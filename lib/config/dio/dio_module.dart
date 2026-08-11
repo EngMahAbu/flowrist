@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flowrist/config/dio/token_service.dart';
 import 'package:flowrist/config/storage/secure_storage.dart';
 import 'package:flowrist/config/storage/secure_storage_service.dart';
+import 'package:flowrist/core/constants/endpoints.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
 
@@ -26,8 +27,7 @@ abstract class DioModule {
   Dio dio(TokenService tokenService) {
     final dio = Dio(
       BaseOptions(
-        // TODO: Replace with your actual base URL
-        // baseUrl: Endpoints.baseUrl,
+        baseUrl: Endpoints.baseUrl,
         sendTimeout: const Duration(seconds: 10),
         receiveTimeout: const Duration(seconds: 10),
       ),
