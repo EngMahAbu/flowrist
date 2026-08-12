@@ -30,6 +30,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: any
+  go_router: ^17.5.0
 
 
 dev_dependencies:

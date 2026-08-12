@@ -1,5 +1,5 @@
+import 'package:flowrist/core/constants/app_router.dart';
 import 'package:flowrist/core/constants/app_strings.dart';
-import 'package:flowrist/features/splash/presentation/view/splash_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -14,7 +14,7 @@ class FlowristApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: AppStrings.appName,
       localizationsDelegates: [
         AppLocalizations.delegate,
@@ -23,7 +23,7 @@ class FlowristApp extends StatelessWidget {
       ],
       supportedLocales: [Locale('en')],
       theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
-      home: const SplashView(),
+      routerConfig: AppRouter.router,
     );
   }
 }

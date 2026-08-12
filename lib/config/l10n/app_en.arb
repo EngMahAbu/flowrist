@@ -1,3 +1,7 @@
 {
-  "login": "Login"
+  "login": "Login",
+  "home": "Home",
+  "categories": "Categories",
+  "cart": "Cart",
+  "profile": "Profile"
 }
