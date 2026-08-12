@@ -123,6 +123,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Profile'**
   String get profile;
+
+  /// No description provided for @generalValidationError.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid input'**
+  String get generalValidationError;
+
+  /// No description provided for @emptyValidationError.
+  ///
+  /// In en, this message translates to:
+  /// **'This field is required'**
+  String get emptyValidationError;
 }
 
 class _AppLocalizationsDelegate

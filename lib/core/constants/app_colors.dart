@@ -51,6 +51,9 @@ abstract final class AppColors {
   static const Color magenta90 = Color(0xFF65558F); // primary
   static const Color magenta100 = Color(0xFF1D192B); // secondary container
   static const Color grey10 = Color(0xFF79747E); // outline
-  static const Color grey20 = Color(0xFF49454F); // on surface variant
+  static const Color grey20 = Color(0xFF878787);
+  static const Color grey30 = Color(0xFF535353);
+  static const Color grey90 = Color(0xFF1d1b20); // on surface
+  static const Color grey40 = Color(0xFF49454F); // on surface variant
   static const Color pink10 = Color(0xFFE8DEF8); // secondary container
 }

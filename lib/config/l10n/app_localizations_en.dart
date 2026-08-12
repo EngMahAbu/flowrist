@@ -22,4 +22,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profile => 'Profile';
+
+  @override
+  String get generalValidationError => 'Invalid input';
+
+  @override
+  String get emptyValidationError => 'This field is required';
 }

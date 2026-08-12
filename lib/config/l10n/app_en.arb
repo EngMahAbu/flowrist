@@ -3,5 +3,7 @@
   "home": "Home",
   "categories": "Categories",
   "cart": "Cart",
-  "profile": "Profile"
+  "profile": "Profile",
+  "generalValidationError": "Invalid input",
+  "emptyValidationError": "This field is required"
 }
