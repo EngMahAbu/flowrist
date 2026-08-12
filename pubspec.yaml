@@ -16,6 +16,7 @@ dependencies:
 
   cupertino_icons: ^1.0.8
   flutter_bloc: ^9.1.1
+  bloc: ^9.2.1
   injectable: ^3.0.0
   get_it: ^9.2.1
   retrofit: ^4.9.0

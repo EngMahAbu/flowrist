@@ -1,30 +1,15 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
-import 'package:flowrist/config/dio/token_service.dart';
-import 'package:flowrist/config/storage/secure_storage.dart';
 import 'package:flowrist/config/storage/secure_storage_service.dart';
+import 'package:flowrist/core/constants/app_constants.dart';
 import 'package:flowrist/core/constants/endpoints.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
 
 @module
 abstract class DioModule {
   @lazySingleton
-  FlutterSecureStorage get secureStorage => const FlutterSecureStorage();
-
-  @lazySingleton
-  SecureStorage secureStorageService(FlutterSecureStorage storage) {
-    return SecureStorageService(storage);
-  }
-
-  @lazySingleton
-  TokenService tokenService(SecureStorage secureStorage) {
-    return TokenService(secureStorage);
-  }
-
-  @lazySingleton
-  Dio dio(TokenService tokenService) {
+  Dio dio(SecureStorageService secureStorageService) {
     final dio = Dio(
       BaseOptions(
         baseUrl: Endpoints.baseUrl,
@@ -37,9 +22,11 @@ abstract class DioModule {
       InterceptorsWrapper(
         onRequest: (options, handler) async {
           try {
-            final token = await tokenService.getToken();
+            final token = await secureStorageService.get(
+              AppConstants.storageTokenKey,
+            );
 
-            if (token != null && token.isNotEmpty) {
+            if (token.isNotEmpty) {
               options.headers['token'] = token;
             }
           } catch (error, stackTrace) {

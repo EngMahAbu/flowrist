@@ -1,1 +1,3 @@
-abstract final class AppConstants {}
+abstract final class AppConstants {
+  static const String storageTokenKey = 'userTokenKey';
+}

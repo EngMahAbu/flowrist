@@ -1,23 +1,23 @@
-import 'package:flowrist/config/storage/secure_storage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:injectable/injectable.dart';
 
-class SecureStorageService implements SecureStorage {
-  final FlutterSecureStorage _secureStorage;
-  static const String _tokenKey = 'token';
-  SecureStorageService(this._secureStorage);
+@lazySingleton
+class SecureStorageService {
+  late final FlutterSecureStorage _secureStorage;
 
-  @override
-  Future<void> saveToken(String token) async {
-    await _secureStorage.write(key: _tokenKey, value: token);
+  SecureStorageService() {
+    _secureStorage = FlutterSecureStorage();
   }
 
-  @override
-  Future<void> deleteToken() async {
-    await _secureStorage.delete(key: _tokenKey);
+  Future<void> save(String key, String value) async {
+    await _secureStorage.write(key: key, value: value);
   }
 
-  @override
-  Future<String?> getToken() async {
-    return await _secureStorage.read(key: _tokenKey);
+  Future<void> delete(String key) async {
+    await _secureStorage.delete(key: key);
+  }
+
+  Future<String> get(String key) async {
+    return await _secureStorage.read(key: key) ?? '';
   }
 }
