@@ -49,3 +49,6 @@ flutter:
     - family: Inter
       fonts:
         - asset: assets/fonts/Inter_Regular.ttf
+    - family: FloweryIcons
+      fonts:
+        - asset: assets/fonts/FloweryIcons.ttf
