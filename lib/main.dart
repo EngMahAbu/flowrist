@@ -1,3 +1,4 @@
+import 'package:flowrist/config/di/di.dart';
 import 'package:flowrist/core/constants/app_router.dart';
 import 'package:flowrist/core/constants/app_strings.dart';
 import 'package:flowrist/core/ui/theme/app_theme.dart';
@@ -9,6 +10,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'config/l10n/app_localizations.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  configureDependencies();
   Bloc.observer = FlowristBlocObserver();
   runApp(const FlowristApp());
 }
