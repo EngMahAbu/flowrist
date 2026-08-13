@@ -9,7 +9,7 @@ class AppTextField extends StatelessWidget {
   final String hint;
   final TextStyle labelStyle;
   final TextStyle hintStyle;
-  final TextEditingController? _controller;
+  final TextEditingController? controller;
   final String? Function(String?)? validator;
   final String? validationPattern;
   final String? validationErrorMessage;
@@ -25,7 +25,7 @@ class AppTextField extends StatelessWidget {
     required this.hint,
     TextStyle? labelStyle,
     TextStyle? hintStyle,
-    this._controller,
+    this.controller,
     this.validator,
     this.validationPattern,
     this.validationErrorMessage,
@@ -56,8 +56,9 @@ class AppTextField extends StatelessWidget {
         hintText: hint,
         hintStyle: hintStyle,
         suffixIcon: suffixIcon,
+        errorMaxLines: 3,
       ),
-      controller: _controller,
+      controller: controller,
       validator: validator ?? defaultValidator,
       onChanged: onChange,
       obscureText: obscureText,

@@ -1,3 +1,5 @@
+import 'package:flowrist/features/auth/presentation/login/view/login_view.dart';
+import 'package:flowrist/features/auth/presentation/signup/view/signup_view.dart';
 import 'package:flowrist/features/home/presentation/view/home_view.dart';
 import 'package:flowrist/features/home/presentation/view/tabs/cart/cart_tab_view.dart';
 import 'package:flowrist/features/home/presentation/view/tabs/categories/categories_tab_view.dart';
@@ -10,6 +12,8 @@ import 'package:go_router/go_router.dart';
 abstract final class AppRoutes {
   static const String splash = '/';
 
+  static const String login = '/login';
+  static const String signUp = '/sign-up';
   static const String homeTab = '/home-tab';
   static const String categoriesTab = '/categories-tab';
   static const String cartTab = '/cart-tab';
@@ -25,7 +29,16 @@ abstract final class AppRouter {
       builder: (context, state) => const SplashView(),
       parentNavigatorKey: _rootNavigatorKey,
     ),
-
+    GoRoute(
+      path: AppRoutes.login,
+      builder: (context, state) => const LoginView(),
+      parentNavigatorKey: _rootNavigatorKey,
+    ),
+    GoRoute(
+      path: AppRoutes.signUp,
+      builder: (context, state) => const SignUpView(),
+      parentNavigatorKey: _rootNavigatorKey,
+    ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
         return HomeView(tabViewShell: navigationShell);
@@ -69,7 +82,7 @@ abstract final class AppRouter {
 
   static final GoRouter router = GoRouter(
     navigatorKey: _rootNavigatorKey,
-    initialLocation: AppRoutes.splash,
+    initialLocation: AppRoutes.signUp,
     routes: _routes,
   );
 }
