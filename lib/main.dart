@@ -13,6 +13,7 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   configureDependencies();
   Bloc.observer = FlowristBlocObserver();
+
   runApp(const FlowristApp());
 }
 
