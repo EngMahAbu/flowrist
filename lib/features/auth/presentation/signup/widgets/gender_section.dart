@@ -23,22 +23,24 @@ class GenderSection extends StatelessWidget {
       children: [
         Text(localizations.gender, style: AppStyles.medium18Inter),
         SizedBox(width: screenWidth * 0.04),
-        Expanded(
-          child: RadioGroup<int>(
-            groupValue: selectedGender,
-            onChanged: (val) {
-              if (val != null) onGenderChanged(val);
-            },
-            child: Row(
-              children: [
-                _buildRadioOption(localizations.female, 1),
-                SizedBox(width: screenWidth * 0.03),
-                _buildRadioOption(localizations.male, 0),
-              ],
-            ),
-          ),
-        ),
+        Expanded(child: _buildRadioGroup()),
       ],
+    );
+  }
+
+  Widget _buildRadioGroup() {
+    return RadioGroup<int>(
+      groupValue: selectedGender,
+      onChanged: (val) {
+        if (val != null) onGenderChanged(val);
+      },
+      child: Row(
+        children: [
+          _buildRadioOption(localizations.female, 1),
+          SizedBox(width: screenWidth * 0.03),
+          _buildRadioOption(localizations.male, 0),
+        ],
+      ),
     );
   }
 

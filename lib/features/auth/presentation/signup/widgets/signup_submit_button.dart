@@ -30,19 +30,23 @@ class SignUpSubmitButton extends StatelessWidget {
                 borderRadius: BorderRadius.circular(24),
               ),
             ),
-            child: state.isLoading
-                ? const SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(
-                      color: AppColors.whiteBase,
-                      strokeWidth: 2,
-                    ),
-                  )
-                : Text(localizations.signup),
+            child: _buildButtonChild(state.isLoading),
           ),
         );
       },
+    );
+  }
+
+  Widget _buildButtonChild(bool isLoading) {
+    if (!isLoading) return Text(localizations.signup);
+
+    return const SizedBox(
+      height: 20,
+      width: 20,
+      child: CircularProgressIndicator(
+        color: AppColors.whiteBase,
+        strokeWidth: 2,
+      ),
     );
   }
 }

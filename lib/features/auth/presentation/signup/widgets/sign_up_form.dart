@@ -50,8 +50,6 @@ class SignUpFormState extends State<SignUpForm> {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
     final screenSize = MediaQuery.sizeOf(context);
-    final screenHeight = screenSize.height;
-    final screenWidth = screenSize.width;
 
     return BlocListener<SignUpViewModel, SignUpState>(
       listener: _handleStateChanges,
@@ -61,63 +59,82 @@ class SignUpFormState extends State<SignUpForm> {
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              SizedBox(height: screenHeight * 0.0284),
-              NameFields(
-                firstNameController: _firstNameController,
-                lastNameController: _lastNameController,
-                localizations: localizations,
-                screenWidth: screenWidth,
-              ),
-              SizedBox(height: screenHeight * 0.0284),
-              AppTextField(
-                label: localizations.email,
-                hint: localizations.enterEmail,
-                controller: _emailController,
-                keyboardType: TextInputType.emailAddress,
-                validationPattern: FormValidator.emailPattern,
-                validationErrorMessage: localizations.invalidEmailError,
-                localizations: localizations,
-              ),
-              SizedBox(height: screenHeight * 0.0284),
-              PasswordFields(
-                passwordController: _passwordController,
-                confirmPasswordController: _confirmPasswordController,
-                localizations: localizations,
-                screenWidth: screenWidth,
-              ),
-              SizedBox(height: screenHeight * 0.0284),
-              AppTextField(
-                label: localizations.phoneNumber,
-                hint: localizations.enterPhoneNumber,
-                controller: _phoneController,
-                keyboardType: TextInputType.phone,
-                validationPattern: FormValidator.phonePattern,
-                validationErrorMessage: localizations.generalValidationError,
-                localizations: localizations,
-              ),
-              SizedBox(height: screenHeight * 0.0284),
-              GenderSection(
-                selectedGender: _gender,
-                onGenderChanged: (val) => setState(() => _gender = val),
-                localizations: localizations,
-                screenWidth: screenWidth,
-              ),
-              SizedBox(height: screenHeight * 0.0189),
-              _buildTermsAndConditionsText(localizations),
-              SizedBox(height: screenHeight * 0.0568),
-              SignUpSubmitButton(
-                screenHeight: screenHeight,
-                localizations: localizations,
-                onSubmit: () => _onSubmit(context),
-              ),
-              SizedBox(height: screenHeight * 0.0189),
-              _buildLoginRedirectText(context, localizations),
-              SizedBox(height: screenHeight * 0.03),
-            ],
+            children: _buildFormContent(context, localizations, screenSize),
           ),
         ),
       ),
+    );
+  }
+
+  List<Widget> _buildFormContent(
+    BuildContext context,
+    AppLocalizations localizations,
+    Size screenSize,
+  ) {
+    final screenHeight = screenSize.height;
+    final screenWidth = screenSize.width;
+
+    return [
+      SizedBox(height: screenHeight * 0.0284),
+      NameFields(
+        firstNameController: _firstNameController,
+        lastNameController: _lastNameController,
+        localizations: localizations,
+        screenWidth: screenWidth,
+      ),
+      SizedBox(height: screenHeight * 0.0284),
+      _buildEmailField(localizations),
+      SizedBox(height: screenHeight * 0.0284),
+      PasswordFields(
+        passwordController: _passwordController,
+        confirmPasswordController: _confirmPasswordController,
+        localizations: localizations,
+        screenWidth: screenWidth,
+      ),
+      SizedBox(height: screenHeight * 0.0284),
+      _buildPhoneField(localizations),
+      SizedBox(height: screenHeight * 0.0284),
+      GenderSection(
+        selectedGender: _gender,
+        onGenderChanged: (val) => setState(() => _gender = val),
+        localizations: localizations,
+        screenWidth: screenWidth,
+      ),
+      SizedBox(height: screenHeight * 0.0189),
+      _buildTermsAndConditionsText(localizations),
+      SizedBox(height: screenHeight * 0.0568),
+      SignUpSubmitButton(
+        screenHeight: screenHeight,
+        localizations: localizations,
+        onSubmit: () => _onSubmit(context),
+      ),
+      SizedBox(height: screenHeight * 0.0189),
+      _buildLoginRedirectText(context, localizations),
+      SizedBox(height: screenHeight * 0.03),
+    ];
+  }
+
+  Widget _buildEmailField(AppLocalizations localizations) {
+    return AppTextField(
+      label: localizations.email,
+      hint: localizations.enterEmail,
+      controller: _emailController,
+      keyboardType: TextInputType.emailAddress,
+      validationPattern: FormValidator.emailPattern,
+      validationErrorMessage: localizations.invalidEmailError,
+      localizations: localizations,
+    );
+  }
+
+  Widget _buildPhoneField(AppLocalizations localizations) {
+    return AppTextField(
+      label: localizations.phoneNumber,
+      hint: localizations.enterPhoneNumber,
+      controller: _phoneController,
+      keyboardType: TextInputType.phone,
+      validationPattern: FormValidator.phonePattern,
+      validationErrorMessage: localizations.generalValidationError,
+      localizations: localizations,
     );
   }
 
@@ -125,9 +142,9 @@ class SignUpFormState extends State<SignUpForm> {
     final localizations = AppLocalizations.of(context)!;
 
     if (state.errorMessage != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(state.errorMessage!)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
     } else if (state.data != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(localizations.registrationSuccessful)),

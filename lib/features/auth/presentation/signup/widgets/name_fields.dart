@@ -21,28 +21,32 @@ class NameFields extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(
-          child: AppTextField(
-            label: localizations.firstName,
-            hint: localizations.enterFirstName,
-            controller: firstNameController,
-            validationPattern: FormValidator.namePattern,
-            validationErrorMessage: localizations.generalValidationError,
-            localizations: localizations,
-          ),
-        ),
+        Expanded(child: _buildFirstNameField()),
         SizedBox(width: screenWidth * 0.03),
-        Expanded(
-          child: AppTextField(
-            label: localizations.lastName,
-            hint: localizations.enterLastName,
-            controller: lastNameController,
-            validationPattern: FormValidator.namePattern,
-            validationErrorMessage: localizations.generalValidationError,
-            localizations: localizations,
-          ),
-        ),
+        Expanded(child: _buildLastNameField()),
       ],
+    );
+  }
+
+  Widget _buildFirstNameField() {
+    return AppTextField(
+      label: localizations.firstName,
+      hint: localizations.enterFirstName,
+      controller: firstNameController,
+      validationPattern: FormValidator.namePattern,
+      validationErrorMessage: localizations.generalValidationError,
+      localizations: localizations,
+    );
+  }
+
+  Widget _buildLastNameField() {
+    return AppTextField(
+      label: localizations.lastName,
+      hint: localizations.enterLastName,
+      controller: lastNameController,
+      validationPattern: FormValidator.namePattern,
+      validationErrorMessage: localizations.generalValidationError,
+      localizations: localizations,
     );
   }
 }

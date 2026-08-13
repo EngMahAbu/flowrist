@@ -82,7 +82,7 @@ abstract final class AppRouter {
 
   static final GoRouter router = GoRouter(
     navigatorKey: _rootNavigatorKey,
-    initialLocation: AppRoutes.signUp,
+    initialLocation: AppRoutes.splash,
     routes: _routes,
   );
 }
