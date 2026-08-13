@@ -1,0 +1,9 @@
+{
+  "login": "Login",
+  "home": "Home",
+  "categories": "Categories",
+  "cart": "Cart",
+  "profile": "Profile",
+  "generalValidationError": "Invalid input",
+  "emptyValidationError": "This field is required"
+}
