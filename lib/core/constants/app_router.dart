@@ -1,3 +1,6 @@
+import 'package:flowrist/config/di/di.dart';
+import 'package:flowrist/features/auth/presentation/login/cubit/login_cubit.dart';
+import 'package:flowrist/features/auth/presentation/login/view/login_view.dart';
 import 'package:flowrist/features/home/presentation/view/home_view.dart';
 import 'package:flowrist/features/home/presentation/view/tabs/cart/cart_tab_view.dart';
 import 'package:flowrist/features/home/presentation/view/tabs/categories/categories_tab_view.dart';
@@ -5,11 +8,12 @@ import 'package:flowrist/features/home/presentation/view/tabs/home/home_tab_view
 import 'package:flowrist/features/home/presentation/view/tabs/profile/profile_tab_view.dart';
 import 'package:flowrist/features/splash/presentation/view/splash_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 abstract final class AppRoutes {
   static const String splash = '/';
-
+  static const String login = '/login';
   static const String homeTab = '/home-tab';
   static const String categoriesTab = '/categories-tab';
   static const String cartTab = '/cart-tab';
@@ -23,6 +27,17 @@ abstract final class AppRouter {
     GoRoute(
       path: AppRoutes.splash,
       builder: (context, state) => const SplashView(),
+      parentNavigatorKey: _rootNavigatorKey,
+    ),
+
+    GoRoute(
+      path: AppRoutes.login,
+      builder: (context, state) {
+        return BlocProvider(
+          create: (_) => getIt<LoginCubit>(),
+          child: const LoginView(),
+        );
+      },
       parentNavigatorKey: _rootNavigatorKey,
     ),
 

@@ -1,3 +1,3 @@
 abstract final class Endpoints {
-  static const baseUrl = 'http://localhost:5199/';
+  static const baseUrl = 'http://localhost:5000/';
 }

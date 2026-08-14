@@ -9,6 +9,8 @@ class BaseState<T> {
     required this.data,
   });
 
+  BaseState.initial() : this(isLoading: false, errorMessage: null, data: null);
+
   BaseState<T> copyWith({bool? isLoading, String? errorMessage, T? data}) {
     return BaseState<T>(
       isLoading: isLoading ?? this.isLoading,

@@ -5,5 +5,19 @@
   "cart": "Cart",
   "profile": "Profile",
   "generalValidationError": "Invalid input",
-  "emptyValidationError": "This field is required"
+  "emptyValidationError": "This field is required",
+
+  "loginRequired": "Login required",
+  "loginRequiredMessage": "Please login to use this feature.",
+  "cancel": "Cancel",
+  "rememberMe": "Remember me",
+  "forgetPassword": "Forget Password?",
+  "continueAsGuest": "Continue as guest",
+  "dontHaveAccount": "Don't have account?",
+  "signUp": "Sign up",
+  "loginSuccessfully": "Login Successfully",
+  "email": "Email",
+  "emailHint": "Enter your email",
+  "password": "Password",
+  "passwordHint": "Enter your password"
 }

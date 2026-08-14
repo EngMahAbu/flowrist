@@ -23,6 +23,7 @@ class FlowristApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: AppStrings.appName,
+      debugShowCheckedModeBanner: false,
       localizationsDelegates: [
         AppLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,

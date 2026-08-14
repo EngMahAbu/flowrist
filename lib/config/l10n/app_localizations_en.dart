@@ -28,4 +28,43 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get emptyValidationError => 'This field is required';
+
+  @override
+  String get loginRequired => 'Login required';
+
+  @override
+  String get loginRequiredMessage => 'Please login to use this feature.';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get rememberMe => 'Remember me';
+
+  @override
+  String get forgetPassword => 'Forget Password?';
+
+  @override
+  String get continueAsGuest => 'Continue as guest';
+
+  @override
+  String get dontHaveAccount => 'Don\'t have account?';
+
+  @override
+  String get signUp => 'Sign up';
+
+  @override
+  String get loginSuccessfully => 'Login Successfully';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get emailHint => 'Enter your email';
+
+  @override
+  String get password => 'Password';
+
+  @override
+  String get passwordHint => 'Enter your password';
 }
