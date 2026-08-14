@@ -4,7 +4,7 @@ import 'package:flowrist/features/auth/data/models/register_request_dto.dart';
 import 'package:flowrist/features/auth/data/models/register_response_dto.dart';
 import 'package:injectable/injectable.dart';
 
-@LazySingleton(as: AuthRemoteDataSource)
+@Injectable(as: AuthRemoteDataSource)
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   final AuthApiClient _apiClient;
 

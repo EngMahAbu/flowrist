@@ -1,7 +1,7 @@
-import 'package:flowrist/config/form_validator/form_validator.dart';
 import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flowrist/core/constants/app_colors.dart';
 import 'package:flowrist/core/ui/widgets/app_text_field.dart';
+import 'package:flowrist/features/auth/presentation/signup/utils/signup_form_validator.dart';
 import 'package:flutter/material.dart';
 
 class PasswordFields extends StatefulWidget {
@@ -52,7 +52,10 @@ class PasswordFieldsState extends State<PasswordFields> {
         onPressed: () =>
             setState(() => _isPasswordObscure = !_isPasswordObscure),
       ),
-      validator: (value) => _getPasswordError(value),
+      validator: (value) => SignUpFormValidator.validatePassword(
+        value: value,
+        localizations: widget.localizations,
+      ),
       localizations: widget.localizations,
     );
   }
@@ -72,33 +75,12 @@ class PasswordFieldsState extends State<PasswordFields> {
           () => _isConfirmPasswordObscure = !_isConfirmPasswordObscure,
         ),
       ),
-      validator: (value) => _getConfirmPasswordError(value),
+      validator: (value) => SignUpFormValidator.validateConfirmPassword(
+        value: value,
+        password: widget.passwordController.text,
+        localizations: widget.localizations,
+      ),
       localizations: widget.localizations,
     );
-  }
-
-  String? _getPasswordError(String? value) {
-    if (value == null || value.isEmpty) {
-      return widget.localizations.emptyValidationError;
-    }
-    final result = FormValidator.validatePassword(value);
-    return switch (result) {
-      Valid() => null,
-      LengthError() => widget.localizations.passwordLengthError,
-      UppercaseError() => widget.localizations.passwordUppercaseError,
-      LowercaseError() => widget.localizations.passwordLowercaseError,
-      NumberError() => widget.localizations.passwordNumberError,
-      SpecialCharError() => widget.localizations.passwordSpecialCharError,
-    };
-  }
-
-  String? _getConfirmPasswordError(String? value) {
-    if (value == null || value.isEmpty) {
-      return widget.localizations.emptyValidationError;
-    }
-    if (value != widget.passwordController.text) {
-      return widget.localizations.passwordsDoNotMatchError;
-    }
-    return null;
   }
 }

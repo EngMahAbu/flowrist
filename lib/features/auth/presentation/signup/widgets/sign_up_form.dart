@@ -33,7 +33,7 @@ class SignUpFormState extends State<SignUpForm> {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
-  int _gender = 1;
+  Gender _selectedGender = Gender.female;
 
   @override
   void dispose() {
@@ -95,8 +95,12 @@ class SignUpFormState extends State<SignUpForm> {
       _buildPhoneField(localizations),
       SizedBox(height: screenHeight * 0.0284),
       GenderSection(
-        selectedGender: _gender,
-        onGenderChanged: (val) => setState(() => _gender = val),
+        selectedGender: _selectedGender,
+        onGenderChanged: (gender) {
+          setState(() {
+            _selectedGender = gender;
+          });
+        },
         localizations: localizations,
         screenWidth: screenWidth,
       ),
@@ -202,7 +206,7 @@ class SignUpFormState extends State<SignUpForm> {
         lastName: _lastNameController.text.trim(),
         email: _emailController.text.trim(),
         phone: _phoneController.text.trim(),
-        gender: _gender,
+        gender: _selectedGender.value,
         password: _passwordController.text,
         confirmPassword: _confirmPasswordController.text,
         fcmToken: 'dummy_fcm_token',

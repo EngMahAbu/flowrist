@@ -7,7 +7,7 @@ import 'package:flowrist/features/auth/data/models/register_request_dto.dart';
 import 'package:flowrist/features/auth/data/models/register_response_dto.dart';
 
 @GenerateMocks([AuthApiClient])
-import 'auth_remote_data_source_test.mocks.dart';
+import 'auth_remote_data_source_impl_test.mocks.dart';
 
 void main() {
   late MockAuthApiClient mockApiClient;

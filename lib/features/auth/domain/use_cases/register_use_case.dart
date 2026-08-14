@@ -4,7 +4,7 @@ import 'package:flowrist/features/auth/domain/entities/user_entity.dart';
 import 'package:flowrist/features/auth/domain/repositories/auth_repository.dart';
 import 'package:injectable/injectable.dart';
 
-@lazySingleton
+@injectable
 class RegisterUseCase {
   final AuthRepository _repository;
 

@@ -3,9 +3,17 @@ import 'package:flowrist/core/constants/app_colors.dart';
 import 'package:flowrist/core/constants/app_styles.dart';
 import 'package:flutter/material.dart';
 
+enum Gender {
+  male(0),
+  female(1);
+
+  final int value;
+  const Gender(this.value);
+}
+
 class GenderSection extends StatelessWidget {
-  final int selectedGender;
-  final ValueChanged<int> onGenderChanged;
+  final Gender selectedGender;
+  final ValueChanged<Gender> onGenderChanged;
   final AppLocalizations localizations;
   final double screenWidth;
 
@@ -29,26 +37,26 @@ class GenderSection extends StatelessWidget {
   }
 
   Widget _buildRadioGroup() {
-    return RadioGroup<int>(
+    return RadioGroup<Gender>(
       groupValue: selectedGender,
       onChanged: (val) {
         if (val != null) onGenderChanged(val);
       },
       child: Row(
         children: [
-          _buildRadioOption(localizations.female, 1),
+          _buildRadioOption(localizations.female, Gender.female),
           SizedBox(width: screenWidth * 0.03),
-          _buildRadioOption(localizations.male, 0),
+          _buildRadioOption(localizations.male, Gender.male),
         ],
       ),
     );
   }
 
-  Widget _buildRadioOption(String title, int value) {
+  Widget _buildRadioOption(String title, Gender value) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Radio<int>(value: value, activeColor: AppColors.purpleBase),
+        Radio<Gender>(value: value, activeColor: AppColors.purpleBase),
         Text(title, style: AppStyles.regular14Inter),
       ],
     );
