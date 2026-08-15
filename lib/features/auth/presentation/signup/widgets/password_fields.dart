@@ -1,7 +1,8 @@
+import 'package:flowrist/config/form_validator/form_validator.dart';
 import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flowrist/core/constants/app_colors.dart';
 import 'package:flowrist/core/ui/widgets/app_text_field.dart';
-import 'package:flowrist/features/auth/presentation/signup/utils/signup_form_validator.dart';
+import 'package:flowrist/features/auth/presentation/signup/utils/signup_validation_mapper.dart';
 import 'package:flutter/material.dart';
 
 class PasswordFields extends StatefulWidget {
@@ -52,10 +53,14 @@ class PasswordFieldsState extends State<PasswordFields> {
         onPressed: () =>
             setState(() => _isPasswordObscure = !_isPasswordObscure),
       ),
-      validator: (value) => SignUpFormValidator.validatePassword(
-        value: value,
-        localizations: widget.localizations,
-      ),
+      validator: (value) {
+        if (value == null || value.trim().isEmpty) {
+          return widget.localizations.emptyValidationError;
+        }
+        return FormValidator.validatePassword(
+          value,
+        ).toLocalizedMessage(widget.localizations);
+      },
       localizations: widget.localizations,
     );
   }
@@ -75,11 +80,15 @@ class PasswordFieldsState extends State<PasswordFields> {
           () => _isConfirmPasswordObscure = !_isConfirmPasswordObscure,
         ),
       ),
-      validator: (value) => SignUpFormValidator.validateConfirmPassword(
-        value: value,
-        password: widget.passwordController.text,
-        localizations: widget.localizations,
-      ),
+      validator: (value) {
+        if (value == null || value.trim().isEmpty) {
+          return widget.localizations.emptyValidationError;
+        }
+        if (value != widget.passwordController.text) {
+          return widget.localizations.passwordsDoNotMatchError;
+        }
+        return null;
+      },
       localizations: widget.localizations,
     );
   }
