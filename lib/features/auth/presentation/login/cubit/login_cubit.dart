@@ -28,14 +28,22 @@ class LoginCubit extends Cubit<LoginState> {
         await _login(event);
 
       case RememberMeChanged():
-        emit(state.copyWith(rememberMe: event.value));
+        await _rememberMeChanged(event);
 
       case FormValidityChanged():
-        emit(state.copyWith(isFormValid: event.isValid));
+        await _formValidityChanged(event);
 
       case ContinueAsGuest():
         await _continueAsGuest();
     }
+  }
+
+  Future<void> _rememberMeChanged(RememberMeChanged event) async {
+    emit(state.copyWith(rememberMe: event.value));
+  }
+
+  Future<void> _formValidityChanged(FormValidityChanged event) async {
+    emit(state.copyWith(isFormValid: event.isValid));
   }
 
   Future<void> _login(LoginSubmitted event) async {
@@ -63,7 +71,7 @@ class LoginCubit extends Cubit<LoginState> {
             login: state.login.copyWith(isLoading: false, data: result.data),
           ),
         );
-        _uiEventController.add(ShowMessage("LoginSuccessfuly"));
+        _uiEventController.add(ShowMessage('loginSuccessfully'));
         _uiEventController.add(LoginSuccess());
 
       case ErrorResponse<LoginEntity>():

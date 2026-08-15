@@ -1,3 +1,4 @@
+import 'package:flowrist/config/api_error_handler/api_error_handler.dart';
 import 'package:flowrist/config/base_response/base_response.dart';
 import 'package:flowrist/config/storage/secure_storage_service.dart';
 import 'package:flowrist/core/constants/app_constants.dart';
@@ -32,7 +33,7 @@ class AuthRepositoryImpl implements AuthRepository {
         AppConstants.rememberMeKey,
         rememberMe.toString(),
       );
-      
+
       await _secureStorageService.save(AppConstants.guestModeKey, 'false');
 
       if (rememberMe) {
@@ -45,7 +46,7 @@ class AuthRepositoryImpl implements AuthRepository {
       }
       return SuccessResponse(loginEntity);
     } on Exception catch (e) {
-      return ErrorResponse(e.toString());
+      return ApiErrorHandler.handleException<LoginEntity>(e);
     }
   }
 }

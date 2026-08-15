@@ -1,7 +1,8 @@
+import 'package:equatable/equatable.dart';
 import 'package:flowrist/config/base_state/base_state.dart';
 import 'package:flowrist/features/auth/domain/entities/login_entity.dart';
 
-class LoginState {
+class LoginState extends Equatable {
   final BaseState<LoginEntity> login;
   final bool rememberMe;
   final bool isFormValid;
@@ -26,4 +27,7 @@ class LoginState {
       isFormValid: isFormValid ?? this.isFormValid,
     );
   }
+
+  @override
+  List<Object?> get props => [login, rememberMe, isFormValid];
 }

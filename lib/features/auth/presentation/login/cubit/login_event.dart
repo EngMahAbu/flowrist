@@ -29,8 +29,6 @@ class ShowMessage extends LoginUIEvent {
   ShowMessage(this.message);
 }
 
-class LoginSuccess extends LoginUIEvent {
-  LoginSuccess();
-}
+class LoginSuccess extends LoginUIEvent {}
 
 class GuestLoginSuccess extends LoginUIEvent {}

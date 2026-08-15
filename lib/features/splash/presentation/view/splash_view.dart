@@ -1,7 +1,5 @@
 import 'package:flowrist/config/di/di.dart';
 import 'package:flowrist/config/session/session_service.dart';
-import 'package:flowrist/config/storage/secure_storage_service.dart';
-import 'package:flowrist/core/constants/app_constants.dart';
 import 'package:flowrist/core/constants/app_dimensions.dart';
 import 'package:flowrist/core/constants/app_router.dart';
 import 'package:flowrist/gallery_view.dart';
@@ -32,12 +30,20 @@ Future<void> _checkSession() async {
 
   final sessionService = getIt<SessionService>();
 
-  final rememberMe = await sessionService.isRemembered();
-  final isGuest = await sessionService.isGuest();
+  try {
+    final rememberMe = await sessionService.isRemembered();
+    final isGuest = await sessionService.isGuest();
 
-  if (rememberMe || isGuest) {
-    context.go(AppRoutes.homeTab);
-  } else {
+    if (!mounted) return;
+
+    if (rememberMe || isGuest) {
+      context.go(AppRoutes.homeTab);
+    } else {
+      context.go(AppRoutes.login);
+    }
+  } catch (e) {
+    if (!mounted) return;
+
     context.go(AppRoutes.login);
   }
 }

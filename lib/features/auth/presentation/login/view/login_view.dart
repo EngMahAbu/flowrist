@@ -27,7 +27,7 @@ class _LoginViewState extends State<LoginView> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  bool obscurePassword = true;
+  final ValueNotifier<bool> obscurePassword = ValueNotifier(true);
 
   void checkFormValidity() {
     context.read<LoginCubit>().doEvent(
@@ -37,6 +37,7 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   void dispose() {
+    obscurePassword.dispose();
     _subscription.cancel();
     emailController.dispose();
     passwordController.dispose();
@@ -52,9 +53,15 @@ class _LoginViewState extends State<LoginView> {
     _subscription = loginCubit.uiStream.listen((event) {
       switch (event) {
         case ShowMessage():
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(event.message)));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                event.message == 'loginSuccessfully'
+                    ? AppLocalizations.of(context)!.loginSuccessfully
+                    : event.message,
+              ),
+            ),
+          );
 
         case LoginSuccess():
           context.go(AppRoutes.homeTab);
@@ -89,31 +96,35 @@ class _LoginViewState extends State<LoginView> {
                       keyboardType: TextInputType.emailAddress,
                       controller: emailController,
                       validationPattern: FormValidator.emailPattern,
-                      validationErrorMessage: localizations.generalValidationError,
+                      validationErrorMessage:
+                          localizations.generalValidationError,
                       localizations: localizations,
                       onChange: (_) => checkFormValidity(),
                     ),
-                    SizedBox(height: 20),
-                    AppTextField(
-                      label: localizations.password,
-                      hint: localizations.passwordHint,
-                      controller: passwordController,
-                      obscureText: obscurePassword,
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            obscurePassword = !obscurePassword;
-                          });
-                        },
-                        icon: Icon(
-                          obscurePassword
-                              ? Icons.visibility_off
-                              : Icons.visibility,
-                          size: 18,
-                        ),
-                      ),
-                      localizations: localizations,
-                      onChange: (_) => checkFormValidity(),
+                    const SizedBox(height: 20),
+                    ValueListenableBuilder<bool>(
+                      valueListenable: obscurePassword,
+                      builder: (context, isObscure, child) {
+                        return AppTextField(
+                          label: "Password",
+                          hint: "Enter your password",
+                          controller: passwordController,
+                          obscureText: isObscure,
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              obscurePassword.value = !obscurePassword.value;
+                            },
+                            icon: Icon(
+                              isObscure
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                              size: 18,
+                            ),
+                          ),
+                          localizations: localizations,
+                          onChange: (_) => checkFormValidity(),
+                        );
+                      },
                     ),
 
                     BlocBuilder<LoginCubit, LoginState>(
@@ -130,7 +141,10 @@ class _LoginViewState extends State<LoginView> {
                                 );
                               },
                             ),
-                            Text(localizations.rememberMe, style: AppStyles.regular13),
+                            Text(
+                              localizations.rememberMe,
+                              style: AppStyles.regular13,
+                            ),
                             const Spacer(),
                             TextButton(
                               onPressed: () {
@@ -150,7 +164,7 @@ class _LoginViewState extends State<LoginView> {
                         );
                       },
                     ),
-                    SizedBox(height: 70),
+                    const SizedBox(height: 70),
                     BlocBuilder<LoginCubit, LoginState>(
                       buildWhen: (previous, current) =>
                           previous.login.isLoading != current.login.isLoading,
@@ -158,7 +172,7 @@ class _LoginViewState extends State<LoginView> {
                         return SizedBox(
                           width: double.infinity,
                           child: AppButton(
-                            text: 'Login',
+                            text: localizations.login,
                             isLoading: state.login.isLoading,
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
@@ -174,7 +188,7 @@ class _LoginViewState extends State<LoginView> {
                         );
                       },
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     SizedBox(
                       width: double.infinity,
                       child: AppButton(
@@ -187,7 +201,7 @@ class _LoginViewState extends State<LoginView> {
                         textColor: AppColors.blackBase,
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     RichText(
                       text: TextSpan(
                         style: AppStyles.regular16,
