@@ -75,7 +75,8 @@ class AppTextField extends StatelessWidget {
       return localizations.emptyValidationError;
     }
 
-    if (!FormValidator.validate(validationPattern!, input)) {
+    if (validationPattern != null &&
+        !FormValidator.validate(validationPattern!, input)) {
       return validationErrorMessage;
     }
 

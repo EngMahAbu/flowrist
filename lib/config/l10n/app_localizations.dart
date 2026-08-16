@@ -166,12 +166,6 @@ abstract class AppLocalizations {
   /// **'Enter last name'**
   String get enterLastName;
 
-  /// No description provided for @email.
-  ///
-  /// In en, this message translates to:
-  /// **'Email'**
-  String get email;
-
   /// No description provided for @enterEmail.
   ///
   /// In en, this message translates to:
@@ -183,12 +177,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This Email is not valid'**
   String get invalidEmailError;
-
-  /// No description provided for @password.
-  ///
-  /// In en, this message translates to:
-  /// **'Password'**
-  String get password;
 
   /// No description provided for @enterPassword.
   ///
@@ -291,6 +279,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Passwords do not match'**
   String get passwordsDoNotMatchError;
+
+  /// No description provided for @loginRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Login required'**
+  String get loginRequired;
+
+  /// No description provided for @loginRequiredMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Please login to use this feature.'**
+  String get loginRequiredMessage;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @rememberMe.
+  ///
+  /// In en, this message translates to:
+  /// **'Remember me'**
+  String get rememberMe;
+
+  /// No description provided for @forgetPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Forget Password?'**
+  String get forgetPassword;
+
+  /// No description provided for @continueAsGuest.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue as guest'**
+  String get continueAsGuest;
+
+  /// No description provided for @dontHaveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t have account? '**
+  String get dontHaveAccount;
+
+  /// No description provided for @signUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up'**
+  String get signUp;
+
+  /// No description provided for @loginSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Login Successfully'**
+  String get loginSuccessfully;
+
+  /// No description provided for @email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get email;
+
+  /// No description provided for @emailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email'**
+  String get emailHint;
+
+  /// No description provided for @password.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get password;
+
+  /// No description provided for @passwordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your password'**
+  String get passwordHint;
 }
 
 class _AppLocalizationsDelegate

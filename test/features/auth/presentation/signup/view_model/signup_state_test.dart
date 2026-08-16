@@ -9,7 +9,6 @@ void main() {
     name: 'Ali Ibrahim',
     email: 'ali@example.com',
     phone: '01000000000',
-    token: 'jwt_token_example',
   );
 
   group('SignUpState Unit Tests', () {

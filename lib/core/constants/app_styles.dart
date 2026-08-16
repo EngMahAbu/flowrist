@@ -63,6 +63,12 @@ abstract final class AppStyles {
     fontSize: 16,
     color: AppColors.whiteBase,
   );
+  static final TextStyle medium16InterUnderline = GoogleFonts.inter(
+    fontWeight: FontWeight.w500,
+    fontSize: 16,
+    color: AppColors.purpleBase,
+    decoration: TextDecoration.underline,
+  );
 
   static final TextStyle medium18Roboto = GoogleFonts.roboto(
     fontWeight: FontWeight.w500,

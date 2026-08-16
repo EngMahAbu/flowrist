@@ -22,7 +22,6 @@ void main() {
     name: 'Ali Ibrahim',
     email: 'ali@example.com',
     phone: '01000000000',
-    token: 'jwt_token_example',
   );
 
   const tRequestDto = RegisterRequestDto(
@@ -79,8 +78,7 @@ void main() {
             .having((s) => s.errorMessage, 'errorMessage', isNull),
         isA<SignUpState>()
             .having((s) => s.isLoading, 'isLoading', false)
-            .having((s) => s.data?.id, 'data.id', '123')
-            .having((s) => s.data?.token, 'data.token', 'jwt_token_example'),
+            .having((s) => s.data?.id, 'data.id', '123'),
       ],
       verify: (_) {
         verify(mockRegisterUseCase(tRequestDto)).called(1);

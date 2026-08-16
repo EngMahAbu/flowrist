@@ -3,22 +3,28 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
 import 'package:flowrist/config/base_response/base_response.dart';
+import 'package:flowrist/config/storage/secure_storage_service.dart';
 import 'package:flowrist/features/auth/data/data_sources/contract/remote/auth_remote_data_source.dart';
 import 'package:flowrist/features/auth/data/models/register_request_dto.dart';
 import 'package:flowrist/features/auth/data/models/register_response_dto.dart';
 import 'package:flowrist/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:flowrist/features/auth/domain/entities/user_entity.dart';
 
-@GenerateMocks([AuthRemoteDataSource])
+@GenerateMocks([AuthRemoteDataSource, SecureStorageService])
 import 'auth_repository_impl_test.mocks.dart';
 
 void main() {
   late MockAuthRemoteDataSource mockRemoteDataSource;
+  late MockSecureStorageService mockSecureStorageService;
   late AuthRepositoryImpl repository;
 
   setUp(() {
     mockRemoteDataSource = MockAuthRemoteDataSource();
-    repository = AuthRepositoryImpl(mockRemoteDataSource);
+    mockSecureStorageService = MockSecureStorageService();
+    repository = AuthRepositoryImpl(
+      mockRemoteDataSource,
+      mockSecureStorageService,
+    );
   });
 
   const tRequestDto = RegisterRequestDto(
@@ -61,7 +67,6 @@ void main() {
         expect(result, isA<SuccessResponse<UserEntity>>());
         final successData = (result as SuccessResponse<UserEntity>).data;
         expect(successData?.id, equals('123'));
-        expect(successData?.token, equals('jwt_token_example'));
         verify(mockRemoteDataSource.register(tRequestDto)).called(1);
         verifyNoMoreInteractions(mockRemoteDataSource);
       },

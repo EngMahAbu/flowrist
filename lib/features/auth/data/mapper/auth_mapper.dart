@@ -9,7 +9,6 @@ abstract final class AuthMapper {
       email: user?.email ?? '',
       phone: user?.phone ?? '',
       name: user?.name ?? '',
-      token: dto.data?.token ?? '',
     );
   }
 }

@@ -23,7 +23,6 @@ void main() {
       expect(result.name, equals('Ali Ibrahim'));
       expect(result.email, equals('ali@example.com'));
       expect(result.phone, equals('01000000000'));
-      expect(result.token, equals('jwt_token_example'));
     });
 
     test('should return empty strings when DTO fields are null', () {
@@ -35,7 +34,6 @@ void main() {
       expect(result.name, equals(''));
       expect(result.email, equals(''));
       expect(result.phone, equals(''));
-      expect(result.token, equals(''));
     });
   });
 }

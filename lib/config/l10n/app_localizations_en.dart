@@ -45,16 +45,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enterLastName => 'Enter last name';
 
   @override
-  String get email => 'Email';
-
-  @override
   String get enterEmail => 'Enter your email';
 
   @override
   String get invalidEmailError => 'This Email is not valid';
-
-  @override
-  String get password => 'Password';
 
   @override
   String get enterPassword => 'Enter password';
@@ -111,4 +105,43 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get passwordsDoNotMatchError => 'Passwords do not match';
+
+  @override
+  String get loginRequired => 'Login required';
+
+  @override
+  String get loginRequiredMessage => 'Please login to use this feature.';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get rememberMe => 'Remember me';
+
+  @override
+  String get forgetPassword => 'Forget Password?';
+
+  @override
+  String get continueAsGuest => 'Continue as guest';
+
+  @override
+  String get dontHaveAccount => 'Don\'t have account? ';
+
+  @override
+  String get signUp => 'Sign up';
+
+  @override
+  String get loginSuccessfully => 'Login Successfully';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get emailHint => 'Enter your email';
+
+  @override
+  String get password => 'Password';
+
+  @override
+  String get passwordHint => 'Enter your password';
 }

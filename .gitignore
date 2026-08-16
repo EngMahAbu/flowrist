@@ -49,3 +49,5 @@ app.*.map.json
 *.config.dart
 # mockito generated files
 *.mocks.dart
+# FVM Version Cache
+.fvm/

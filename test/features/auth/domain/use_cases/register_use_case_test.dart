@@ -20,7 +20,6 @@ void main() {
     name: 'Ali Ibrahim',
     email: 'ali@example.com',
     phone: '01000000000',
-    token: 'jwt_token_example',
   );
 
   setUp(() {
@@ -62,7 +61,6 @@ void main() {
         final successData = (result as SuccessResponse<UserEntity>).data;
         expect(successData?.id, equals('123'));
         expect(successData?.name, equals('Ali Ibrahim'));
-        expect(successData?.token, equals('jwt_token_example'));
         verify(mockAuthRepository.register(tRequestDto)).called(1);
         verifyNoMoreInteractions(mockAuthRepository);
       },
