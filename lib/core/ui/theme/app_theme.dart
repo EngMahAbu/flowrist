@@ -9,7 +9,7 @@ abstract final class AppTheme {
 
     appBarTheme: AppBarTheme(
       backgroundColor: AppColors.whiteBase,
-      titleSpacing: 0,
+      titleSpacing: 25,
       elevation: 0,
       titleTextStyle: AppStyles.medium20,
       iconTheme: IconThemeData(color: AppColors.blackBase, size: 20),
