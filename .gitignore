@@ -47,6 +47,7 @@ app.*.map.json
 *.g.dart
 # injectable (di) generated files
 *.config.dart
-
+# mockito generated files
+*.mocks.dart
 # FVM Version Cache
 .fvm/

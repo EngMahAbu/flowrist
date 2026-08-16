@@ -210,7 +210,9 @@ class _LoginViewState extends State<LoginView> {
                           TextSpan(
                             text: localizations.signUp,
                             style: AppStyles.medium16InterUnderline,
-                            recognizer: TapGestureRecognizer()..onTap = () {},
+                            recognizer: TapGestureRecognizer()..onTap = () {
+                              context.push(AppRoutes.signUp);
+                            },
                           ),
                         ],
                       ),
