@@ -74,6 +74,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get invalidOtp => 'OTP must contain 6 digits';
 
   @override
+  String get seconds => 'seconds';
+
+  @override
   String get resetPassword => 'Reset Password';
 
   @override

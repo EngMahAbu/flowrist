@@ -214,6 +214,12 @@ abstract class AppLocalizations {
   /// **'OTP must contain 6 digits'**
   String get invalidOtp;
 
+  /// No description provided for @seconds.
+  ///
+  /// In en, this message translates to:
+  /// **'seconds'**
+  String get seconds;
+
   /// No description provided for @resetPassword.
   ///
   /// In en, this message translates to:
