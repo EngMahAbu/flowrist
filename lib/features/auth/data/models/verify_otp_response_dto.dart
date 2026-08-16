@@ -1,7 +1,7 @@
 import 'package:injectable/injectable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'verifyOtp_response_dto.g.dart';
+part 'verify_otp_response_dto.g.dart';
 
 @JsonSerializable()
 class VerifyOtpResponseDto {

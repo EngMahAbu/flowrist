@@ -1,7 +1,7 @@
 import 'package:injectable/injectable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'forgetPassword_response_dto.g.dart';
+part 'forget_password_response_dto.g.dart';
 
 @JsonSerializable()
 class ForgetPasswordResponseDto {

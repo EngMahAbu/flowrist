@@ -1,16 +1,11 @@
 import 'package:equatable/equatable.dart';
 
+import '../../../../../config/base_state/base_state.dart';
+
 enum ForgetPasswordStep {
   email,
   otp,
   resetPassword,
-}
-
-enum ForgetPasswordStatus {
-  initial,
-  loading,
-  success,
-  failure,
 }
 
 enum ForgetPasswordOperation {
@@ -21,28 +16,29 @@ enum ForgetPasswordOperation {
   resetPassword,
 }
 
-class ForgetPasswordState extends Equatable {
+class ForgetPasswordState
+    extends BaseState<dynamic>
+    with EquatableMixin {
   final ForgetPasswordStep step;
-  final ForgetPasswordStatus status;
   final ForgetPasswordOperation operation;
   final String otp;
   final String? email;
-  final String? errorMessage;
-
   final int remainingSeconds;
 
-  const ForgetPasswordState({
+  ForgetPasswordState({
     this.step = ForgetPasswordStep.email,
-    this.status = ForgetPasswordStatus.initial,
     this.operation = ForgetPasswordOperation.none,
-    this.email,
     this.otp = '',
-    this.errorMessage,
+    this.email,
     this.remainingSeconds = 30,
-  });
-
-  bool get isLoading =>
-      status == ForgetPasswordStatus.loading;
+    bool isLoading = false,
+    String? errorMessage,
+    dynamic data,
+  }) : super(
+    isLoading: isLoading,
+    errorMessage: errorMessage,
+    data: data,
+  );
 
   bool get canResend =>
       remainingSeconds == 0 &&
@@ -50,32 +46,36 @@ class ForgetPasswordState extends Equatable {
 
   ForgetPasswordState copyWith({
     ForgetPasswordStep? step,
-    ForgetPasswordStatus? status,
     ForgetPasswordOperation? operation,
-    String? email,
     String? otp,
-    String? errorMessage,
+    String? email,
     int? remainingSeconds,
+    bool? isLoading,
+    String? errorMessage,
+    dynamic data,
   }) {
     return ForgetPasswordState(
       step: step ?? this.step,
-      status: status ?? this.status,
       operation: operation ?? this.operation,
-      email: email ?? this.email,
       otp: otp ?? this.otp,
-      errorMessage: errorMessage ?? this.errorMessage,
+      email: email ?? this.email,
       remainingSeconds:
       remainingSeconds ?? this.remainingSeconds,
+      isLoading: isLoading ?? this.isLoading,
+      errorMessage: errorMessage ?? this.errorMessage,
+      data: data ?? this.data,
     );
   }
 
   @override
   List<Object?> get props => [
     step,
-    status,
     operation,
+    otp,
     email,
-    errorMessage,
     remainingSeconds,
+    isLoading,
+    errorMessage,
+    data,
   ];
 }

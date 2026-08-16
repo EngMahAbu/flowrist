@@ -21,10 +21,10 @@ class ForgetPasswordOtpView extends StatelessWidget {
         children: [
           const SizedBox(height: 40),
 
-          const Text(
-            'Verify OTP',
+          Text(
+            localizations.verifyOtp,
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
             ),
@@ -35,8 +35,8 @@ class ForgetPasswordOtpView extends StatelessWidget {
           BlocBuilder<ForgetPasswordBloc, ForgetPasswordState>(
             builder: (context, state) {
               return Text(
-                'Enter the OTP sent to '
-                    '${state.email ?? 'your email'}',
+                '${localizations.otpSentTo} '
+                    '${state.email ?? localizations.email}',
                 textAlign: TextAlign.center,
               );
             },
@@ -62,7 +62,7 @@ class ForgetPasswordOtpView extends StatelessWidget {
           BlocBuilder<ForgetPasswordBloc, ForgetPasswordState>(
             builder: (context, state) {
               final isLoading =
-                  state.status == ForgetPasswordStatus.loading &&
+                  state.isLoading &&
                       state.operation ==
                           ForgetPasswordOperation.verifyOtp;
 
@@ -93,7 +93,7 @@ class ForgetPasswordOtpView extends StatelessWidget {
                       strokeWidth: 2,
                     ),
                   )
-                      : const Text('Verify OTP'),
+                      : Text(localizations.verifyOtp),
                 ),
               );
             },
@@ -105,14 +105,15 @@ class ForgetPasswordOtpView extends StatelessWidget {
             builder: (context, state) {
               if (state.remainingSeconds > 0) {
                 return Text(
-                  'Resend OTP in '
-                      '${state.remainingSeconds} seconds',
+                  '${localizations.resendOtpIn} '
+                      '${state.remainingSeconds} ',
+
                   textAlign: TextAlign.center,
                 );
               }
 
               final isLoading =
-                  state.status == ForgetPasswordStatus.loading &&
+                  state.isLoading &&
                       state.operation ==
                           ForgetPasswordOperation.resendOtp;
 
@@ -126,7 +127,7 @@ class ForgetPasswordOtpView extends StatelessWidget {
                 },
                 child: isLoading
                     ? const CircularProgressIndicator()
-                    : const Text('Resend OTP'),
+                    : Text(localizations.resendOtp),
               );
             },
           ),

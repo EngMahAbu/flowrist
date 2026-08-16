@@ -30,8 +30,7 @@ class _ForgetPasswordEmailPageState
 
   @override
   Widget build(BuildContext context) {
-    final localizations =
-    AppLocalizations.of(context)!;
+    final localizations = AppLocalizations.of(context)!;
 
     return Form(
       key: _formKey,
@@ -40,9 +39,9 @@ class _ForgetPasswordEmailPageState
         children: [
           const SizedBox(height: 40),
 
-          const Text(
-            'Forgot Password?',
-            style: TextStyle(
+          Text(
+            localizations.forgotPassword,
+            style: const TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
             ),
@@ -50,9 +49,8 @@ class _ForgetPasswordEmailPageState
 
           const SizedBox(height: 12),
 
-          const Text(
-            'Enter your email address and we will '
-                'send you an OTP.',
+          Text(
+            localizations.forgotPasswordDescription,
           ),
 
           const SizedBox(height: 40),
@@ -62,25 +60,19 @@ class _ForgetPasswordEmailPageState
             hint: localizations.enterYourEmail,
             controller: _emailController,
             localizations: localizations,
-            validationPattern:
-            FormValidator.emailPattern,
-            validationErrorMessage:
-            localizations.invalidEmail,
-            keyboardType:
-            TextInputType.emailAddress,
+            validationPattern: FormValidator.emailPattern,
+            validationErrorMessage: localizations.invalidEmail,
+            keyboardType: TextInputType.emailAddress,
           ),
 
           const SizedBox(height: 24),
 
-          BlocBuilder<ForgetPasswordBloc,
-              ForgetPasswordState>(
+          BlocBuilder<ForgetPasswordBloc, ForgetPasswordState>(
             builder: (context, state) {
               final isLoading =
-                  state.status ==
-                      ForgetPasswordStatus.loading &&
+                  state.isLoading &&
                       state.operation ==
-                          ForgetPasswordOperation
-                              .checkEmail;
+                          ForgetPasswordOperation.checkEmail;
 
               return SizedBox(
                 width: double.infinity,
@@ -89,17 +81,13 @@ class _ForgetPasswordEmailPageState
                   onPressed: isLoading
                       ? null
                       : () {
-                    if (!_formKey.currentState!
-                        .validate()) {
+                    if (!_formKey.currentState!.validate()) {
                       return;
                     }
 
-                    context
-                        .read<ForgetPasswordBloc>()
-                        .add(
+                    context.read<ForgetPasswordBloc>().add(
                       CheckEmailEvent(
-                        _emailController.text
-                            .trim(),
+                        _emailController.text.trim(),
                       ),
                     );
                   },
@@ -107,12 +95,11 @@ class _ForgetPasswordEmailPageState
                       ? const SizedBox(
                     height: 24,
                     width: 24,
-                    child:
-                    CircularProgressIndicator(
+                    child: CircularProgressIndicator(
                       strokeWidth: 2,
                     ),
                   )
-                      : const Text('Send OTP'),
+                      : Text(localizations.sendOtp),
                 ),
               );
             },

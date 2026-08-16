@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:injectable/injectable.dart';
 
-
-
 import '../../../../../config/base_response/base_response.dart';
 import '../../../domain/use_cases/forget_password_usecase.dart';
 import '../../../domain/use_cases/reset_password_usecase.dart';
@@ -25,19 +23,14 @@ class ForgetPasswordBloc
       this._forgetPasswordUseCase,
       this._verifyOtpUseCase,
       this._resetPasswordUseCase,
-      ) : super(const ForgetPasswordState()) {
+      ) : super(ForgetPasswordState()) {
     on<CheckEmailEvent>(_onCheckEmail);
     on<ResendOtpEvent>(_onResendOtp);
     on<VerifyOtpEvent>(_onVerifyOtp);
     on<ResetPasswordEvent>(_onResetPassword);
-
     on<StartOtpTimerEvent>(_onStartOtpTimer);
     on<TickOtpTimerEvent>(_onTickOtpTimer);
   }
-
-  // ============================================================
-  // CHECK EMAIL
-  // ============================================================
 
   Future<void> _onCheckEmail(
       CheckEmailEvent event,
@@ -45,22 +38,21 @@ class ForgetPasswordBloc
       ) async {
     emit(
       state.copyWith(
-        status: ForgetPasswordStatus.loading,
+        isLoading: true,
         operation: ForgetPasswordOperation.checkEmail,
         errorMessage: null,
       ),
     );
 
-    final BaseResponse result =
-    await _forgetPasswordUseCase.execute(
+    final BaseResponse result = await _forgetPasswordUseCase.execute(
       email: event.email,
     );
 
     if (result is SuccessResponse) {
       emit(
         state.copyWith(
+          isLoading: false,
           step: ForgetPasswordStep.otp,
-          status: ForgetPasswordStatus.success,
           operation: ForgetPasswordOperation.checkEmail,
           email: event.email,
           remainingSeconds: 30,
@@ -72,17 +64,13 @@ class ForgetPasswordBloc
     } else if (result is ErrorResponse) {
       emit(
         state.copyWith(
-          status: ForgetPasswordStatus.failure,
+          isLoading: false,
           operation: ForgetPasswordOperation.checkEmail,
           errorMessage: result.errorMessage,
         ),
       );
     }
   }
-
-  // ============================================================
-  // RESEND OTP
-  // ============================================================
 
   Future<void> _onResendOtp(
       ResendOtpEvent event,
@@ -94,21 +82,20 @@ class ForgetPasswordBloc
 
     emit(
       state.copyWith(
-        status: ForgetPasswordStatus.loading,
+        isLoading: true,
         operation: ForgetPasswordOperation.resendOtp,
         errorMessage: null,
       ),
     );
 
-    final BaseResponse result =
-    await _forgetPasswordUseCase.execute(
+    final BaseResponse result = await _forgetPasswordUseCase.execute(
       email: state.email!,
     );
 
     if (result is SuccessResponse) {
       emit(
         state.copyWith(
-          status: ForgetPasswordStatus.success,
+          isLoading: false,
           operation: ForgetPasswordOperation.resendOtp,
           remainingSeconds: 30,
           errorMessage: null,
@@ -119,17 +106,13 @@ class ForgetPasswordBloc
     } else if (result is ErrorResponse) {
       emit(
         state.copyWith(
-          status: ForgetPasswordStatus.failure,
+          isLoading: false,
           operation: ForgetPasswordOperation.resendOtp,
           errorMessage: result.errorMessage,
         ),
       );
     }
   }
-
-  // ============================================================
-  // VERIFY OTP
-  // ============================================================
 
   Future<void> _onVerifyOtp(
       VerifyOtpEvent event,
@@ -141,14 +124,14 @@ class ForgetPasswordBloc
 
     emit(
       state.copyWith(
-        status: ForgetPasswordStatus.loading,
+        isLoading: true,
         operation: ForgetPasswordOperation.verifyOtp,
+        otp: event.otp,
         errorMessage: null,
       ),
     );
 
-    final BaseResponse result =
-    await _verifyOtpUseCase.execute(
+    final BaseResponse result = await _verifyOtpUseCase.execute(
       email: state.email!,
       otp: event.otp,
     );
@@ -156,8 +139,8 @@ class ForgetPasswordBloc
     if (result is SuccessResponse) {
       emit(
         state.copyWith(
+          isLoading: false,
           step: ForgetPasswordStep.resetPassword,
-          status: ForgetPasswordStatus.success,
           operation: ForgetPasswordOperation.verifyOtp,
           errorMessage: null,
         ),
@@ -165,17 +148,13 @@ class ForgetPasswordBloc
     } else if (result is ErrorResponse) {
       emit(
         state.copyWith(
-          status: ForgetPasswordStatus.failure,
+          isLoading: false,
           operation: ForgetPasswordOperation.verifyOtp,
           errorMessage: result.errorMessage,
         ),
       );
     }
   }
-
-  // ============================================================
-  // RESET PASSWORD
-  // ============================================================
 
   Future<void> _onResetPassword(
       ResetPasswordEvent event,
@@ -187,14 +166,13 @@ class ForgetPasswordBloc
 
     emit(
       state.copyWith(
-        status: ForgetPasswordStatus.loading,
+        isLoading: true,
         operation: ForgetPasswordOperation.resetPassword,
         errorMessage: null,
       ),
     );
 
-    final BaseResponse result =
-    await _resetPasswordUseCase.execute(
+    final BaseResponse result = await _resetPasswordUseCase.execute(
       email: state.email!,
       newPassword: event.password,
     );
@@ -204,7 +182,7 @@ class ForgetPasswordBloc
 
       emit(
         state.copyWith(
-          status: ForgetPasswordStatus.success,
+          isLoading: false,
           operation: ForgetPasswordOperation.resetPassword,
           errorMessage: null,
         ),
@@ -212,17 +190,13 @@ class ForgetPasswordBloc
     } else if (result is ErrorResponse) {
       emit(
         state.copyWith(
-          status: ForgetPasswordStatus.failure,
+          isLoading: false,
           operation: ForgetPasswordOperation.resetPassword,
           errorMessage: result.errorMessage,
         ),
       );
     }
   }
-
-  // ============================================================
-  // START TIMER
-  // ============================================================
 
   void _onStartOtpTimer(
       StartOtpTimerEvent event,
@@ -244,10 +218,6 @@ class ForgetPasswordBloc
     );
   }
 
-  // ============================================================
-  // TIMER TICK
-  // ============================================================
-
   void _onTickOtpTimer(
       TickOtpTimerEvent event,
       Emitter<ForgetPasswordState> emit,
@@ -266,15 +236,10 @@ class ForgetPasswordBloc
 
     emit(
       state.copyWith(
-        remainingSeconds:
-        state.remainingSeconds - 1,
+        remainingSeconds: state.remainingSeconds - 1,
       ),
     );
   }
-
-  // ============================================================
-  // CLOSE
-  // ============================================================
 
   @override
   Future<void> close() {

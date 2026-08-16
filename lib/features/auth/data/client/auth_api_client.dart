@@ -11,7 +11,7 @@ import 'package:retrofit/retrofit.dart';
 
 part 'auth_api_client.g.dart';
 
-@singleton
+@injectable
 @RestApi()
 abstract class AuthApiClient {
   @factoryMethod

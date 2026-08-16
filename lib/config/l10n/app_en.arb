@@ -23,6 +23,7 @@
   "resendOtp": "Resend OTP",
   "resendOtpIn": "Resend OTP in {seconds} seconds",
   "invalidOtp": "OTP must contain 6 digits",
+  "seconds": "seconds",
 
   "resetPassword": "Reset Password",
   "createNewPassword": "Create New Password",

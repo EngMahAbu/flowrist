@@ -31,6 +31,24 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
     super.dispose();
   }
 
+  String? _validatePassword(
+      String? value,
+      AppLocalizations localizations,
+      ) {
+    if (value == null || value.isEmpty) {
+      return localizations.enterNewPassword;
+    }
+
+    return switch (FormValidator.validatePassword(value)) {
+      Valid() => null,
+      LengthError() => localizations.passwordMustBeAtLeast8Characters,
+      UppercaseError() => localizations.passwordMustContainUppercase,
+      LowercaseError() => localizations.passwordMustContainLowercase,
+      NumberError() => localizations.passwordMustContainNumber,
+      SpecialCharError() => localizations.passwordMustContainSpecialCharacter,
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
@@ -42,10 +60,10 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
         children: [
           const SizedBox(height: 40),
 
-          const Text(
-            'Create New Password',
+          Text(
+            localizations.createNewPassword,
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
             ),
@@ -54,32 +72,13 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
           const SizedBox(height: 40),
 
           AppTextField(
-            label: 'New Password',
-            hint: 'Enter new password',
+            label: localizations.newPassword,
+            hint: localizations.enterNewPassword,
             controller: _passwordController,
             localizations: localizations,
             obscureText: _obscurePassword,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter your password';
-              }
-
-              final result = FormValidator.validatePassword(value);
-
-              return switch (result) {
-                Valid() => null,
-                LengthError() =>
-                'Password must be at least 8 characters',
-                UppercaseError() =>
-                'Password must contain an uppercase letter',
-                LowercaseError() =>
-                'Password must contain a lowercase letter',
-                NumberError() =>
-                'Password must contain a number',
-                SpecialCharError() =>
-                'Password must contain a special character',
-              };
-            },
+            validator: (value) =>
+                _validatePassword(value, localizations),
             suffixIcon: IconButton(
               onPressed: () {
                 setState(() {
@@ -97,18 +96,18 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
           const SizedBox(height: 20),
 
           AppTextField(
-            label: 'Confirm Password',
-            hint: 'Confirm your password',
+            label: localizations.confirmPassword,
+            hint: localizations.confirmYourPassword,
             controller: _confirmPasswordController,
             localizations: localizations,
             obscureText: _obscureConfirmPassword,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please confirm your password';
+                return localizations.confirmYourPassword;
               }
 
               if (value != _passwordController.text) {
-                return 'Passwords do not match';
+                return localizations.passwordsDoNotMatch;
               }
 
               return null;
@@ -133,7 +132,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
           BlocBuilder<ForgetPasswordBloc, ForgetPasswordState>(
             builder: (context, state) {
               final isLoading =
-                  state.status == ForgetPasswordStatus.loading &&
+                  state.isLoading &&
                       state.operation ==
                           ForgetPasswordOperation.resetPassword;
 
@@ -162,7 +161,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                       strokeWidth: 2,
                     ),
                   )
-                      : const Text('Reset Password'),
+                      : Text(localizations.resetPassword),
                 ),
               );
             },

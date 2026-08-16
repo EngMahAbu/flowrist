@@ -9,7 +9,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../contract/remote/auth_remote_data_source.dart';
 
-@LazySingleton(as: AuthRemoteDataSource)
+@injectable
 class AuthRemoteDataSourceImpl
     implements AuthRemoteDataSource {
   final AuthApiClient _apiClient;
