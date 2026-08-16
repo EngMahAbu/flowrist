@@ -12,6 +12,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../config/di/di.dart';
+import '../../features/auth/presentation/forget_password/view/forget_password_view.dart';
+import '../../features/auth/presentation/forget_password/view_model/forget_password_view_model.dart';
+
 abstract final class AppRoutes {
   static const String splash = '/';
 
@@ -21,15 +25,19 @@ abstract final class AppRoutes {
   static const String categoriesTab = '/categories-tab';
   static const String cartTab = '/cart-tab';
   static const String profileTab = '/profile-tab';
+
+  static const String forgetPassword = '/forgot-password';
 }
 
 abstract final class AppRouter {
-  static final _rootNavigatorKey = GlobalKey<NavigatorState>();
+  static final _rootNavigatorKey =
+  GlobalKey<NavigatorState>();
 
   static final _routes = [
     GoRoute(
       path: AppRoutes.splash,
-      builder: (context, state) => const SplashView(),
+      builder: (context, state) =>
+      const SplashView(),
       parentNavigatorKey: _rootNavigatorKey,
     ),
     GoRoute(
@@ -48,40 +56,59 @@ abstract final class AppRouter {
       parentNavigatorKey: _rootNavigatorKey,
     ),
 
+    // FORGET PASSWORD
+    GoRoute(
+      path: AppRoutes.forgetPassword,
+      builder: (context, state) {
+        return const ForgetPasswordView();
+      },
+      parentNavigatorKey: _rootNavigatorKey,
+    ),
+
+    // HOME
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
-        return HomeView(tabViewShell: navigationShell);
+        return HomeView(
+          tabViewShell: navigationShell,
+        );
       },
       branches: [
         StatefulShellBranch(
           routes: [
             GoRoute(
               path: AppRoutes.homeTab,
-              builder: (context, state) => const HomeTabView(),
+              builder: (context, state) =>
+              const HomeTabView(),
             ),
           ],
         ),
+
         StatefulShellBranch(
           routes: [
             GoRoute(
               path: AppRoutes.categoriesTab,
-              builder: (context, state) => const CategoriesTabView(),
+              builder: (context, state) =>
+              const CategoriesTabView(),
             ),
           ],
         ),
+
         StatefulShellBranch(
           routes: [
             GoRoute(
               path: AppRoutes.cartTab,
-              builder: (context, state) => const CartTabView(),
+              builder: (context, state) =>
+              const CartTabView(),
             ),
           ],
         ),
+
         StatefulShellBranch(
           routes: [
             GoRoute(
               path: AppRoutes.profileTab,
-              builder: (context, state) => const ProfileTabView(),
+              builder: (context, state) =>
+              const ProfileTabView(),
             ),
           ],
         ),
