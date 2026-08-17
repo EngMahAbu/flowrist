@@ -11,27 +11,21 @@ import 'package:flowrist/features/auth/data/models/reset_password_response_dto.d
 import 'package:flowrist/features/auth/data/models/verify_otp_request_dto.dart';
 import 'package:flowrist/features/auth/data/models/verify_otp_response_dto.dart';
 import 'package:injectable/injectable.dart';
-import '../../contract/remote/auth_remote_data_source.dart';
-
 
 @Injectable(as: AuthRemoteDataSource)
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
-
   final AuthApiClient _apiClient;
 
   AuthRemoteDataSourceImpl(this._apiClient);
 
   @override
   Future<RegisterResponseDto> register(RegisterRequestDto request) async {
-return await _apiClient.register(request);
+    return await _apiClient.register(request);
+  }
 
-}
-  Future<ForgetPasswordResponseDto> forgotPassword({
-    required String email,
-  }) {
-    final request = ForgetPasswordRequestDto(
-      email: email,
-    );
+  @override
+  Future<ForgetPasswordResponseDto> forgotPassword({required String email}) {
+    final request = ForgetPasswordRequestDto(email: email);
 
     return _apiClient.forgotPassword(request);
   }
@@ -40,14 +34,13 @@ return await _apiClient.register(request);
   Future<LoginResponse> login(LoginRequest request) async {
     return await _apiClient.login(request);
   }
+
+  @override
   Future<VerifyOtpResponseDto> verifyOtp({
     required String email,
     required String otp,
   }) {
-    final request = VerifyOtpRequestDto(
-      email: email,
-      otp: otp,
-    );
+    final request = VerifyOtpRequestDto(email: email, otp: otp);
 
     return _apiClient.verifyOtp(request);
   }

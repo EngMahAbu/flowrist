@@ -1,6 +1,4 @@
-import 'package:injectable/injectable.dart';
 import 'package:json_annotation/json_annotation.dart';
-
 part 'reset_password_request_dto.g.dart';
 
 @JsonSerializable(createFactory: false)
@@ -13,7 +11,5 @@ class ResetPasswordRequestDto {
     required this.newPassword,
   });
 
-
-  Map<String, dynamic> toJson() =>
-      _$ResetPasswordRequestDtoToJson(this);
+  Map<String, dynamic> toJson() => _$ResetPasswordRequestDtoToJson(this);
 }

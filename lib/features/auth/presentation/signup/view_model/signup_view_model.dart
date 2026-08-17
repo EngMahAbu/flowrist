@@ -21,15 +21,17 @@ class SignUpViewModel extends Cubit<SignUpState> {
   }
 
   Future<void> _handleSignUpSubmitted(SignUpSubmittedEvent event) async {
-    emit(state.copyWith(isLoading: true, errorMessage: null));
+    emit(BaseState(isLoading: true, errorMessage: null, data: null));
 
     final result = await _registerUseCase(event.request);
 
     switch (result) {
       case SuccessResponse(:final data):
-        emit(state.copyWith(isLoading: false, data: data));
+        emit(BaseState(isLoading: false, data: data, errorMessage: null));
       case ErrorResponse(:final errorMessage):
-        emit(state.copyWith(isLoading: false, errorMessage: errorMessage));
+        emit(
+          BaseState(isLoading: false, errorMessage: errorMessage, data: null),
+        );
     }
   }
 }

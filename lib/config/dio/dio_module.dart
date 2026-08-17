@@ -1,10 +1,10 @@
 import 'dart:developer';
-
 import 'package:dio/dio.dart';
 import 'package:flowrist/config/storage/secure_storage_service.dart';
 import 'package:flowrist/core/constants/app_constants.dart';
 import 'package:flowrist/core/constants/endpoints.dart';
 import 'package:injectable/injectable.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 @module
 abstract class DioModule {
@@ -39,6 +39,18 @@ abstract class DioModule {
 
           handler.next(options);
         },
+      ),
+    );
+
+    dio.interceptors.add(
+      PrettyDioLogger(
+        requestHeader: true,
+        requestBody: true,
+        responseBody: true,
+        responseHeader: false,
+        error: true,
+        compact: true,
+        maxWidth: 90,
       ),
     );
 

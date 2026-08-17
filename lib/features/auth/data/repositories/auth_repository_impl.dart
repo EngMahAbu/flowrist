@@ -12,8 +12,6 @@ import 'package:flowrist/features/auth/domain/params/login_params.dart';
 import 'package:flowrist/features/auth/domain/repositories/auth_repository.dart';
 import 'package:injectable/injectable.dart';
 
-import 'auth_repository_impl.dart' as _remoteDataSource;
-
 @Injectable(as: AuthRepository)
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource _remoteDataSource;
@@ -67,20 +65,15 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<BaseResponse<void>> forgotPassword({
-    required String email,
-  }) async {
+  Future<BaseResponse<void>> forgotPassword({required String email}) async {
     try {
-      await _remoteDataSource.forgotPassword(
-        email: email,
-      );
+      await _remoteDataSource.forgotPassword(email: email);
 
       return SuccessResponse(null);
     } on Exception catch (exception) {
       return ApiErrorHandler.handleException<void>(exception);
     }
   }
-
 
   @override
   Future<BaseResponse<void>> resetPassword({
@@ -105,10 +98,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String otp,
   }) async {
     try {
-      await _remoteDataSource.verifyOtp(
-        email: email,
-        otp: otp,
-      );
+      await _remoteDataSource.verifyOtp(email: email, otp: otp);
 
       return SuccessResponse(null);
     } on Exception catch (exception) {
@@ -116,10 +106,3 @@ class AuthRepositoryImpl implements AuthRepository {
     }
   }
 }
-
-
-
-
-
-
-

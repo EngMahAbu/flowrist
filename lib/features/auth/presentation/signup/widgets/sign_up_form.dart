@@ -144,13 +144,14 @@ class SignUpFormState extends State<SignUpForm> {
 
   void _handleStateChanges(BuildContext context, SignUpState state) {
     final localizations = AppLocalizations.of(context)!;
+    final messenger = ScaffoldMessenger.of(context);
 
-    if (state.errorMessage != null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
+    messenger.hideCurrentSnackBar();
+
+    if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
+      messenger.showSnackBar(SnackBar(content: Text(state.errorMessage!)));
     } else if (state.data != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         SnackBar(content: Text(localizations.registrationSuccessful)),
       );
       context.go(AppRoutes.login);

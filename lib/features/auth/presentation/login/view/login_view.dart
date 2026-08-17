@@ -148,7 +148,7 @@ class _LoginViewState extends State<LoginView> {
                             const Spacer(),
                             TextButton(
                               onPressed: () {
-                                context.go(AppRoutes.homeTab);
+                                context.go(AppRoutes.forgetPassword);
                               },
                               style: TextButton.styleFrom(
                                 padding: EdgeInsets.zero,
@@ -210,9 +210,10 @@ class _LoginViewState extends State<LoginView> {
                           TextSpan(
                             text: localizations.signUp,
                             style: AppStyles.medium16InterUnderline,
-                            recognizer: TapGestureRecognizer()..onTap = () {
-                              context.push(AppRoutes.signUp);
-                            },
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                context.push(AppRoutes.signUp);
+                              },
                           ),
                         ],
                       ),
