@@ -28,6 +28,7 @@ class SignUpViewModel extends Cubit<SignUpState> {
     switch (result) {
       case SuccessResponse(:final data):
         emit(BaseState(isLoading: false, data: data, errorMessage: null));
+
       case ErrorResponse(:final errorMessage):
         emit(
           BaseState(isLoading: false, errorMessage: errorMessage, data: null),
