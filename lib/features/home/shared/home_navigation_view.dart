@@ -13,16 +13,29 @@ class HomeNavigationView extends StatelessWidget {
 
     return Scaffold(
       body: tabViewShell,
-      bottomNavigationBar: _buildBottomNavigationBar(localization: l10n),
+      bottomNavigationBar: _buildBottomNavigationBar(
+          context: context, localization: l10n
+      ),
     );
   }
 
   BottomNavigationBar _buildBottomNavigationBar({
+    required BuildContext context,
     required AppLocalizations localization,
   }) {
     return BottomNavigationBar(
       currentIndex: tabViewShell.currentIndex,
-      onTap: (index) => tabViewShell.goBranch(index),
+      onTap: (index) async {
+        if (index == 3) {
+          final canContinue = await checkGuestMode(context);
+
+          if (!canContinue) {
+            return;
+          }
+        }
+
+        tabViewShell.goBranch(index);
+      },
       items: [
         BottomNavigationBarItem(
           icon: const Icon(Icons.home_outlined),
