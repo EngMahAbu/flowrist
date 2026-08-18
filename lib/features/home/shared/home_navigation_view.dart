@@ -2,10 +2,10 @@ import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class HomeView extends StatelessWidget {
+class HomeNavigationView extends StatelessWidget {
   final StatefulNavigationShell tabViewShell;
 
-  const HomeView({super.key, required this.tabViewShell});
+  const HomeNavigationView({super.key, required this.tabViewShell});
 
   @override
   Widget build(BuildContext context) {
@@ -13,16 +13,29 @@ class HomeView extends StatelessWidget {
 
     return Scaffold(
       body: tabViewShell,
-      bottomNavigationBar: _buildBottomNavigationBar(localization: l10n),
+      bottomNavigationBar: _buildBottomNavigationBar(
+          context: context, localization: l10n
+      ),
     );
   }
 
   BottomNavigationBar _buildBottomNavigationBar({
+    required BuildContext context,
     required AppLocalizations localization,
   }) {
     return BottomNavigationBar(
       currentIndex: tabViewShell.currentIndex,
-      onTap: (index) => tabViewShell.goBranch(index),
+      onTap: (index) async {
+        if (index == 3) {
+          final canContinue = await checkGuestMode(context);
+
+          if (!canContinue) {
+            return;
+          }
+        }
+
+        tabViewShell.goBranch(index);
+      },
       items: [
         BottomNavigationBarItem(
           icon: const Icon(Icons.home_outlined),
