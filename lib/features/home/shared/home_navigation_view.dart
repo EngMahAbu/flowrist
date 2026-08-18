@@ -2,10 +2,10 @@ import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class HomeView extends StatelessWidget {
+class HomeNavigationView extends StatelessWidget {
   final StatefulNavigationShell tabViewShell;
 
-  const HomeView({super.key, required this.tabViewShell});
+  const HomeNavigationView({super.key, required this.tabViewShell});
 
   @override
   Widget build(BuildContext context) {
