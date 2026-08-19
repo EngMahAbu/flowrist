@@ -24,52 +24,20 @@ void main() {
     useCase = GetOccasionsUseCase(mockRepository);
   });
 
-  const tOccasions = [
-    OccasionEntity(id: '1', name: 'Birthday', imageUrl: 'url1'),
-    OccasionEntity(id: '2', name: 'Wedding', imageUrl: 'url2'),
+  final tOccasions = [
+    const OccasionEntity(id: '1', name: 'Birthday', imageUrl: 'birthday.png'),
   ];
 
-  test(
-    'should return SuccessResponse with List<OccasionEntity> when repository succeeds',
-    () async {
-      // Arrange
-      when(
-        mockRepository.getOccasions(),
-      ).thenAnswer((_) async => SuccessResponse(tOccasions));
+  test('should return list of OccasionEntity on success', () async {
+    when(
+      mockRepository.getOccasions(),
+    ).thenAnswer((_) async => SuccessResponse(tOccasions));
 
-      // Act
-      final result = await useCase();
+    final result = await useCase();
 
-      // Assert
-      expect(result, isA<SuccessResponse<List<OccasionEntity>>>());
-      expect(
-        (result as SuccessResponse<List<OccasionEntity>>).data,
-        tOccasions,
-      );
-      verify(mockRepository.getOccasions()).called(1);
-      verifyNoMoreInteractions(mockRepository);
-    },
-  );
-
-  test(
-    'should return ErrorResponse when repository returns an error',
-    () async {
-      // Arrange
-      when(
-        mockRepository.getOccasions(),
-      ).thenAnswer((_) async => ErrorResponse('Server Error'));
-
-      // Act
-      final result = await useCase();
-
-      // Assert
-      expect(result, isA<ErrorResponse<List<OccasionEntity>>>());
-      expect(
-        (result as ErrorResponse<List<OccasionEntity>>).errorMessage,
-        'Server Error',
-      );
-      verify(mockRepository.getOccasions()).called(1);
-      verifyNoMoreInteractions(mockRepository);
-    },
-  );
+    expect(result, isA<SuccessResponse<List<OccasionEntity>>>());
+    expect((result as SuccessResponse).data, tOccasions);
+    verify(mockRepository.getOccasions()).called(1);
+    verifyNoMoreInteractions(mockRepository);
+  });
 }

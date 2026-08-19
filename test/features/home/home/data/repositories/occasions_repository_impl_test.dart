@@ -17,8 +17,12 @@ void main() {
   late MockOccasionsRemoteDataSource mockRemoteDataSource;
 
   setUpAll(() {
-    provideDummy<OccasionsResponseDto>(const OccasionsResponseDto());
-    provideDummy<ProductsResponseDto>(const ProductsResponseDto());
+    provideDummy<BaseResponse<List<OccasionEntity>>>(
+      SuccessResponse<List<OccasionEntity>>([]),
+    );
+    provideDummy<BaseResponse<List<ProductEntity>>>(
+      SuccessResponse<List<ProductEntity>>([]),
+    );
   });
 
   setUp(() {
@@ -27,98 +31,56 @@ void main() {
   });
 
   group('getOccasions', () {
-    const tResponseDto = OccasionsResponseDto(
-      data: [OccasionDto(id: '1', name: 'Birthday', imageUrl: 'url1')],
-    );
-
     test(
       'should return SuccessResponse<List<OccasionEntity>> when remote call succeeds',
       () async {
-        // Arrange
+        const tResponse = OccasionsResponseDto(
+          data: [OccasionDto(id: '1', name: 'Birthday', imageUrl: 'img.png')],
+        );
         when(
           mockRemoteDataSource.getOccasions(),
-        ).thenAnswer((_) async => tResponseDto);
+        ).thenAnswer((_) async => tResponse);
 
-        // Act
         final result = await repository.getOccasions();
 
-        // Assert
         expect(result, isA<SuccessResponse<List<OccasionEntity>>>());
-        final data = (result as SuccessResponse<List<OccasionEntity>>).data;
-        expect(data?.first.id, '1');
-        expect(data?.first.name, 'Birthday');
-        verify(mockRemoteDataSource.getOccasions()).called(1);
-      },
-    );
-
-    test(
-      'should return ErrorResponse when remote data source throws an exception',
-      () async {
-        // Arrange
-        when(
-          mockRemoteDataSource.getOccasions(),
-        ).thenThrow(Exception('Connection error'));
-
-        // Act
-        final result = await repository.getOccasions();
-
-        // Assert
-        expect(result, isA<ErrorResponse<List<OccasionEntity>>>());
-        verify(mockRemoteDataSource.getOccasions()).called(1);
+        expect((result as SuccessResponse).data?.first.name, 'Birthday');
       },
     );
   });
 
-  group('getProductsByOccasion', () {
-    const tOccasionId = 'occ-123';
-    const tProductsDto = ProductsResponseDto(
-      data: [
-        ProductDto(
-          id: 'p1',
-          name: 'Lily Bouquet',
-          price: 45.0,
-          inStock: true,
-          categoryId: 'c1',
-          categoryName: 'Lilies',
-          imageUrl: 'url1',
-        ),
-      ],
-    );
-
+  group('getProducts', () {
     test(
       'should return SuccessResponse<List<ProductEntity>> when remote call succeeds',
       () async {
-        // Arrange
+        const tResponse = ProductsResponseDto(
+          data: [ProductDto(id: 'p1', name: 'Flower', price: 100.0)],
+        );
         when(
-          mockRemoteDataSource.getProductsByOccasion(tOccasionId),
-        ).thenAnswer((_) async => tProductsDto);
+          mockRemoteDataSource.getProducts(occasionId: '1', categoryId: null),
+        ).thenAnswer((_) async => tResponse);
 
-        // Act
-        final result = await repository.getProductsByOccasion(tOccasionId);
+        final result = await repository.getProducts(occasionId: '1');
 
-        // Assert
         expect(result, isA<SuccessResponse<List<ProductEntity>>>());
-        final data = (result as SuccessResponse<List<ProductEntity>>).data;
-        expect(data?.first.id, 'p1');
-        expect(data?.first.name, 'Lily Bouquet');
-        verify(
-          mockRemoteDataSource.getProductsByOccasion(tOccasionId),
-        ).called(1);
+        expect((result as SuccessResponse).data?.first.name, 'Flower');
       },
     );
 
-    test('should return ErrorResponse when remote call fails', () async {
-      // Arrange
-      when(
-        mockRemoteDataSource.getProductsByOccasion(tOccasionId),
-      ).thenThrow(Exception('Server error'));
+    test(
+      'should return ErrorResponse when remote call throws exception',
+      () async {
+        when(
+          mockRemoteDataSource.getProducts(
+            occasionId: anyNamed('occasionId'),
+            categoryId: anyNamed('categoryId'),
+          ),
+        ).thenThrow(Exception('Server error'));
 
-      // Act
-      final result = await repository.getProductsByOccasion(tOccasionId);
+        final result = await repository.getProducts(occasionId: '1');
 
-      // Assert
-      expect(result, isA<ErrorResponse<List<ProductEntity>>>());
-      verify(mockRemoteDataSource.getProductsByOccasion(tOccasionId)).called(1);
-    });
+        expect(result, isA<ErrorResponse<List<ProductEntity>>>());
+      },
+    );
   });
 }

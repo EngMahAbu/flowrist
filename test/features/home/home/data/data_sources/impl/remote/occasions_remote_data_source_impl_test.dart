@@ -58,43 +58,63 @@ void main() {
     });
   });
 
-  group('getProductsByOccasion', () {
+  group('getProducts', () {
     const tOccasionId = 'occ-123';
+    const tCategoryId = 'cat-123';
     const tProductsDto = ProductsResponseDto(
       message: 'Success',
       data: [ProductDto(id: 'p1', name: 'Bouquet')],
     );
 
-    test(
-      'should call apiClient.getProductsByOccasion with correct parameter',
-      () async {
-        // Arrange
-        when(
-          mockApiClient.getProductsByOccasion(tOccasionId),
-        ).thenAnswer((_) async => tProductsDto);
+    test('should call apiClient.getProducts with correct parameters', () async {
+      // Arrange
+      when(
+        mockApiClient.getProducts(
+          occasionId: tOccasionId,
+          categoryId: tCategoryId,
+        ),
+      ).thenAnswer((_) async => tProductsDto);
 
-        // Act
-        final result = await dataSource.getProductsByOccasion(tOccasionId);
+      // Act
+      final result = await dataSource.getProducts(
+        occasionId: tOccasionId,
+        categoryId: tCategoryId,
+      );
 
-        // Assert
-        expect(result, tProductsDto);
-        verify(mockApiClient.getProductsByOccasion(tOccasionId)).called(1);
-        verifyNoMoreInteractions(mockApiClient);
-      },
-    );
+      // Assert
+      expect(result, tProductsDto);
+      verify(
+        mockApiClient.getProducts(
+          occasionId: tOccasionId,
+          categoryId: tCategoryId,
+        ),
+      ).called(1);
+      verifyNoMoreInteractions(mockApiClient);
+    });
 
     test('should throw an exception when apiClient fails', () async {
       // Arrange
       when(
-        mockApiClient.getProductsByOccasion(tOccasionId),
+        mockApiClient.getProducts(
+          occasionId: tOccasionId,
+          categoryId: tCategoryId,
+        ),
       ).thenThrow(Exception('API error'));
 
       // Act & Assert
       expect(
-        () => dataSource.getProductsByOccasion(tOccasionId),
+        () => dataSource.getProducts(
+          occasionId: tOccasionId,
+          categoryId: tCategoryId,
+        ),
         throwsA(isA<Exception>()),
       );
-      verify(mockApiClient.getProductsByOccasion(tOccasionId)).called(1);
+      verify(
+        mockApiClient.getProducts(
+          occasionId: tOccasionId,
+          categoryId: tCategoryId,
+        ),
+      ).called(1);
       verifyNoMoreInteractions(mockApiClient);
     });
   });

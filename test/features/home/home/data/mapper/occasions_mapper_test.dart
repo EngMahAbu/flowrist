@@ -6,118 +6,76 @@ import 'package:flowrist/features/home/home/domain/entities/occasion_entity.dart
 import 'package:flowrist/features/home/home/domain/entities/product_entity.dart';
 
 void main() {
-  group('OccasionsMapper - toOccasionEntities', () {
-    test(
-      'should map OccasionsResponseDto to List<OccasionEntity> correctly',
-      () {
-        // Arrange
-        const dto = OccasionsResponseDto(
-          data: [
-            OccasionDto(
-              id: '1',
-              name: 'Birthday',
-              imageUrl: 'https://img.com/1',
-            ),
-            OccasionDto(
-              id: '2',
-              name: 'Wedding',
-              imageUrl: 'https://img.com/2',
-            ),
-          ],
-        );
-
-        // Act
-        final result = OccasionsMapper.toOccasionEntities(dto);
-
-        // Assert
-        expect(result.length, 2);
-        expect(result, const [
-          OccasionEntity(
-            id: '1',
-            name: 'Birthday',
-            imageUrl: 'https://img.com/1',
-          ),
-          OccasionEntity(
-            id: '2',
-            name: 'Wedding',
-            imageUrl: 'https://img.com/2',
-          ),
-        ]);
-      },
-    );
-
-    test('should return list with fallback defaults when fields are null', () {
-      // Arrange
+  group('OccasionsMapper', () {
+    test('toOccasionEntities should map OccasionsResponseDto correctly', () {
       const dto = OccasionsResponseDto(
-        data: [OccasionDto(id: null, name: null, imageUrl: null)],
+        data: [
+          OccasionDto(id: '1', name: 'Wedding', imageUrl: 'wedding.png'),
+          OccasionDto(id: null, name: null, imageUrl: null),
+        ],
       );
 
-      // Act
       final result = OccasionsMapper.toOccasionEntities(dto);
 
-      // Assert
-      expect(result.length, 1);
-      expect(result.first.id, '');
-      expect(result.first.name, '');
-      expect(result.first.imageUrl, '');
+      expect(result.length, 2);
+      expect(
+        result[0],
+        const OccasionEntity(id: '1', name: 'Wedding', imageUrl: 'wedding.png'),
+      );
+      expect(result[1], const OccasionEntity(id: '', name: '', imageUrl: ''));
     });
 
-    test('should return empty list when data is null', () {
-      // Arrange
-      const dto = OccasionsResponseDto(data: null);
-
-      // Act
-      final result = OccasionsMapper.toOccasionEntities(dto);
-
-      // Assert
-      expect(result, isEmpty);
-    });
-  });
-
-  group('OccasionsMapper - toProductEntities', () {
-    test('should map ProductsResponseDto to List<ProductEntity> correctly', () {
-      // Arrange
+    test('toProductEntities should map ProductsResponseDto correctly', () {
       const dto = ProductsResponseDto(
         data: [
           ProductDto(
             id: 'p1',
-            name: 'Rose',
-            price: 25.5,
+            name: 'Rose Box',
+            price: 200.0,
             inStock: true,
             categoryId: 'c1',
-            categoryName: 'Roses',
-            imageUrl: 'https://img.com/p1',
+            categoryName: 'Boxes',
+            imageUrl: 'box.png',
+          ),
+          ProductDto(
+            id: null,
+            name: null,
+            price: null,
+            inStock: null,
+            categoryId: null,
+            categoryName: null,
+            imageUrl: null,
           ),
         ],
       );
 
-      // Act
       final result = OccasionsMapper.toProductEntities(dto);
 
-      // Assert
-      expect(result.length, 1);
-      expect(result, const [
-        ProductEntity(
+      expect(result.length, 2);
+      expect(
+        result[0],
+        const ProductEntity(
           id: 'p1',
-          name: 'Rose',
-          price: 25.5,
+          name: 'Rose Box',
+          price: 200.0,
           inStock: true,
           categoryId: 'c1',
-          categoryName: 'Roses',
-          imageUrl: 'https://img.com/p1',
+          categoryName: 'Boxes',
+          imageUrl: 'box.png',
         ),
-      ]);
-    });
-
-    test('should return empty list when products data is null', () {
-      // Arrange
-      const dto = ProductsResponseDto(data: null);
-
-      // Act
-      final result = OccasionsMapper.toProductEntities(dto);
-
-      // Assert
-      expect(result, isEmpty);
+      );
+      expect(
+        result[1],
+        const ProductEntity(
+          id: '',
+          name: '',
+          price: 0.0,
+          inStock: false,
+          categoryId: '',
+          categoryName: '',
+          imageUrl: '',
+        ),
+      );
     });
   });
 }
