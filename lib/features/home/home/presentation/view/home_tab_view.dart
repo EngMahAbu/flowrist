@@ -1,8 +1,8 @@
 import 'package:flowrist/features/home/home/presentation/cubit/home_cubit.dart';
 import 'package:flowrist/features/home/home/presentation/cubit/home_state.dart';
-import 'package:flowrist/features/home/home/presentation/view/tabs/home/widgets/home_header.dart';
-import 'package:flowrist/features/home/home/presentation/view/tabs/home/widgets/home_section.dart';
-import 'package:flowrist/features/home/home/presentation/view/tabs/home/widgets/home_shimmer.dart';
+import 'package:flowrist/features/home/home/presentation/view/widgets/home_header.dart';
+import 'package:flowrist/features/home/home/presentation/view/widgets/home_section.dart';
+import 'package:flowrist/features/home/home/presentation/view/widgets/home_shimmer.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

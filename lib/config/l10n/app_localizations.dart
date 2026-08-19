@@ -357,6 +357,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter your password'**
   String get passwordHint;
+
+  /// No description provided for @flowery.
+  ///
+  /// In en, this message translates to:
+  /// **'Flowery'**
+  String get flowery;
+
+  /// No description provided for @search.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get search;
+
+  /// No description provided for @deliverTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Deliver to'**
+  String get deliverTo;
+
+  /// No description provided for @viewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View All'**
+  String get viewAll;
+
+  /// No description provided for @bestSellers.
+  ///
+  /// In en, this message translates to:
+  /// **'Best Sellers'**
+  String get bestSellers;
+
+  /// No description provided for @occasion.
+  ///
+  /// In en, this message translates to:
+  /// **'Occasion'**
+  String get occasion;
 }
 
 class _AppLocalizationsDelegate

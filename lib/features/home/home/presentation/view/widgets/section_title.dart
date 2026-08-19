@@ -1,3 +1,4 @@
+import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flowrist/core/constants/app_colors.dart';
 import 'package:flowrist/core/constants/app_styles.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ class SectionTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
@@ -22,7 +24,7 @@ class SectionTitle extends StatelessWidget {
           TextButton(
             onPressed: () {},
             child: Text(
-              "View All",
+              localizations.viewAll,
               style: AppStyles.medium18Inter.copyWith(
                 fontSize: 12,
                 color: AppColors.purpleBase,

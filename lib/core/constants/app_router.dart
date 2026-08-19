@@ -6,7 +6,7 @@ import 'package:flowrist/features/home/cart/presentation/view/cart_tab_view.dart
 import 'package:flowrist/features/home/categories/presentation/view/categories_tab_view.dart';
 import 'package:flowrist/features/home/home/presentation/cubit/home_cubit.dart';
 import 'package:flowrist/features/home/home/presentation/cubit/home_event.dart';
-import 'package:flowrist/features/home/home/presentation/view/tabs/home/home_tab_view.dart';
+import 'package:flowrist/features/home/home/presentation/view/home_tab_view.dart';
 
 import 'package:flowrist/features/home/profile/presentation/view/profile_tab_view.dart';
 import 'package:flowrist/features/home/shared/home_navigation_view.dart';

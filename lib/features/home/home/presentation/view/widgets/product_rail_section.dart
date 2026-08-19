@@ -1,6 +1,7 @@
+import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flowrist/core/constants/app_styles.dart';
 import 'package:flowrist/features/home/home/domain/entities/product_rail_payload_entity.dart';
-import 'package:flowrist/features/home/home/presentation/view/tabs/home/widgets/section_title.dart';
+import 'package:flowrist/features/home/home/presentation/view/widgets/section_title.dart';
  
 import 'package:flutter/material.dart';
 
@@ -14,11 +15,12 @@ class ProductRailSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SectionTitle(
-          title: 'Best Sellers',
+          title: localizations.bestSellers,
           onViewAll: () {},
         ),
 

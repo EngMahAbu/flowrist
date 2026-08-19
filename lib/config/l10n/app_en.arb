@@ -42,5 +42,11 @@
   "email": "Email",
   "emailHint": "Enter your email",
   "password": "Password",
-  "passwordHint": "Enter your password"
+  "passwordHint": "Enter your password",
+  "flowery": "Flowery",
+  "search": "Search",
+  "deliverTo": "Deliver to",
+  "viewAll": "View All",
+  "bestSellers": "Best Sellers",
+  "occasion": "Occasion"
 }

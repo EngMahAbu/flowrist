@@ -1,9 +1,9 @@
 import 'package:flowrist/core/constants/app_colors.dart';
-import 'package:flowrist/features/home/home/presentation/view/tabs/home/widgets/shimmer_widgets/banner_shimmer.dart';
-import 'package:flowrist/features/home/home/presentation/view/tabs/home/widgets/shimmer_widgets/category_shimmer.dart';
-import 'package:flowrist/features/home/home/presentation/view/tabs/home/widgets/shimmer_widgets/header_shimmer.dart';
-import 'package:flowrist/features/home/home/presentation/view/tabs/home/widgets/shimmer_widgets/occasion_shimmer.dart';
-import 'package:flowrist/features/home/home/presentation/view/tabs/home/widgets/shimmer_widgets/product_shimmer.dart';
+import 'package:flowrist/features/home/home/presentation/view/widgets/shimmer_widgets/banner_shimmer.dart';
+import 'package:flowrist/features/home/home/presentation/view/widgets/shimmer_widgets/category_shimmer.dart';
+import 'package:flowrist/features/home/home/presentation/view/widgets/shimmer_widgets/header_shimmer.dart';
+import 'package:flowrist/features/home/home/presentation/view/widgets/shimmer_widgets/occasion_shimmer.dart';
+import 'package:flowrist/features/home/home/presentation/view/widgets/shimmer_widgets/product_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 

@@ -6,10 +6,11 @@ import 'package:retrofit/retrofit.dart';
 import '../models/home_response_model.dart';
 
 part 'home_api_client.g.dart';
+
 @lazySingleton
 @RestApi()
 abstract class HomeApiClient {
-    @factoryMethod
+  @factoryMethod
   factory HomeApiClient(Dio dio) = _HomeApiClient;
 
   @GET(Endpoints.home)

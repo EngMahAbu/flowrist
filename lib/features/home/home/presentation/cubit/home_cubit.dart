@@ -18,11 +18,11 @@ class HomeCubit extends Cubit<HomeState> {
   Future<void> doEvent(HomeEvent event) async {
     switch (event) {
       case GetHomeLayout():
-        await getHomeLayout();
+        await _getHomeLayout();
     }
   }
 
-  Future<void> getHomeLayout() async {
+  Future<void> _getHomeLayout() async {
     emit(
       state.copyWith(
         homeLayout: BaseState(isLoading: true, errorMessage: null, data: null),

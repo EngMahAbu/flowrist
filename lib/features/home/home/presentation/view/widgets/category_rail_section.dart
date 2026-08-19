@@ -1,6 +1,7 @@
  
+import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flowrist/features/home/home/domain/entities/category_rail_payload_entity.dart';
-import 'package:flowrist/features/home/home/presentation/view/tabs/home/widgets/section_title.dart';
+import 'package:flowrist/features/home/home/presentation/view/widgets/section_title.dart';
 import 'package:flutter/material.dart';
  
 class CategoryRailSection extends StatelessWidget {
@@ -13,18 +14,19 @@ class CategoryRailSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SectionTitle(
-          title: 'Categories',
+          title: localizations.categories,
           onViewAll: () {},
         ),
 
         const SizedBox(height: 8),
 
         SizedBox(
-          height: 100,
+          height: 110,
           child: ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             scrollDirection: Axis.horizontal,
@@ -34,17 +36,21 @@ class CategoryRailSection extends StatelessWidget {
             },
             itemBuilder: (context, index) {
               final item = payload.items[index];
-
+       
               return SizedBox(
                 width: 80,
                 child: Column(
                   children: [
-                    CircleAvatar(
-                      radius: 32,
-                      backgroundImage: NetworkImage(
-                        item.iconUrl,
-                      ),
+                    ClipRRect(
+                       borderRadius: BorderRadiusGeometry.circular(20),
+                      child: Image.network(item.iconUrl),
                     ),
+                    // CircleAvatar(
+                    //   radius: 32,
+                    //   backgroundImage: NetworkImage(
+                    //     item.iconUrl,
+                    //   ),
+                    // ),
                     const SizedBox(height: 8),
                     Text(
                       item.name,

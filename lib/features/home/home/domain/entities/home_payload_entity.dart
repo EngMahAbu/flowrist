@@ -1,3 +1,4 @@
 abstract class HomePayloadEntity {
-  const HomePayloadEntity();
+  final String type;
+  const HomePayloadEntity({required this.type});
 }

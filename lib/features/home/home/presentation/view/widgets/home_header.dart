@@ -1,7 +1,8 @@
+import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flowrist/core/constants/app_colors.dart';
 import 'package:flowrist/core/constants/app_images.dart';
 import 'package:flowrist/core/constants/app_styles.dart';
-import 'package:flowrist/features/home/home/presentation/view/tabs/home/widgets/delivery_location_header.dart';
+import 'package:flowrist/features/home/home/presentation/view/widgets/delivery_location_header.dart';
  
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -11,6 +12,7 @@ class HomeHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return SafeArea(
       bottom: false,
       child: Padding(
@@ -30,7 +32,7 @@ class HomeHeader extends StatelessWidget {
 
                 const SizedBox(width: 8),
 
-                Text('Flowery', style: AppStyles.appTitle),
+                Text(localizations.flowery, style: AppStyles.appTitle),
 
                 const SizedBox(width: 17),
 
@@ -44,7 +46,7 @@ class HomeHeader extends StatelessWidget {
                           color: AppColors.white70,
                           size: 24,
                         ),
-                        hintText: 'Search',
+                        hintText: localizations.search,
                         hintStyle: const TextStyle(
                           color: AppColors.white70,
                           fontSize: 14,

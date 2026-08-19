@@ -1,6 +1,7 @@
+import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flowrist/core/constants/app_styles.dart';
 import 'package:flowrist/features/home/home/domain/entities/occasion_rail_payload_entity.dart';
-import 'package:flowrist/features/home/home/presentation/view/tabs/home/widgets/section_title.dart';
+import 'package:flowrist/features/home/home/presentation/view/widgets/section_title.dart';
  
 import 'package:flutter/material.dart';
 
@@ -11,10 +12,11 @@ class OccasionRailSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SectionTitle(title: 'Shop By Occasion', onViewAll: () {}),
+        SectionTitle(title: localizations.occasion, onViewAll: () {}),
 
         SizedBox(
           height: 210,
@@ -22,7 +24,7 @@ class OccasionRailSection extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             scrollDirection: Axis.horizontal,
             itemCount: payload.items.length,
-            separatorBuilder: (_, __) {
+            separatorBuilder: (_, _) {
               return const SizedBox(width: 12);
             },
             itemBuilder: (context, index) {

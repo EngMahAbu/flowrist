@@ -27,7 +27,7 @@ abstract class DioModule {
             );
 
             if (token.isNotEmpty) {
-              options.headers['token'] = token;
+            options.headers['Authorization'] = 'Bearer $token';
             }
           } catch (error, stackTrace) {
             log(

@@ -1,3 +1,4 @@
+import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flowrist/core/constants/app_colors.dart';
 import 'package:flowrist/core/constants/app_styles.dart';
 import 'package:flowrist/core/constants/flowery_icons.dart';
@@ -8,12 +9,13 @@ class DeliveryLocationHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Row(
       children: [
         Icon(FloweryIcons.location, size: 20),
         SizedBox(width: 2),
         Text(
-          'Deliver to 2XVP+XC - Sheikh Zayed ',
+          '${localizations.deliverTo} 2XVP+XC - Sheikh Zayed ',
           style: AppStyles.medium18Inter.copyWith(fontSize: 14),
         ),
 
