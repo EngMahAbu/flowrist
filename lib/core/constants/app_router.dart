@@ -2,7 +2,7 @@ import 'package:flowrist/features/auth/presentation/login/view/login_view.dart';
 import 'package:flowrist/features/auth/presentation/signup/view/signup_view.dart';
 import 'package:flowrist/config/di/di.dart';
 import 'package:flowrist/features/auth/presentation/login/cubit/login_cubit.dart';
-import 'package:flowrist/features/home/presentation/view/home_view.dart';
+import 'package:flowrist/features/home/presentation/view/home_navigation_view.dart';
 import 'package:flowrist/features/home/presentation/view/tabs/cart/cart_tab_view.dart';
 import 'package:flowrist/features/home/presentation/view/tabs/categories/categories_tab_view.dart';
 import 'package:flowrist/features/home/presentation/view/tabs/home/home_tab_view.dart';
