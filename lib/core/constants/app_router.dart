@@ -2,11 +2,13 @@ import 'package:flowrist/features/auth/presentation/login/view/login_view.dart';
 import 'package:flowrist/features/auth/presentation/signup/view/signup_view.dart';
 import 'package:flowrist/config/di/di.dart';
 import 'package:flowrist/features/auth/presentation/login/cubit/login_cubit.dart';
-import 'package:flowrist/features/home/presentation/view/home_navigation_view.dart';
-import 'package:flowrist/features/home/presentation/view/tabs/cart/cart_tab_view.dart';
-import 'package:flowrist/features/home/presentation/view/tabs/categories/categories_tab_view.dart';
-import 'package:flowrist/features/home/presentation/view/tabs/home/home_tab_view.dart';
-import 'package:flowrist/features/home/presentation/view/tabs/profile/profile_tab_view.dart';
+import 'package:flowrist/features/home/cart/presentation/view/cart_tab_view.dart';
+import 'package:flowrist/features/home/categories/presentation/view/categories_tab_view.dart';
+import 'package:flowrist/features/home/home/best_seller/presentation/view/best_seller_view.dart';
+import 'package:flowrist/features/home/home/occasion/presentation/view/occasion_view.dart';
+import 'package:flowrist/features/home/home/presentation/view/home_tab_view.dart';
+import 'package:flowrist/features/home/profile/presentation/view/profile_tab_view.dart';
+import 'package:flowrist/features/home/shared/home_navigation_view.dart';
 import 'package:flowrist/features/splash/presentation/view/splash_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,6 +23,9 @@ abstract final class AppRoutes {
   static const String categoriesTab = '/categories-tab';
   static const String cartTab = '/cart-tab';
   static const String profileTab = '/profile-tab';
+  static const String bestSeller='/best-seller';
+  static const String occasions= '/occasions';
+  static const String categories= '/categories';
 }
 
 abstract final class AppRouter {
@@ -38,6 +43,21 @@ abstract final class AppRouter {
       parentNavigatorKey: _rootNavigatorKey,
     ),
     GoRoute(
+      path: AppRoutes.bestSeller,
+      builder: (context, state) =>  BestSellerView(),
+      parentNavigatorKey: _rootNavigatorKey,
+    ),
+    GoRoute(
+      path: AppRoutes.occasions,
+      builder: (context, state) =>  OccasionView(),
+      parentNavigatorKey: _rootNavigatorKey,
+    ),
+    GoRoute(
+      path: AppRoutes.categories,
+      builder: (context, state) =>  CategoriesTabView(),
+      parentNavigatorKey: _rootNavigatorKey,
+    ),
+    GoRoute(
       path: AppRoutes.login,
       builder: (context, state) {
         return BlocProvider(
@@ -50,7 +70,7 @@ abstract final class AppRouter {
 
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
-        return HomeView(tabViewShell: navigationShell);
+        return HomeNavigationView(tabViewShell: navigationShell);
       },
       branches: [
         StatefulShellBranch(

@@ -33,6 +33,7 @@ dependencies:
   intl: any
   go_router: ^17.5.0
   equatable: ^2.1.0
+  shimmer_animation: ^2.2.2+1
 
 
 dev_dependencies:

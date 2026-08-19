@@ -1,19 +1,18 @@
 import 'package:flowrist/core/constants/app_dimensions.dart';
-import 'package:flowrist/core/ui/widgets/app_search_bar.dart';
-import 'package:flowrist/core/ui/widgets/filter_button.dart';
+import 'package:flowrist/core/constants/app_styles.dart';
 import 'package:flowrist/core/ui/widgets/product_card.dart';
 import 'package:flowrist/core/ui/widgets/selection_bar.dart';
 import 'package:flutter/material.dart';
 
-class CategoriesTabView extends StatefulWidget {
-  const CategoriesTabView({super.key});
+class OccasionView extends StatefulWidget {
+  OccasionView({super.key});
 
   @override
-  State<CategoriesTabView> createState() => _CategoriesTabViewState();
+  State<OccasionView> createState() => _OccasionViewState();
 }
 
-class _CategoriesTabViewState extends State<CategoriesTabView> {
-  final List<String> categories = [
+class _OccasionViewState extends State<OccasionView> {
+  final List<String> occasions = [
     'Birthday',
     'Anniversary',
     'Wedding',
@@ -69,49 +68,47 @@ class _CategoriesTabViewState extends State<CategoriesTabView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        titleSpacing: 0,
+        leading: Padding(
+          padding: const EdgeInsetsGeometry.directional(
+            start: AppDimensions.defaultScreenPadding,
+          ),
+          child: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(Icons.arrow_back_ios_new),
+          ),
+        ),
+        title: const Text('Occasion'),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(24),
+          child: Padding(
+            padding: const EdgeInsets.only(left: 55, bottom: 8),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Bloom with our exquisite best sellers',
+                style: AppStyles.regular13W500,
+              ),
+            ),
+          ),
+        ),
+      ),
       body: SafeArea(
         child: Column(
           children: [
-            SizedBox(height: 30),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppDimensions.defaultScreenPadding,
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 3,
-                    child: AppSearchBar(
-                      onChanged: (value) {
-                        // UI
-                      },
-                    ),
-                  ),
-
-                  const SizedBox(width: 8),
-
-                  Expanded(
-                    flex: 1,
-                    child: FilterButton(
-                      onPressed: () {
-                        // UI
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 20),
-            SelectionBar(
-              items: categories,
-              selectedIndex: selectedIndex,
-              onItemSelected: (index) {
-                setState(() {
-                  selectedIndex = index;
-                });
-              },
-            ),
-            SizedBox(height: 25),
+            SizedBox(height: 10),
+SelectionBar(
+  items: occasions,
+  selectedIndex: selectedIndex,
+  onItemSelected: (index) {
+    setState(() {
+      selectedIndex = index;
+    });
+  },
+),            SizedBox(height: 25),
             Expanded(
               child: GridView.builder(
                 padding: const EdgeInsets.all(
