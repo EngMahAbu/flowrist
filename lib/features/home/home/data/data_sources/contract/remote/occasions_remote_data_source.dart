@@ -3,5 +3,8 @@ import 'package:flowrist/features/home/home/data/models/response/products_respon
 
 abstract interface class OccasionsRemoteDataSource {
   Future<OccasionsResponseDto> getOccasions();
-  Future<ProductsResponseDto> getProductsByOccasion(String occasionId);
+  Future<ProductsResponseDto> getProducts({
+    String? occasionId,
+    String? categoryId,
+  });
 }

@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flowrist/core/constants/endpoints.dart';
 import 'package:flowrist/features/home/categories/data/models/response/categories_response_dto.dart';
-import 'package:flowrist/features/home/categories/data/models/response/category_products_response_dto.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -15,9 +14,4 @@ abstract class CategoriesApiClient {
 
   @GET(Endpoints.categories)
   Future<CategoriesResponseDto> getCategories();
-
-  @GET(Endpoints.productsByCategory)
-  Future<CategoryProductsResponseDto> getProductsByCategory(
-    @Query('categoryId') String categoryId,
-  );
 }

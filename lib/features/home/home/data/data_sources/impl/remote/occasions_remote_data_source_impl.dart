@@ -16,7 +16,13 @@ class OccasionsRemoteDataSourceImpl implements OccasionsRemoteDataSource {
   }
 
   @override
-  Future<ProductsResponseDto> getProductsByOccasion(String occasionId) async {
-    return await _apiClient.getProductsByOccasion(occasionId);
+  Future<ProductsResponseDto> getProducts({
+    String? occasionId,
+    String? categoryId,
+  }) async {
+    return await _apiClient.getProducts(
+      occasionId: occasionId,
+      categoryId: categoryId,
+    );
   }
 }

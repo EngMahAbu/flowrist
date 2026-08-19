@@ -4,12 +4,18 @@ import 'package:flowrist/features/home/home/domain/repositories/occasions_reposi
 import 'package:injectable/injectable.dart';
 
 @injectable
-class GetProductsByOccasionUseCase {
+class GetProductsUseCase {
   final OccasionsRepository _repository;
 
-  GetProductsByOccasionUseCase(this._repository);
+  GetProductsUseCase(this._repository);
 
-  Future<BaseResponse<List<ProductEntity>>> call(String occasionId) async {
-    return await _repository.getProductsByOccasion(occasionId);
+  Future<BaseResponse<List<ProductEntity>>> call({
+    String? occasionId,
+    String? categoryId,
+  }) async {
+    return await _repository.getProducts(
+      occasionId: occasionId,
+      categoryId: categoryId,
+    );
   }
 }

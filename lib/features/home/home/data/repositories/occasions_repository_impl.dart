@@ -25,12 +25,14 @@ class OccasionsRepositoryImpl implements OccasionsRepository {
   }
 
   @override
-  Future<BaseResponse<List<ProductEntity>>> getProductsByOccasion(
-    String occasionId,
-  ) async {
+  Future<BaseResponse<List<ProductEntity>>> getProducts({
+    String? occasionId,
+    String? categoryId,
+  }) async {
     try {
-      final responseDto = await _remoteDataSource.getProductsByOccasion(
-        occasionId,
+      final responseDto = await _remoteDataSource.getProducts(
+        occasionId: occasionId,
+        categoryId: categoryId,
       );
       final entities = OccasionsMapper.toProductEntities(responseDto);
       return SuccessResponse<List<ProductEntity>>(entities);

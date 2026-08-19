@@ -3,6 +3,5 @@ abstract final class Endpoints {
   static const register = 'api/identity/auth/register';
   static const occasions = 'api/catalog/occasions';
   static const categories = 'api/catalog/categories';
-  static const productsByOccasion = 'products';
-  static const productsByCategory = 'products';
+  static const products = 'products';
 }

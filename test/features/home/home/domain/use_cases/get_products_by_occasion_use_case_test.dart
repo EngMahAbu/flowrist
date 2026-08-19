@@ -4,7 +4,7 @@ import 'package:mockito/mockito.dart';
 import 'package:flowrist/config/base_response/base_response.dart';
 import 'package:flowrist/features/home/home/domain/entities/product_entity.dart';
 import 'package:flowrist/features/home/home/domain/repositories/occasions_repository.dart';
-import 'package:flowrist/features/home/home/domain/use_cases/get_products_by_occasion_use_case.dart';
+import 'package:flowrist/features/home/home/domain/use_cases/get_products_use_case.dart';
 
 import 'get_products_by_occasion_use_case_test.mocks.dart';
 

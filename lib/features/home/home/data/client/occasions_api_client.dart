@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flowrist/core/constants/app_constants.dart';
 import 'package:flowrist/core/constants/endpoints.dart';
 import 'package:flowrist/features/home/home/data/models/response/occasions_response_dto.dart';
 import 'package:flowrist/features/home/home/data/models/response/products_response_dto.dart';
@@ -16,8 +17,9 @@ abstract class OccasionsApiClient {
   @GET(Endpoints.occasions)
   Future<OccasionsResponseDto> getOccasions();
 
-  @GET(Endpoints.productsByOccasion)
-  Future<ProductsResponseDto> getProductsByOccasion(
-    @Query('occasionId') String occasionId,
-  );
+  @GET(Endpoints.products)
+  Future<ProductsResponseDto> getProducts({
+    @Query(AppConstants.occasionId) String? occasionId,
+    @Query(AppConstants.categoryId) String? categoryId,
+  });
 }
