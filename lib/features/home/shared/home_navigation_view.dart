@@ -1,4 +1,5 @@
 import 'package:flowrist/config/l10n/app_localizations.dart';
+import 'package:flowrist/config/session/session_guard.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -26,7 +27,7 @@ class HomeNavigationView extends StatelessWidget {
     return BottomNavigationBar(
       currentIndex: tabViewShell.currentIndex,
       onTap: (index) async {
-        if (index == 3) {
+        if (index == 3 || index == 2) {
           final canContinue = await checkGuestMode(context);
 
           if (!canContinue) {
