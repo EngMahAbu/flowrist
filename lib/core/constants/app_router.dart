@@ -2,11 +2,6 @@ import 'package:flowrist/features/auth/presentation/login/view/login_view.dart';
 import 'package:flowrist/features/auth/presentation/signup/view/signup_view.dart';
 import 'package:flowrist/config/di/di.dart';
 import 'package:flowrist/features/auth/presentation/login/cubit/login_cubit.dart';
-import 'package:flowrist/features/home/presentation/view/home_navigation_view.dart';
-import 'package:flowrist/features/home/presentation/view/tabs/cart/cart_tab_view.dart';
-import 'package:flowrist/features/home/presentation/view/tabs/categories/categories_tab_view.dart';
-import 'package:flowrist/features/home/presentation/view/tabs/home/home_tab_view.dart';
-import 'package:flowrist/features/home/presentation/view/tabs/profile/profile_tab_view.dart';
 import 'package:flowrist/features/splash/presentation/view/splash_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,6 +10,11 @@ import 'package:go_router/go_router.dart';
 import '../../config/di/di.dart';
 import '../../features/auth/presentation/forget_password/view/forget_password_view.dart';
 import '../../features/auth/presentation/forget_password/view_model/forget_password_view_model.dart';
+import '../../features/home/cart/presentation/view/cart_tab_view.dart';
+import '../../features/home/categories/presentation/view/categories_tab_view.dart';
+import '../../features/home/home/presentation/view/home_tab_view.dart';
+import '../../features/home/profile/presentation/view/profile_tab_view.dart';
+import '../../features/home/shared/home_navigation_view.dart';
 
 abstract final class AppRoutes {
   static const String splash = '/';
@@ -68,7 +68,7 @@ abstract final class AppRouter {
     // HOME
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
-        return HomeView(
+        return HomeNavigationView(
           tabViewShell: navigationShell,
         );
       },

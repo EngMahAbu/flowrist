@@ -2,6 +2,8 @@ import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../config/session/session_guard.dart';
+
 class HomeNavigationView extends StatelessWidget {
   final StatefulNavigationShell tabViewShell;
 
