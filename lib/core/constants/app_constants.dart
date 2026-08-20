@@ -3,5 +3,5 @@ abstract final class AppConstants {
   static const String rememberMeKey = 'rememberMeKey';
   static const String guestModeKey = 'guestModeKey';
   static const String categoryId = 'categoryId';
-  static const String occasionId = 'occasionId';
+  static const String occasionId = 'OccasionId';
 }
