@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:flowrist/config/base_response/base_response.dart';
-import 'package:flowrist/features/home/home/domain/entities/product_entity.dart';
+import 'package:flowrist/features/home/home/domain/entities/occasion/product_entity.dart';
 import 'package:flowrist/features/home/home/domain/repositories/occasions_repository.dart';
 import 'package:flowrist/features/home/home/domain/use_cases/get_products_use_case.dart';
 

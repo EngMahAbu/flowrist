@@ -2,8 +2,8 @@ import 'package:flowrist/config/api_error_handler/api_error_handler.dart';
 import 'package:flowrist/config/base_response/base_response.dart';
 import 'package:flowrist/features/home/home/data/data_sources/contract/remote/occasions_remote_data_source.dart';
 import 'package:flowrist/features/home/home/data/mapper/occasions_mapper.dart';
-import 'package:flowrist/features/home/home/domain/entities/occasion_entity.dart';
-import 'package:flowrist/features/home/home/domain/entities/product_entity.dart';
+import 'package:flowrist/features/home/home/domain/entities/occasion/occasion_entity.dart';
+import 'package:flowrist/features/home/home/domain/entities/occasion/product_entity.dart';
 import 'package:flowrist/features/home/home/domain/repositories/occasions_repository.dart';
 import 'package:injectable/injectable.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flowrist/features/home/home/data/client/occasions_api_client.dart';
 import 'package:flowrist/features/home/home/data/data_sources/contract/remote/occasions_remote_data_source.dart';
-import 'package:flowrist/features/home/home/data/models/response/occasions_response_dto.dart';
-import 'package:flowrist/features/home/home/data/models/response/products_response_dto.dart';
+import 'package:flowrist/features/home/home/data/models/occasions/occasions_response_dto.dart';
+import 'package:flowrist/features/home/home/data/models/occasions/products_response_dto.dart';
 import 'package:injectable/injectable.dart';
 
 @Injectable(as: OccasionsRemoteDataSource)

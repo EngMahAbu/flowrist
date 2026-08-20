@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flowrist/features/home/home/data/mapper/occasions_mapper.dart';
-import 'package:flowrist/features/home/home/data/models/response/occasions_response_dto.dart';
-import 'package:flowrist/features/home/home/data/models/response/products_response_dto.dart';
-import 'package:flowrist/features/home/home/domain/entities/occasion_entity.dart';
-import 'package:flowrist/features/home/home/domain/entities/product_entity.dart';
+import 'package:flowrist/features/home/home/data/models/occasions/occasions_response_dto.dart';
+import 'package:flowrist/features/home/home/data/models/occasions/products_response_dto.dart';
+import 'package:flowrist/features/home/home/domain/entities/occasion/occasion_entity.dart';
+import 'package:flowrist/features/home/home/domain/entities/occasion/product_entity.dart';
 
 void main() {
   group('OccasionsMapper', () {

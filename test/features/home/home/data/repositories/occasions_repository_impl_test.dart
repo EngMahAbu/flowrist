@@ -3,11 +3,11 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:flowrist/config/base_response/base_response.dart';
 import 'package:flowrist/features/home/home/data/data_sources/contract/remote/occasions_remote_data_source.dart';
-import 'package:flowrist/features/home/home/data/models/response/occasions_response_dto.dart';
-import 'package:flowrist/features/home/home/data/models/response/products_response_dto.dart';
+import 'package:flowrist/features/home/home/data/models/occasions/occasions_response_dto.dart';
+import 'package:flowrist/features/home/home/data/models/occasions/products_response_dto.dart';
 import 'package:flowrist/features/home/home/data/repositories/occasions_repository_impl.dart';
-import 'package:flowrist/features/home/home/domain/entities/occasion_entity.dart';
-import 'package:flowrist/features/home/home/domain/entities/product_entity.dart';
+import 'package:flowrist/features/home/home/domain/entities/occasion/occasion_entity.dart';
+import 'package:flowrist/features/home/home/domain/entities/occasion/product_entity.dart';
 
 import 'occasions_repository_impl_test.mocks.dart';
 

@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flowrist/core/constants/app_constants.dart';
 import 'package:flowrist/core/constants/endpoints.dart';
-import 'package:flowrist/features/home/home/data/models/response/occasions_response_dto.dart';
-import 'package:flowrist/features/home/home/data/models/response/products_response_dto.dart';
+import 'package:flowrist/features/home/home/data/models/occasions/occasions_response_dto.dart';
+import 'package:flowrist/features/home/home/data/models/occasions/products_response_dto.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
 

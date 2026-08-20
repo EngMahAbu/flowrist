@@ -1,5 +1,5 @@
 import 'package:flowrist/config/base_response/base_response.dart';
-import 'package:flowrist/features/home/home/domain/entities/product_entity.dart';
+import 'package:flowrist/features/home/home/domain/entities/occasion/product_entity.dart';
 import 'package:flowrist/features/home/home/domain/repositories/occasions_repository.dart';
 import 'package:injectable/injectable.dart';
 
