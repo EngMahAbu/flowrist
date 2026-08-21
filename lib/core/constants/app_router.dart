@@ -25,7 +25,6 @@ abstract final class AppRoutes {
   static const String profileTab = '/profile-tab';
   static const String bestSeller='/best-seller';
   static const String occasions= '/occasions';
-  static const String categories= '/categories';
 }
 
 abstract final class AppRouter {
@@ -50,11 +49,6 @@ abstract final class AppRouter {
     GoRoute(
       path: AppRoutes.occasions,
       builder: (context, state) =>  OccasionView(),
-      parentNavigatorKey: _rootNavigatorKey,
-    ),
-    GoRoute(
-      path: AppRoutes.categories,
-      builder: (context, state) =>  CategoriesTabView(),
       parentNavigatorKey: _rootNavigatorKey,
     ),
     GoRoute(

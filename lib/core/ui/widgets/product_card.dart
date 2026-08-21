@@ -1,12 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flowrist/config/session/session_guard.dart';
 import 'package:flowrist/core/constants/app_colors.dart';
+import 'package:flowrist/core/constants/app_images.dart';
 import 'package:flowrist/core/constants/app_router.dart';
 import 'package:flowrist/core/constants/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class ProductCard extends StatelessWidget {
-  static const String defaultImg = 'assets/images/default.png';
 
   final String title;
   final String price;
@@ -98,7 +99,7 @@ class ProductCard extends StatelessWidget {
   Widget _buildProductImage() {
     if (image.isEmpty) {
       return Image.asset(
-        defaultImg,
+        AppImages.cardDefultImage,
         width: double.infinity,
         height: 150,
         fit: BoxFit.cover,
@@ -106,39 +107,27 @@ class ProductCard extends StatelessWidget {
     }
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(8),
-      child: Image.network(
-        image,
-        width: double.infinity,
-        height: 150,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
+    borderRadius: BorderRadius.circular(8),
+    child: CachedNetworkImage(
+      imageUrl: image,
+      width: double.infinity,
+      height: 150,
+      fit: BoxFit.cover,
+      placeholder: (context, url) {
+        return const SizedBox(
+          width: double.infinity,
+          height: 150,
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+      },
+      errorWidget: (context, url, error) {
           return Image.asset(
-            defaultImg,
+            AppImages.cardDefultImage,
             width: double.infinity,
             height: 150,
             fit: BoxFit.cover,
-          );
-        },
-        loadingBuilder: (
-          context,
-          child,
-          loadingProgress,
-        ) {
-          if (loadingProgress == null) {
-            return child;
-          }
-          return SizedBox(
-            width: double.infinity,
-            height: 150,
-            child: Center(
-              child: CircularProgressIndicator(
-                value: loadingProgress.expectedTotalBytes != null
-                    ? loadingProgress.cumulativeBytesLoaded /
-                        loadingProgress.expectedTotalBytes!
-                    : null,
-              ),
-            ),
           );
         },
       ),
