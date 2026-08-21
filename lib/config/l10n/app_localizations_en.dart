@@ -228,4 +228,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get passwordResetSuccessfully => 'Password reset successfully';
+
+  @override
+  String get productDescription => 'Description';
+
+  @override
+  String get productIncludes => 'Includes';
+
+  @override
+  String get productInStock => 'In Stock';
+
+  @override
+  String get productOutOfStock => 'Out of Stock';
+
+  @override
+  String get productAvailableStock => 'Available Stock';
+
+  @override
+  String get retry => 'Retry';
 }

@@ -1,9 +1,9 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'product_details_dto.g.dart';
+part 'product_details_request_dto.g.dart';
 
 @JsonSerializable()
-class ProductDetailsDto {
+class ProductDetailsRequestDto {
   final String id;
   final String name;
   final double price;
@@ -21,7 +21,7 @@ class ProductDetailsDto {
   final DateTime updatedAt;
   final String lastChangedBy;
 
-  const ProductDetailsDto({
+  const ProductDetailsRequestDto({
     required this.id,
     required this.name,
     required this.price,
@@ -40,8 +40,11 @@ class ProductDetailsDto {
     required this.lastChangedBy,
   });
 
-  factory ProductDetailsDto.fromJson(Map<String, dynamic> json) =>
-      _$ProductDetailsDtoFromJson(json);
+  factory ProductDetailsRequestDto.fromJson(
+      Map<String, dynamic> json,
+      ) =>
+      _$ProductDetailsRequestDtoFromJson(json);
 
-  Map<String, dynamic> toJson() => _$ProductDetailsDtoToJson(this);
+  Map<String, dynamic> toJson() =>
+      _$ProductDetailsRequestDtoToJson(this);
 }

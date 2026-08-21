@@ -15,6 +15,7 @@ import '../../features/home/categories/presentation/view/categories_tab_view.dar
 import '../../features/home/home/presentation/view/home_tab_view.dart';
 import '../../features/home/profile/presentation/view/profile_tab_view.dart';
 import '../../features/home/shared/home_navigation_view.dart';
+import '../../features/product_details/presentation/view/products_details_screen.dart';
 
 abstract final class AppRoutes {
   static const String splash = '/';
@@ -25,6 +26,7 @@ abstract final class AppRoutes {
   static const String categoriesTab = '/categories-tab';
   static const String cartTab = '/cart-tab';
   static const String profileTab = '/profile-tab';
+  static const String productDetails = '/product/:productId';
 
   static const String forgetPassword = '/forgot-password';
 }
@@ -54,6 +56,17 @@ abstract final class AppRouter {
         );
       },
       parentNavigatorKey: _rootNavigatorKey,
+    ),
+
+    GoRoute(
+      path: AppRoutes.productDetails,
+      builder: (context, state) {
+        final productId = state.pathParameters['productId']!;
+
+        return ProductDetailsScreen(
+          productId: productId,
+        );
+      },
     ),
 
     // FORGET PASSWORD

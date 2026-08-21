@@ -507,6 +507,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Password reset successfully'**
   String get passwordResetSuccessfully;
+
+  /// No description provided for @productDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get productDescription;
+
+  /// No description provided for @productIncludes.
+  ///
+  /// In en, this message translates to:
+  /// **'Includes'**
+  String get productIncludes;
+
+  /// No description provided for @productInStock.
+  ///
+  /// In en, this message translates to:
+  /// **'In Stock'**
+  String get productInStock;
+
+  /// No description provided for @productOutOfStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Out of Stock'**
+  String get productOutOfStock;
+
+  /// No description provided for @productAvailableStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Available Stock'**
+  String get productAvailableStock;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
 }
 
 class _AppLocalizationsDelegate

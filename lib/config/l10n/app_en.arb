@@ -76,5 +76,16 @@
   "passwordMustContainSpecialCharacter": "Password must contain a special character",
   "passwordsDoNotMatch": "Passwords do not match",
 
-  "passwordResetSuccessfully": "Password reset successfully"
+  "passwordResetSuccessfully": "Password reset successfully",
+
+  "productDescription": "Description",
+  "productIncludes": "Includes",
+  "productInStock": "In Stock",
+  "productOutOfStock": "Out of Stock",
+  "productAvailableStock": "Available Stock",
+  "retry": "Retry"
+
+
+
+
 }
