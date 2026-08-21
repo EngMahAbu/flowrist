@@ -1,6 +1,6 @@
  
 import 'package:flowrist/config/l10n/app_localizations.dart';
-import 'package:flowrist/features/home/home/domain/entities/category_rail_payload_entity.dart';
+import 'package:flowrist/features/home/home/domain/entities/home_entities/category_rail_payload_entity.dart';
 import 'package:flowrist/features/home/home/presentation/view/widgets/section_title.dart';
 import 'package:flutter/material.dart';
  
@@ -31,7 +31,7 @@ class CategoryRailSection extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             scrollDirection: Axis.horizontal,
             itemCount: payload.items.length,
-            separatorBuilder: (_, __) {
+            separatorBuilder: (_, _) {
               return const SizedBox(width: 12);
             },
             itemBuilder: (context, index) {

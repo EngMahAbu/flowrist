@@ -1,6 +1,6 @@
 import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flowrist/core/constants/app_styles.dart';
-import 'package:flowrist/features/home/home/domain/entities/occasion_rail_payload_entity.dart';
+import 'package:flowrist/features/home/home/domain/entities/home_entities/occasion_rail_payload_entity.dart';
 import 'package:flowrist/features/home/home/presentation/view/widgets/section_title.dart';
  
 import 'package:flutter/material.dart';

@@ -1,8 +1,8 @@
-import '../models/banner_payload_model.dart';
-import '../models/category_rail_payload_model.dart';
-import '../models/home_payload_model.dart';
-import '../models/occasion_rail_payload_model.dart';
-import '../models/product_rail_payload_model.dart';
+import '../models/home_model/banner_payload_model.dart';
+import '../models/home_model/category_rail_payload_model.dart';
+import '../models/home_model/home_payload_model.dart';
+import '../models/home_model/occasion_rail_payload_model.dart';
+import '../models/home_model/product_rail_payload_model.dart';
 
 class HomePayloadModelFactory {
   const HomePayloadModelFactory();

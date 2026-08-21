@@ -1,9 +1,9 @@
  
-import 'package:flowrist/features/home/home/data/models/home_payload_model.dart';
-import 'package:flowrist/features/home/home/domain/entities/product_item_entity.dart';
+import 'package:flowrist/features/home/home/data/models/home_model/home_payload_model.dart';
+import 'package:flowrist/features/home/home/domain/entities/home_entities/product_item_entity.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import '../../domain/entities/product_rail_payload_entity.dart';
+import '../../../domain/entities/home_entities/product_rail_payload_entity.dart';
 import 'product_item_model.dart';
 
 part 'product_rail_payload_model.g.dart';

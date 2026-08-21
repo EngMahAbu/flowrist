@@ -1,9 +1,9 @@
  
-import 'package:flowrist/features/home/home/domain/entities/banner_payload_entity.dart';
-import 'package:flowrist/features/home/home/domain/entities/category_rail_payload_entity.dart';
-import 'package:flowrist/features/home/home/domain/entities/home_layout_entity.dart';
-import 'package:flowrist/features/home/home/domain/entities/occasion_rail_payload_entity.dart';
-import 'package:flowrist/features/home/home/domain/entities/product_rail_payload_entity.dart';
+import 'package:flowrist/features/home/home/domain/entities/home_entities/banner_payload_entity.dart';
+import 'package:flowrist/features/home/home/domain/entities/home_entities/category_rail_payload_entity.dart';
+import 'package:flowrist/features/home/home/domain/entities/home_entities/home_layout_entity.dart';
+import 'package:flowrist/features/home/home/domain/entities/home_entities/occasion_rail_payload_entity.dart';
+import 'package:flowrist/features/home/home/domain/entities/home_entities/product_rail_payload_entity.dart';
 import 'package:flowrist/features/home/home/presentation/view/widgets/banner_section.dart';
 import 'package:flowrist/features/home/home/presentation/view/widgets/category_rail_section.dart';
 import 'package:flowrist/features/home/home/presentation/view/widgets/occassion_rail_section.dart';

@@ -3,7 +3,7 @@ import 'package:flowrist/core/constants/endpoints.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
 
-import '../models/home_response_model.dart';
+import '../models/home_model/home_response_model.dart';
 
 part 'home_api_client.g.dart';
 

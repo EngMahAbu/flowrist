@@ -1,5 +1,5 @@
  
-import 'package:flowrist/features/home/home/domain/entities/banner_payload_entity.dart';
+import 'package:flowrist/features/home/home/domain/entities/home_entities/banner_payload_entity.dart';
 import 'package:flutter/material.dart';
  
 

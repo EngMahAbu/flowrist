@@ -2,7 +2,7 @@
 import 'package:flowrist/features/home/home/data/factories/home_payload_model_factory.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import '../../domain/entities/home_layout_entity.dart';
+import '../../../domain/entities/home_entities/home_layout_entity.dart';
 import 'home_payload_model.dart';
  
  

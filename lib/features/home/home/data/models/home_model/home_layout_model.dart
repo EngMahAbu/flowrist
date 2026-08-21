@@ -1,5 +1,5 @@
-import '../../domain/entities/home_layout_entity.dart';
-import '../factories/home_payload_model_factory.dart';
+import '../../../domain/entities/home_entities/home_layout_entity.dart';
+import '../../factories/home_payload_model_factory.dart';
 import 'home_payload_model.dart';
 
 class HomeLayoutModel {
