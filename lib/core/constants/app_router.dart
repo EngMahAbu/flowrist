@@ -65,6 +65,7 @@ abstract final class AppRouter {
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
         return HomeNavigationView(tabViewShell: navigationShell);
+        return HomeNavigationView(tabViewShell: navigationShell);
       },
       branches: [
         StatefulShellBranch(

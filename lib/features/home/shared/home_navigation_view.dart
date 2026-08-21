@@ -27,7 +27,7 @@ class HomeNavigationView extends StatelessWidget {
     return BottomNavigationBar(
       currentIndex: tabViewShell.currentIndex,
       onTap: (index) async {
-        if (index == 3) {
+        if (index == 3 || index == 2) {
           final canContinue = await checkGuestMode(context);
 
           if (!canContinue) {
