@@ -104,8 +104,10 @@ class _OccasionViewState extends State<OccasionView> {
                             return ProductCard(
                               title: product.name,
                               price: product.price.toString(),
-                              oldPrice: '622',
-                              discount: '20',
+                              oldPrice: product.discountPrice?.toString() ?? '',
+                              discount: product.discountPercentage != null
+                                  ? '${product.discountPercentage!.toInt()}%'
+                                  : '',
                               image: product.imageUrl,
                             );
                           },

@@ -93,8 +93,10 @@ class _BestSellerViewState extends State<BestSellerView> {
                 return ProductCard(
                   title: product.name,
                   price: product.price.toString(),
-                  oldPrice: '600',
-                  discount: '20',
+                  oldPrice: product.discountPrice?.toString() ?? '',
+                  discount: product.discountPercentage != null
+                      ? '${product.discountPercentage!.toInt()}%'
+                      : '',
                   image: product.imageUrl,
                 );
               },
