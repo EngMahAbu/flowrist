@@ -1,3 +1,4 @@
+import 'package:flowrist/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -13,7 +14,7 @@ class ProductCardShimmer extends StatelessWidget {
         children: [
           Expanded(
             child: Shimmer.fromColors(
-              baseColor: Colors.grey.shade300,
+              baseColor: AppColors.white60,
               highlightColor: Colors.grey.shade100,
               child: Container(
                 width: double.infinity,
@@ -26,7 +27,7 @@ class ProductCardShimmer extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Shimmer.fromColors(
-            baseColor: Colors.grey.shade300,
+            baseColor: AppColors.white60,
             highlightColor: Colors.grey.shade100,
             child: Container(
               width: 110,
@@ -36,7 +37,7 @@ class ProductCardShimmer extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Shimmer.fromColors(
-            baseColor: Colors.grey.shade300,
+            baseColor: AppColors.white60,
             highlightColor: Colors.grey.shade100,
             child: Container(
               width: 60,

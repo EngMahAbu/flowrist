@@ -12,7 +12,7 @@ class CategoryShimmer extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 320,
+            width: 350,
             height: 20,
             decoration: BoxDecoration(
               color: AppColors.white,

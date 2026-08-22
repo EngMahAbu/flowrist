@@ -1,10 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flowrist/config/l10n/app_localizations.dart';
+import 'package:flowrist/core/constants/app_colors.dart';
 import 'package:flowrist/features/home/home/domain/entities/home_entities/category_rail_payload_entity.dart';
 import 'package:flowrist/features/home/home/presentation/view/widgets/section_title.dart';
-import 'package:flowrist/features/home/home/presentation/view/widgets/shimmer_widgets/category_shimmer.dart';
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
 
 class CategoryRailSection extends StatelessWidget {
   final CategoryRailPayloadEntity payload;
@@ -48,7 +47,7 @@ class CategoryRailSection extends StatelessWidget {
                           return Container(
                             width: 64,
                             height: 64,
-                            color: Colors.grey.shade200,
+                            color: AppColors.white50,
                             child: const Icon(Icons.broken_image_outlined),
                           );
                         },

@@ -1,20 +1,18 @@
 import 'package:flowrist/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
+
 class ProductShimmer extends StatelessWidget {
   const ProductShimmer({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(
-        top: 24,
-        left: 16,
-      ),
+      padding: const EdgeInsets.only( left: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 130,
+            width: 350,
             height: 20,
             decoration: BoxDecoration(
               color: AppColors.white,

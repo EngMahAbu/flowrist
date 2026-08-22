@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flowrist/core/constants/app_colors.dart';
 import 'package:flowrist/features/home/home/domain/entities/home_entities/banner_payload_entity.dart';
 import 'package:flutter/material.dart';
 
@@ -30,7 +31,7 @@ class BannerSection extends StatelessWidget {
               return Container(
                 width: double.infinity,
                 height: double.infinity,
-                color: Colors.grey.shade200,
+                color: AppColors.white50,
                 child: const Center(
                   child: CircularProgressIndicator(),
                 ),
@@ -42,7 +43,7 @@ class BannerSection extends StatelessWidget {
               return Container(
                 width: double.infinity,
                 height: double.infinity,
-                color: Colors.grey.shade200,
+                color: AppColors.white50,
                 child: const Center(
                   child: Icon(
                     Icons.broken_image_outlined,

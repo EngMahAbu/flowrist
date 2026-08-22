@@ -7,7 +7,7 @@ class OccasionShimmer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(
-        top: 24,
+        top: 12,
         left: 16,
         bottom: 24,
       ),
@@ -15,7 +15,7 @@ class OccasionShimmer extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 150,
+            width: 350,
             height: 20,
             decoration: BoxDecoration(
               color: AppColors.white,
