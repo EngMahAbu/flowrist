@@ -37,7 +37,7 @@ class _SplashViewState extends State<SplashView> {
       if (rememberMe || isGuest) {
         context.go(AppRoutes.homeTab);
       } else {
-        context.go(AppRoutes.bestSeller);
+        context.go(AppRoutes.occasions);
       }
     } catch (e) {
       if (!mounted) return;

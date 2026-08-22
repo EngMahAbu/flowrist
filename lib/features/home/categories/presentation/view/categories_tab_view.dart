@@ -1,9 +1,16 @@
+import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flowrist/core/constants/app_dimensions.dart';
 import 'package:flowrist/core/ui/widgets/app_search_bar.dart';
 import 'package:flowrist/core/ui/widgets/filter_button.dart';
 import 'package:flowrist/core/ui/widgets/product_card.dart';
+import 'package:flowrist/core/ui/widgets/products_shimmer.dart';
 import 'package:flowrist/core/ui/widgets/selection_bar.dart';
+import 'package:flowrist/core/ui/widgets/selection_shimmer.dart';
+import 'package:flowrist/features/home/categories/presentation/cubit/categories_cubit.dart';
+import 'package:flowrist/features/home/categories/presentation/cubit/categories_events.dart';
+import 'package:flowrist/features/home/categories/presentation/cubit/categories_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CategoriesTabView extends StatefulWidget {
   const CategoriesTabView({super.key});
@@ -13,130 +20,106 @@ class CategoriesTabView extends StatefulWidget {
 }
 
 class _CategoriesTabViewState extends State<CategoriesTabView> {
-  final List<String> categories = [
-    'Birthday',
-    'Anniversary',
-    'Wedding',
-    'Graduation',
-    'Sympathy',
-    'Get Well Soon',
-    'Thank You',
-  ];
-  int selectedIndex = 0;
-  final List<Map<String, String>> products = [
-    {
-      'title': 'Red Rose',
-      'price': '600',
-      'oldPrice': '800',
-      'discount': '20%',
-      'image':
-          'https://c02.purpledshub.com/uploads/sites/40/2023/08/JI230816Cosmos220-6d9254f-edited-scaled.jpg?w=1200&webp=1',
-    },
-    {
-      'title': 'White Lily',
-      'price': '450',
-      'oldPrice': '600',
-      'discount': '25%',
-      'image':
-          'https://c02.purpledshub.com/uploads/sites/40/2023/08/JI230816Cosmos220-6d9254f-edited-scaled.jpg?w=1200&webp=1',
-    },
-    {
-      'title': 'Yellow Tulip',
-      'price': '350',
-      'oldPrice': '500',
-      'discount': '30%',
-      'image':
-          'https://c02.purpledshub.com/uploads/sites/40/2023/08/JI230816Cosmos220-6d9254f-edited-scaled.jpg?w=1200&webp=1',
-    },
-    {
-      'title': 'Pink Orchid',
-      'price': '750',
-      'oldPrice': '950',
-      'discount': '21%',
-      'image':
-          'https://c02.purpledshub.com/uploads/sites/40/2023/08/JI230816Cosmos220-6d9254f-edited-scaled.jpg?w=1200&webp=1',
-    },
-    {
-      'title': 'Blue Hydrangea',
-      'price': '550',
-      'oldPrice': '700',
-      'discount': '22%',
-      'image':
-          'https://c02.purpledshub.com/uploads/sites/40/2023/08/JI230816Cosmos220-6d9254f-edited-scaled.jpg?w=1200&webp=1',
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+
+    context.read<CategoriesCubit>().doEvent(GetCategoriesEvent());
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          children: [
-            SizedBox(height: 30),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppDimensions.defaultScreenPadding,
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 3,
-                    child: AppSearchBar(
-                      onChanged: (value) {
-                        // UI
-                      },
-                    ),
+        child: BlocBuilder<CategoriesCubit, CategoriesState>(
+          builder: (context, state) {
+            final products = state.products.data ?? [];
+            return Column(
+              children: [
+                const SizedBox(height: 30),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppDimensions.defaultScreenPadding,
                   ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 3,
+                        child: AppSearchBar(
+                          onChanged: (value) {
+                            // Search will be handled
+                          },
+                        ),
+                      ),
 
-                  const SizedBox(width: 8),
+                      const SizedBox(width: 8),
 
-                  Expanded(
-                    flex: 1,
-                    child: FilterButton(
-                      onPressed: () {
-                        // UI
-                      },
-                    ),
+                      Expanded(
+                        flex: 1,
+                        child: FilterButton(
+                          onPressed: () {
+                            // Filter will be handled
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
-            SizedBox(height: 20),
-            SelectionBar(
-              items: categories,
-              selectedIndex: selectedIndex,
-              onItemSelected: (index) {
-                setState(() {
-                  selectedIndex = index;
-                });
-              },
-            ),
-            SizedBox(height: 25),
-            Expanded(
-              child: GridView.builder(
-                padding: const EdgeInsets.all(
-                  AppDimensions.defaultScreenPadding,
                 ),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 20,
-                  crossAxisSpacing: 16,
-                  childAspectRatio: 0.60,
+                SizedBox(height: 20),
+                if (state.categories.isLoading)
+                  const SelectionShimmer()
+                else
+                  SelectionBar(
+                    items:
+                        state.categories.data
+                            ?.map((category) => category.name)
+                            .toList() ??
+                        [],
+                    selectedIndex: state.selectedIndex,
+                    onItemSelected: (index) {
+                      context.read<CategoriesCubit>().doEvent(
+                        SelectCategoryEvent(index),
+                      );
+                    },
+                  ),
+                SizedBox(height: 25),
+                Expanded(
+                  child: state.products.isLoading
+                      ? const ProductsShimmer()
+                      : products.isEmpty
+                      ? Center(
+                          child: Text(
+                            AppLocalizations.of(context)!.noProductsFound,
+                          ),
+                        )
+                      : GridView.builder(
+                          padding: const EdgeInsets.all(
+                            AppDimensions.defaultScreenPadding,
+                          ),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                mainAxisSpacing: 20,
+                                crossAxisSpacing: 16,
+                                childAspectRatio: 0.60,
+                              ),
+                          itemCount: products.length,
+                          itemBuilder: (context, index) {
+                            final product = products[index];
+
+                            return ProductCard(
+                              title: product.name,
+                              price: product.price.toString(),
+                              oldPrice: '600',
+                              discount: '20',
+                              image: product.imageUrl,
+                            );
+                          },
+                        ),
                 ),
-                itemCount: products.length,
-                itemBuilder: (context, index) {
-                  final product = products[index];
-                  return ProductCard(
-                    title: product['title']!,
-                    price: product['price']!,
-                    oldPrice: product['oldPrice']!,
-                    discount: product['discount']!,
-                    image: product['image']!,
-                  );
-                },
-              ),
-            ),
-          ],
+              ],
+            );
+          },
         ),
       ),
     );

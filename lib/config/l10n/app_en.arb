@@ -42,5 +42,14 @@
   "email": "Email",
   "emailHint": "Enter your email",
   "password": "Password",
-  "passwordHint": "Enter your password"
+  "passwordHint": "Enter your password",
+  "search": "Search",
+  "egp": "EGP",
+  "addToCart": "Add to cart",
+  "noProductsFound": "No products found",
+  "categories": "Categories",
+  "bestSeller": "Best Seller",
+  "bestSellerSubtitle": "Bloom with our exquisite best sellers",
+  "occasion": "Occasion"
+
 }

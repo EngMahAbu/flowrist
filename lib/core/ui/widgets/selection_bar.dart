@@ -40,7 +40,7 @@ class SelectionBar extends StatelessWidget {
                   bottom: BorderSide(
                     width: 3,
                     color: isSelected
-                        ? AppColors.purpleBase
+                        ? AppColors.purple60
                         : AppColors.white70,
                   ),
                 ),
@@ -48,7 +48,7 @@ class SelectionBar extends StatelessWidget {
               child: Text(
                 items[index],
                 style: AppStyles.regular16.copyWith(
-                  color: isSelected ? AppColors.purpleBase : AppColors.white70,
+                  color: isSelected ? AppColors.purple60 : AppColors.white70,
                 ),
               ),
             ),

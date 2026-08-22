@@ -16,7 +16,7 @@ abstract final class MockProductsResponse {
       },
       {
         "id": "445b4bb6-b2c7-405b-9a44-eea23f0ee338",
-        "name": "Deluxe Mixed Bouquet",
+        "name": "Petite Posy",
         "price": 75.00,
         "inStock": true,
         "categoryId": "11111111-1111-1111-1111-000000000006",
@@ -26,7 +26,7 @@ abstract final class MockProductsResponse {
       },
       {
         "id": "a0ad1a07-38ff-4ab8-8230-81da113c5532",
-        "name": "Sunshine Bouquet",
+        "name": "Petite Posy",
         "price": 38.00,
         "inStock": true,
         "categoryId": "11111111-1111-1111-1111-000000000005",
@@ -36,7 +36,7 @@ abstract final class MockProductsResponse {
       },
       {
         "id": "7496a097-d05d-469a-8339-1b04b64b71d3",
-        "name": "Purple Orchid Grace",
+        "name": "Petite Posy",
         "price": 65.00,
         "inStock": true,
         "categoryId": "11111111-1111-1111-1111-000000000004",
@@ -46,7 +46,7 @@ abstract final class MockProductsResponse {
       },
       {
         "id": "f866ef57-dfce-458c-a227-e7d61745fe30",
-        "name": "Stargazer Lily Bunch",
+        "name": "Petite Posy",
         "price": 44.00,
         "inStock": true,
         "categoryId": "11111111-1111-1111-1111-000000000003",
@@ -56,7 +56,7 @@ abstract final class MockProductsResponse {
       },
       {
         "id": "197d70c5-72db-4851-b2fe-b43a373aa63c",
-        "name": "Pure White Lilies",
+        "name": "Petite Posy",
         "price": 48.00,
         "inStock": true,
         "categoryId": "11111111-1111-1111-1111-000000000003",
@@ -66,7 +66,7 @@ abstract final class MockProductsResponse {
       },
       {
         "id": "f98b701a-de4a-451c-94e6-af86500fdfda",
-        "name": "Yellow Tulip Cheer",
+        "name": "Petite Posy",
         "price": 28.00,
         "inStock": true,
         "categoryId": "11111111-1111-1111-1111-000000000002",
@@ -76,7 +76,7 @@ abstract final class MockProductsResponse {
       },
       {
         "id": "6dc4806e-bda0-40af-830c-65750d406af5",
-        "name": "Spring Tulip Mix",
+        "name": "Petite Posy",
         "price": 32.50,
         "inStock": true,
         "categoryId": "11111111-1111-1111-1111-000000000002",
@@ -86,7 +86,7 @@ abstract final class MockProductsResponse {
       },
       {
         "id": "19374797-7918-46ca-8b3e-d57c912c1f3a",
-        "name": "White Rose Elegance",
+        "name": "Petite Posy",
         "price": 52.00,
         "inStock": true,
         "categoryId": "11111111-1111-1111-1111-000000000001",
@@ -96,7 +96,7 @@ abstract final class MockProductsResponse {
       },
       {
         "id": "6b216b4e-1c84-4336-9f1b-05f9079cb549",
-        "name": "Classic Red Roses",
+        "name": "Petite Posy",
         "price": 45.00,
         "inStock": true,
         "categoryId": "11111111-1111-1111-1111-000000000001",
@@ -122,17 +122,17 @@ abstract final class MockProductsResponse {
     "data": [
       {
         "id": "445b4bb6-b2c7-405b-9a44-eea23f0ee338",
-        "name": "Deluxe Mixed Bouquet",
+        "name": "Petite Posy",
         "price": 75.00,
         "inStock": true,
         "categoryId": "11111111-1111-1111-1111-000000000006",
-        "categoryName": "Bouquets",
+        "categoryName": "Petite Posy",
         "imageUrl": "https://picsum.photos/seed/deluxe-mixed-bouquet-1/600/600",
         "createdAt": "2026-08-15T10:41:42.4293761",
       },
       {
         "id": "f98b701a-de4a-451c-94e6-af86500fdfda",
-        "name": "Yellow Tulip Cheer",
+        "name": "Petite Posy",
         "price": 28.00,
         "inStock": true,
         "categoryId": "11111111-1111-1111-1111-000000000002",
@@ -144,7 +144,7 @@ abstract final class MockProductsResponse {
     "pagination": {
       "page": 1,
       "pageSize": 20,
-      "totalCount": 2,
+      "totalCount": 5,
       "totalPages": 1,
       "hasNextPage": false,
       "hasPreviousPage": false,

@@ -1,6 +1,5 @@
 import 'package:flowrist/features/home/home/data/client/occasions_api_client.dart';
 import 'package:flowrist/features/home/home/data/data_sources/contract/remote/occasions_remote_data_source.dart';
-import 'package:flowrist/features/home/home/data/mock/mock_products_response.dart';
 import 'package:flowrist/features/home/home/data/models/occasions/occasions_response_dto.dart';
 import 'package:flowrist/features/home/home/data/models/occasions/products_response_dto.dart';
 import 'package:injectable/injectable.dart';
@@ -21,20 +20,19 @@ class OccasionsRemoteDataSourceImpl implements OccasionsRemoteDataSource {
     String? occasionId,
     String? categoryId,
   }) async {
-    // Simulate network delay for testing purposes
-    await Future.delayed(const Duration(milliseconds: 500));
+    // // Simulate network delay for testing purposes
+    // await Future.delayed(const Duration(milliseconds: 500));
 
-    if (occasionId != null) {
-      return ProductsResponseDto.fromJson(MockProductsResponse.occasionProductsJson);
-    }
+    // if (occasionId != null) {
+    //   return ProductsResponseDto.fromJson(MockProductsResponse.occasionProductsJson);
+    // }
 
-    return ProductsResponseDto.fromJson(MockProductsResponse.categoryProductsJson);
+    // return ProductsResponseDto.fromJson(MockProductsResponse.categoryProductsJson);
 
-    /* the following code is commented out because the API endpoint is not yet implemented
+    // the following code is commented out because the API endpoint is not yet implemented
     return await _apiClient.getProducts(
       occasionId: occasionId,
       categoryId: categoryId,
     );
-    */
   }
 }

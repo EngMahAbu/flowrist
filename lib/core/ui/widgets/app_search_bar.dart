@@ -1,3 +1,4 @@
+import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flowrist/core/constants/app_colors.dart';
 import 'package:flowrist/core/constants/app_styles.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,7 @@ class AppSearchBar extends StatelessWidget {
     return TextField(
       onChanged: onChanged,
       decoration: InputDecoration(
-        hintText: 'Search',
+        hintText:  AppLocalizations.of(context)!.search,
         hintStyle: AppStyles.regular14InterW500.copyWith(
           color: AppColors.white70,
         ),

@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flowrist/config/session/session_guard.dart';
 import 'package:flowrist/core/constants/app_colors.dart';
 import 'package:flowrist/core/constants/app_images.dart';
@@ -8,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class ProductCard extends StatelessWidget {
-
   final String title;
   final String price;
   final String oldPrice;
@@ -31,10 +31,7 @@ class ProductCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.whiteBase,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: AppColors.white70,
-          width: 0.5,
-        ),
+        border: Border.all(color: AppColors.white70, width: 0.5),
       ),
       child: Column(
         children: [
@@ -42,16 +39,13 @@ class ProductCard extends StatelessWidget {
           const SizedBox(height: 10),
           Align(
             alignment: Alignment.centerLeft,
-            child: Text(
-              title,
-              style: AppStyles.regular13,
-            ),
+            child: Text(title, style: AppStyles.regular13),
           ),
           const SizedBox(height: 8),
           Row(
             children: [
               Text(
-                'EGP $price',
+                '${AppLocalizations.of(context)!.egp} $price',
                 style: AppStyles.regular14InterW500,
               ),
               const SizedBox(width: 6),
@@ -74,10 +68,7 @@ class ProductCard extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
-              icon: const Icon(
-                Icons.shopping_cart_outlined,
-                size: 18,
-              ),
+              icon: const Icon(Icons.shopping_cart_outlined, size: 18),
               style: ElevatedButton.styleFrom(
                 textStyle: AppStyles.regular13W500,
               ),
@@ -88,7 +79,7 @@ class ProductCard extends StatelessWidget {
                 }
                 context.push(AppRoutes.cartTab);
               },
-              label: const Text('Add to cart'),
+              label: Text(AppLocalizations.of(context)!.addToCart),
             ),
           ),
         ],
@@ -107,22 +98,20 @@ class ProductCard extends StatelessWidget {
     }
 
     return ClipRRect(
-    borderRadius: BorderRadius.circular(8),
-    child: CachedNetworkImage(
-      imageUrl: image,
-      width: double.infinity,
-      height: 150,
-      fit: BoxFit.cover,
-      placeholder: (context, url) {
-        return const SizedBox(
-          width: double.infinity,
-          height: 150,
-          child: Center(
-            child: CircularProgressIndicator(),
-          ),
-        );
-      },
-      errorWidget: (context, url, error) {
+      borderRadius: BorderRadius.circular(8),
+      child: CachedNetworkImage(
+        imageUrl: image,
+        width: double.infinity,
+        height: 150,
+        fit: BoxFit.cover,
+        placeholder: (context, url) {
+          return const SizedBox(
+            width: double.infinity,
+            height: 150,
+            child: Center(child: CircularProgressIndicator()),
+          );
+        },
+        errorWidget: (context, url, error) {
           return Image.asset(
             AppImages.cardDefultImage,
             width: double.infinity,
