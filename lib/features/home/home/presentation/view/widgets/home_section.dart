@@ -1,4 +1,3 @@
- 
 import 'package:flowrist/features/home/home/domain/entities/home_entities/banner_payload_entity.dart';
 import 'package:flowrist/features/home/home/domain/entities/home_entities/category_rail_payload_entity.dart';
 import 'package:flowrist/features/home/home/domain/entities/home_entities/home_layout_entity.dart';
@@ -13,39 +12,48 @@ import 'package:flutter/material.dart';
 class HomeSection extends StatelessWidget {
   final HomeLayoutEntity section;
 
-  const HomeSection({super.key, required this.section});
+  const HomeSection({
+    super.key,
+    required this.section,
+  });
 
   @override
   Widget build(BuildContext context) {
-    switch (section.type) {
-      case 'banner':
+    switch (section) {
+      case HomeLayoutEntity(
+          type: 'banner',
+          payload: BannerPayloadEntity payload,
+        ):
         return GestureDetector(
           onTap: () {},
-          child: BannerSection(payload: section.payload as BannerPayloadEntity),
+          child: BannerSection(payload: payload),
         );
 
-      case 'category_rail':
+      case HomeLayoutEntity(
+          type: 'category_rail',
+          payload: CategoryRailPayloadEntity payload,
+        ):
         return GestureDetector(
           onTap: () {},
-          child: CategoryRailSection(
-            payload: section.payload as CategoryRailPayloadEntity,
-          ),
+          child: CategoryRailSection(payload: payload),
         );
 
-      case 'product_rail':
+      case HomeLayoutEntity(
+          type: 'product_rail',
+          payload: ProductRailPayloadEntity payload,
+        ):
         return GestureDetector(
           onTap: () {},
-          child: ProductRailSection(
-            payload: section.payload as ProductRailPayloadEntity,
-          ),
+          child: ProductRailSection(payload: payload),
         );
 
-      case 'occasion_rail':
+      case HomeLayoutEntity(
+          type: 'occasion_rail',
+          payload: OccasionRailPayloadEntity payload,
+        ):
         return GestureDetector(
           onTap: () {},
-          child: OccasionRailSection(
-            payload: section.payload as OccasionRailPayloadEntity,
-          ),
+          child: OccasionRailSection(payload: payload),
         );
 
       default:

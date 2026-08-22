@@ -14,10 +14,10 @@ import 'home_repository_impl_test.mocks.dart';
 void main() {
   late MockHomeRemoteDataSource mockRemoteDataSource;
   late HomeRepositoryImpl repository;
-provideDummy<BaseResponse<List<HomeResponseModel>>>(
-  SuccessResponse<List<HomeResponseModel>>([]),
-);
   setUp(() {
+    provideDummy<BaseResponse<List<HomeResponseModel>>>(
+      SuccessResponse<List<HomeResponseModel>>([]),
+    );
     mockRemoteDataSource = MockHomeRemoteDataSource();
     repository = HomeRepositoryImpl(mockRemoteDataSource);
   });
@@ -29,18 +29,15 @@ provideDummy<BaseResponse<List<HomeResponseModel>>>(
         // Arrange
         final models = <HomeResponseModel>[];
 
-        when(mockRemoteDataSource.getHomeLayout()).thenAnswer(
-          (_) async => SuccessResponse(models),
-        );
+        when(
+          mockRemoteDataSource.getHomeLayout(),
+        ).thenAnswer((_) async => SuccessResponse(models));
 
         // Act
         final result = await repository.getHomeLayout();
 
         // Assert
-        expect(
-          result,
-          isA<SuccessResponse<List<HomeLayoutEntity>>>(),
-        );
+        expect(result, isA<SuccessResponse<List<HomeLayoutEntity>>>());
 
         final successResponse =
             result as SuccessResponse<List<HomeLayoutEntity>>;
@@ -58,21 +55,17 @@ provideDummy<BaseResponse<List<HomeResponseModel>>>(
         // Arrange
         const errorMessage = 'Failed to load home layout';
 
-        when(mockRemoteDataSource.getHomeLayout()).thenAnswer(
-          (_) async => ErrorResponse(errorMessage),
-        );
+        when(
+          mockRemoteDataSource.getHomeLayout(),
+        ).thenAnswer((_) async => ErrorResponse(errorMessage));
 
         // Act
         final result = await repository.getHomeLayout();
 
         // Assert
-        expect(
-          result,
-          isA<ErrorResponse<List<HomeLayoutEntity>>>(),
-        );
+        expect(result, isA<ErrorResponse<List<HomeLayoutEntity>>>());
 
-        final errorResponse =
-            result as ErrorResponse<List<HomeLayoutEntity>>;
+        final errorResponse = result as ErrorResponse<List<HomeLayoutEntity>>;
 
         expect(errorResponse.errorMessage, errorMessage);
 

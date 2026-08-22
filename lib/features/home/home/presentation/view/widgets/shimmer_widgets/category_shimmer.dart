@@ -1,20 +1,18 @@
 import 'package:flowrist/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
+
 class CategoryShimmer extends StatelessWidget {
   const CategoryShimmer({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(
-        top: 24,
-        left: 16,
-      ),
+      padding: const EdgeInsets.only(top: 24, left: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 120,
+            width: 320,
             height: 20,
             decoration: BoxDecoration(
               color: AppColors.white,
@@ -38,7 +36,7 @@ class CategoryShimmer extends StatelessWidget {
                       height: 64,
                       decoration: const BoxDecoration(
                         color: AppColors.white,
-                        shape: BoxShape.circle,
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),
                     ),
 

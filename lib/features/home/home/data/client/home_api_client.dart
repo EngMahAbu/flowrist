@@ -1,9 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flowrist/core/constants/endpoints.dart';
+import 'package:flowrist/features/home/home/data/models/home_model/home_api_response_model.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
-
-import '../models/home_model/home_response_model.dart';
 
 part 'home_api_client.g.dart';
 
@@ -14,5 +13,5 @@ abstract class HomeApiClient {
   factory HomeApiClient(Dio dio) = _HomeApiClient;
 
   @GET(Endpoints.home)
-  Future<List<HomeResponseModel>> getHomeLayout();
+  Future<HomeApiResponseModel> getHomeLayout();
 }

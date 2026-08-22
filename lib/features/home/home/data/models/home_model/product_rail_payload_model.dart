@@ -1,4 +1,3 @@
- 
 import 'package:flowrist/features/home/home/data/models/home_model/home_payload_model.dart';
 import 'package:flowrist/features/home/home/domain/entities/home_entities/product_item_entity.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -9,7 +8,6 @@ import 'product_item_model.dart';
 part 'product_rail_payload_model.g.dart';
 
 @JsonSerializable()
- 
 class ProductRailPayloadModel extends HomePayloadModel {
   final List<ProductItemModel> items;
   final String viewAllAction;
@@ -20,13 +18,10 @@ class ProductRailPayloadModel extends HomePayloadModel {
     required this.viewAllAction,
   });
 
-  factory ProductRailPayloadModel.fromJson(
-    Map<String, dynamic> json,
-  ) =>
+  factory ProductRailPayloadModel.fromJson(Map<String, dynamic> json) =>
       _$ProductRailPayloadModelFromJson(json);
 
-  Map<String, dynamic> toJson() =>
-      _$ProductRailPayloadModelToJson(this);
+  Map<String, dynamic> toJson() => _$ProductRailPayloadModelToJson(this);
 
   @override
   ProductRailPayloadEntity toEntity() {

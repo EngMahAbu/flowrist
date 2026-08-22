@@ -1,4 +1,6 @@
+import 'package:flowrist/config/di/di.dart';
 import 'package:flowrist/features/home/home/presentation/cubit/home_cubit.dart';
+import 'package:flowrist/features/home/home/presentation/cubit/home_event.dart';
 import 'package:flowrist/features/home/home/presentation/cubit/home_state.dart';
 import 'package:flowrist/features/home/home/presentation/view/widgets/home_header.dart';
 import 'package:flowrist/features/home/home/presentation/view/widgets/home_section.dart';
@@ -12,40 +14,43 @@ class HomeTabView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: BlocBuilder<HomeCubit, HomeState>(
-        builder: (context, state) {
-          final homeState = state.homeLayout;
+    return BlocProvider(
+      create: (_) => getIt<HomeCubit>()..doEvent(GetHomeLayout()),
+      child: Scaffold(
+        body: BlocBuilder<HomeCubit, HomeState>(
+          builder: (context, state) {
+            final homeState = state.homeLayout;
 
-          if (homeState.isLoading) {
-            return const HomeShimmer();
-          }
+            if (homeState.isLoading) {
+              return const HomeShimmer();
+            }
 
-          if (homeState.errorMessage != null) {
-            return Center(child: Text(homeState.errorMessage!));
-          }
+            if (homeState.errorMessage != null) {
+              return Center(child: Text(homeState.errorMessage!));
+            }
 
-          if (homeState.data == null || homeState.data!.isEmpty) {
-            return const Center(child: Text('No content available'));
-          }
+            if (homeState.data == null || homeState.data!.isEmpty) {
+              return const Center(child: Text('No content available'));
+            }
 
-          final sections = homeState.data!;
+            final sections = homeState.data!;
 
-          return ListView.builder(
-            itemCount: sections.length + 1,
-            itemBuilder: (context, index) {
-              // Header
-              if (index == 0) {
-                return HomeHeader();
-              }
+            return ListView.builder(
+              itemCount: sections.length + 1,
+              itemBuilder: (context, index) {
+                // Header
+                if (index == 0) {
+                  return HomeHeader();
+                }
 
-              // Home sections
-              final section = sections[index - 1];
+                // Home sections
+                final section = sections[index - 1];
 
-              return HomeSection(section: section);
-            },
-          );
-        },
+                return HomeSection(section: section);
+              },
+            );
+          },
+        ),
       ),
     );
   }

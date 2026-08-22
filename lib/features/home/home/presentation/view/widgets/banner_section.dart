@@ -1,7 +1,6 @@
- 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flowrist/features/home/home/domain/entities/home_entities/banner_payload_entity.dart';
 import 'package:flutter/material.dart';
- 
 
 class BannerSection extends StatelessWidget {
   final BannerPayloadEntity payload;
@@ -14,17 +13,42 @@ class BannerSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 6),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 6,
+      ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12),
         child: AspectRatio(
           aspectRatio: 16 / 6,
-          child: Image.network(
-            payload.imageUrl,
+          child: CachedNetworkImage(
+            imageUrl: payload.imageUrl,
             fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) {
-              return const Center(
-                child: Icon(Icons.error),
+
+            // Loading state
+            placeholder: (context, url) {
+              return Container(
+                width: double.infinity,
+                height: double.infinity,
+                color: Colors.grey.shade200,
+                child: const Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            },
+
+            // Error state
+            errorWidget: (context, url, error) {
+              return Container(
+                width: double.infinity,
+                height: double.infinity,
+                color: Colors.grey.shade200,
+                child: const Center(
+                  child: Icon(
+                    Icons.broken_image_outlined,
+                    size: 40,
+                  ),
+                ),
               );
             },
           ),

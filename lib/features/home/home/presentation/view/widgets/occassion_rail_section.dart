@@ -1,8 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flowrist/core/constants/app_styles.dart';
 import 'package:flowrist/features/home/home/domain/entities/home_entities/occasion_rail_payload_entity.dart';
 import 'package:flowrist/features/home/home/presentation/view/widgets/section_title.dart';
- 
+
 import 'package:flutter/material.dart';
 
 class OccasionRailSection extends StatelessWidget {
@@ -36,10 +37,35 @@ class OccasionRailSection extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
-                      child: Image.network(
-                        item.imageUrl,
+                      child: CachedNetworkImage(
+                        imageUrl: item.imageUrl,
                         width: double.infinity,
                         fit: BoxFit.cover,
+                          placeholder: (context, url) {
+              return Container(
+                width: double.infinity,
+                height: double.infinity,
+                color: Colors.grey.shade200,
+                child: const Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            },
+
+            // Error state
+            errorWidget: (context, url, error) {
+              return Container(
+                width: double.infinity,
+                height: double.infinity,
+                color: Colors.grey.shade200,
+                child: const Center(
+                  child: Icon(
+                    Icons.broken_image_outlined,
+                    size: 40,
+                  ),
+                ),
+              );
+            },
                       ),
                     ),
 

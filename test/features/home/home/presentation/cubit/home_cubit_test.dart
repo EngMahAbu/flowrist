@@ -17,94 +17,89 @@ void main() {
 
   setUp(() {
     mockGetHomeLayoutUseCase = MockGetHomeLayoutUseCase();
+    provideDummy<BaseResponse<List<HomeLayoutEntity>>>(
+      SuccessResponse<List<HomeLayoutEntity>>([]),
+    );
   });
- provideDummy<BaseResponse<List<HomeLayoutEntity>>>(
-  SuccessResponse<List<HomeLayoutEntity>>([]),
-);
   group('HomeCubit', () {
-test(
-  'should emit loading then success when getHomeLayout succeeds',
-  () async {
-    // Arrange
-    when(mockGetHomeLayoutUseCase()).thenAnswer(
-      (_) async => SuccessResponse<List<HomeLayoutEntity>>([]),
+    test(
+      'should emit loading then success when getHomeLayout succeeds',
+      () async {
+        // Arrange
+        when(
+          mockGetHomeLayoutUseCase(),
+        ).thenAnswer((_) async => SuccessResponse<List<HomeLayoutEntity>>([]));
+
+        final cubit = HomeCubit(mockGetHomeLayoutUseCase);
+
+        // Act
+        final future = expectLater(
+          cubit.stream,
+          emitsInOrder([
+            predicate<HomeState>(
+              (state) =>
+                  state.homeLayout.isLoading == true &&
+                  state.homeLayout.errorMessage == null &&
+                  state.homeLayout.data == null,
+            ),
+            predicate<HomeState>(
+              (state) =>
+                  state.homeLayout.isLoading == false &&
+                  state.homeLayout.errorMessage == null &&
+                  state.homeLayout.data != null &&
+                  state.homeLayout.data!.isEmpty,
+            ),
+          ]),
+        );
+
+        await cubit.doEvent(GetHomeLayout());
+
+        await future;
+
+        // Assert
+        verify(mockGetHomeLayoutUseCase()).called(1);
+
+        await cubit.close();
+      },
     );
 
-    final cubit = HomeCubit(mockGetHomeLayoutUseCase);
+    test('should emit loading then error when getHomeLayout fails', () async {
+      // Arrange
+      const errorMessage = 'Failed to load home layout';
 
-    // Act
-    final future = expectLater(
-      cubit.stream,
-      emitsInOrder([
-        predicate<HomeState>(
-          (state) =>
-              state.homeLayout.isLoading == true &&
-              state.homeLayout.errorMessage == null &&
-              state.homeLayout.data == null,
-        ),
-        predicate<HomeState>(
-          (state) =>
-              state.homeLayout.isLoading == false &&
-              state.homeLayout.errorMessage == null &&
-              state.homeLayout.data != null &&
-              state.homeLayout.data!.isEmpty,
-        ),
-      ]),
-    );
+      when(mockGetHomeLayoutUseCase()).thenAnswer(
+        (_) async => ErrorResponse<List<HomeLayoutEntity>>(errorMessage),
+      );
 
-    await cubit.doEvent(GetHomeLayout());
+      final cubit = HomeCubit(mockGetHomeLayoutUseCase);
 
-    await future;
+      // Act
+      final future = expectLater(
+        cubit.stream,
+        emitsInOrder([
+          predicate<HomeState>(
+            (state) =>
+                state.homeLayout.isLoading == true &&
+                state.homeLayout.errorMessage == null &&
+                state.homeLayout.data == null,
+          ),
+          predicate<HomeState>(
+            (state) =>
+                state.homeLayout.isLoading == false &&
+                state.homeLayout.errorMessage == errorMessage &&
+                state.homeLayout.data == null,
+          ),
+        ]),
+      );
 
-    // Assert
-    verify(mockGetHomeLayoutUseCase()).called(1);
+      await cubit.doEvent(GetHomeLayout());
 
-    await cubit.close();
-  },
-);
+      await future;
 
-  test(
-  'should emit loading then error when getHomeLayout fails',
-  () async {
-    // Arrange
-    const errorMessage = 'Failed to load home layout';
+      // Assert
+      verify(mockGetHomeLayoutUseCase()).called(1);
 
-    when(mockGetHomeLayoutUseCase()).thenAnswer(
-      (_) async => ErrorResponse<List<HomeLayoutEntity>>(
-        errorMessage,
-      ),
-    );
-
-    final cubit = HomeCubit(mockGetHomeLayoutUseCase);
-
-    // Act
-    final future = expectLater(
-      cubit.stream,
-      emitsInOrder([
-        predicate<HomeState>(
-          (state) =>
-              state.homeLayout.isLoading == true &&
-              state.homeLayout.errorMessage == null &&
-              state.homeLayout.data == null,
-        ),
-        predicate<HomeState>(
-          (state) =>
-              state.homeLayout.isLoading == false &&
-              state.homeLayout.errorMessage == errorMessage &&
-              state.homeLayout.data == null,
-        ),
-      ]),
-    );
-
-    await cubit.doEvent(GetHomeLayout());
-
-    await future;
-
-    // Assert
-    verify(mockGetHomeLayoutUseCase()).called(1);
-
-    await cubit.close();
-  },
-);
+      await cubit.close();
+    });
   });
 }

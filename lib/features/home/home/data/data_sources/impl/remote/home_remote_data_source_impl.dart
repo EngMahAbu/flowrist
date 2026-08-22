@@ -16,7 +16,7 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
   Future<BaseResponse<List<HomeResponseModel>>> getHomeLayout() async {
     try {
       final response = await _apiClient.getHomeLayout();
-      return SuccessResponse(response);
+      return SuccessResponse(response.data);
     } on Exception catch (e) {
       return ApiErrorHandler.handleException(e);
     }

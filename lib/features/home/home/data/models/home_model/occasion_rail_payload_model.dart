@@ -9,7 +9,6 @@ import 'occasion_item_model.dart';
 part 'occasion_rail_payload_model.g.dart';
 
 @JsonSerializable()
-@JsonSerializable()
 class OccasionRailPayloadModel extends HomePayloadModel {
   final List<OccasionItemModel> items;
   final String viewAllAction;

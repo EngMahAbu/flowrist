@@ -41,6 +41,7 @@ class HomeCubit extends Cubit<HomeState> {
             ),
           ),
         );
+
       case ErrorResponse<List<HomeLayoutEntity>>():
         emit(
           state.copyWith(

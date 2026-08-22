@@ -2,9 +2,11 @@ import 'package:flowrist/features/home/home/data/data_sources/impl/remote/home_r
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+
 import 'package:flowrist/config/base_response/base_response.dart';
 import 'package:flowrist/features/home/home/data/client/home_api_client.dart';
 import 'package:flowrist/features/home/home/data/models/home_model/home_response_model.dart';
+import 'package:flowrist/features/home/home/data/models/home_model/home_api_response_model.dart';
 
 import 'home_remote_data_source_impl_test.mocks.dart';
 
@@ -23,7 +25,14 @@ void main() {
       'should return SuccessResponse when getHomeLayout succeeds',
       () async {
         // Arrange
-        final response = <HomeResponseModel>[];
+        final homeData = <HomeResponseModel>[];
+
+        final response = HomeApiResponseModel(
+          status: true,
+          code: 200,
+          message: 'Home layout retrieved',
+          data: homeData,
+        );
 
         when(mockApiClient.getHomeLayout())
             .thenAnswer((_) async => response);
@@ -32,12 +41,15 @@ void main() {
         final result = await dataSource.getHomeLayout();
 
         // Assert
-        expect(result, isA<SuccessResponse<List<HomeResponseModel>>>());
+        expect(
+          result,
+          isA<SuccessResponse<List<HomeResponseModel>>>(),
+        );
 
         final successResponse =
             result as SuccessResponse<List<HomeResponseModel>>;
 
-        expect(successResponse.data, response);
+        expect(successResponse.data, homeData);
 
         verify(mockApiClient.getHomeLayout()).called(1);
       },
@@ -47,7 +59,12 @@ void main() {
       'should call getHomeLayout only once',
       () async {
         // Arrange
-        final response = <HomeResponseModel>[];
+        final response = HomeApiResponseModel(
+          status: true,
+          code: 200,
+          message: 'Home layout retrieved',
+          data: [],
+        );
 
         when(mockApiClient.getHomeLayout())
             .thenAnswer((_) async => response);
@@ -62,7 +79,7 @@ void main() {
     );
 
     test(
-      'should return error response when getHomeLayout throws exception',
+      'should return ErrorResponse when getHomeLayout throws exception',
       () async {
         // Arrange
         final exception = Exception('Something went wrong');
@@ -74,7 +91,10 @@ void main() {
         final result = await dataSource.getHomeLayout();
 
         // Assert
-        expect(result, isA<ErrorResponse>());
+        expect(
+          result,
+          isA<ErrorResponse<List<HomeResponseModel>>>(),
+        );
 
         verify(mockApiClient.getHomeLayout()).called(1);
       },

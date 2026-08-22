@@ -4,10 +4,7 @@ import 'package:flowrist/config/di/di.dart';
 import 'package:flowrist/features/auth/presentation/login/cubit/login_cubit.dart';
 import 'package:flowrist/features/home/cart/presentation/view/cart_tab_view.dart';
 import 'package:flowrist/features/home/categories/presentation/view/categories_tab_view.dart';
-import 'package:flowrist/features/home/home/presentation/cubit/home_cubit.dart';
-import 'package:flowrist/features/home/home/presentation/cubit/home_event.dart';
 import 'package:flowrist/features/home/home/presentation/view/home_tab_view.dart';
-
 import 'package:flowrist/features/home/profile/presentation/view/profile_tab_view.dart';
 import 'package:flowrist/features/home/shared/home_navigation_view.dart';
 import 'package:flowrist/features/splash/presentation/view/splash_view.dart';
@@ -60,10 +57,7 @@ abstract final class AppRouter {
           routes: [
             GoRoute(
               path: AppRoutes.homeTab,
-              builder: (context, state) => BlocProvider(
-                create: (_) => getIt<HomeCubit>()..doEvent(GetHomeLayout()),
-                child: const HomeTabView(),
-              ),
+              builder: (context, state) => const HomeTabView(),
             ),
           ],
         ),
