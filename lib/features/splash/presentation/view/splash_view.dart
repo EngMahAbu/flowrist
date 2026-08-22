@@ -14,32 +14,34 @@ class SplashView extends StatefulWidget {
 }
 
 class _SplashViewState extends State<SplashView> {
+  static const _splashDuration = Duration(seconds: 5);
+
   @override
   void initState() {
     super.initState();
-
     _checkSession();
   }
 
   Future<void> _checkSession() async {
-    await Future.delayed(const Duration(seconds: 5));
+    await Future.delayed(_splashDuration);
 
     if (!mounted) return;
 
     final sessionService = getIt<SessionService>();
 
     try {
-      final rememberMe = await sessionService.isRemembered();
-      final isGuest = await sessionService.isGuest();
+      final isRemembered = await sessionService.isRemembered();
 
       if (!mounted) return;
 
-      if (rememberMe || isGuest) {
+      if (isRemembered) {
         context.go(AppRoutes.homeTab);
       } else {
         context.go(AppRoutes.login);
       }
-    } catch (e) {
+    } catch (error) {
+      debugPrint('Splash session check failed: $error');
+
       if (!mounted) return;
 
       context.go(AppRoutes.login);
@@ -51,17 +53,17 @@ class _SplashViewState extends State<SplashView> {
     return Scaffold(
       appBar: AppBar(
         leading: Padding(
-          padding: const EdgeInsetsGeometry.directional(
+          padding: const EdgeInsetsDirectional.only(
             start: AppDimensions.defaultScreenPadding,
           ),
           child: IconButton(
             onPressed: () {},
-            icon: Icon(Icons.arrow_back_ios_new),
+            icon: const Icon(Icons.arrow_back_ios_new),
           ),
         ),
-        title: Text('Gallery Screen'),
+        title: const Text('Gallery Screen'),
       ),
-      body: GalleryView(),
+      body: const GalleryView(),
     );
   }
 }

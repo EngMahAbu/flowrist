@@ -170,9 +170,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get flowery => 'Flowery';
 
   @override
-  String get search => 'Search';
-
-  @override
   String get deliverTo => 'Deliver to';
 
   @override
@@ -180,7 +177,4 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get bestSellers => 'Best Sellers';
-
-  @override
-  String get occasion => 'Occasion';
 }

@@ -28,7 +28,7 @@ class SessionService {
       AppConstants.guestModeKey,
       value.toString(),
     );
-  }
+  } 
 
   Future<bool> isGuest() async {
     final value = await _secureStorage.get(

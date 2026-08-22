@@ -27,16 +27,16 @@ class BannerSection extends StatelessWidget {
             fit: BoxFit.cover,
 
             // Loading state
-            placeholder: (context, url) {
-              return Container(
-                width: double.infinity,
-                height: double.infinity,
-                color: AppColors.white50,
-                child: const Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            },
+            // placeholder: (context, url) {
+            //   return Container(
+            //     width: double.infinity,
+            //     height: double.infinity,
+            //     color: AppColors.white50,
+            //     child: const Center(
+            //       child: CircularProgressIndicator(),
+            //     ),
+            //   );
+            // },
 
             // Error state
             errorWidget: (context, url, error) {

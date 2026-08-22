@@ -22,7 +22,7 @@ class SectionTitle extends StatelessWidget {
             style:    AppStyles.medium18Inter
           ),
           TextButton(
-            onPressed: () {},
+            onPressed: onViewAll,
             child: Text(
               localizations.viewAll,
               style: AppStyles.medium18Inter.copyWith(

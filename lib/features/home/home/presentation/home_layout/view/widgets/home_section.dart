@@ -3,58 +3,54 @@ import 'package:flowrist/features/home/home/domain/entities/home_entities/catego
 import 'package:flowrist/features/home/home/domain/entities/home_entities/home_layout_entity.dart';
 import 'package:flowrist/features/home/home/domain/entities/home_entities/occasion_rail_payload_entity.dart';
 import 'package:flowrist/features/home/home/domain/entities/home_entities/product_rail_payload_entity.dart';
-import 'package:flowrist/features/home/home/presentation/view/widgets/banner_section.dart';
-import 'package:flowrist/features/home/home/presentation/view/widgets/category_rail_section.dart';
-import 'package:flowrist/features/home/home/presentation/view/widgets/occassion_rail_section.dart';
-import 'package:flowrist/features/home/home/presentation/view/widgets/product_rail_section.dart';
+import 'package:flowrist/features/home/home/presentation/home_layout/view/widgets/banner_section.dart';
+import 'package:flowrist/features/home/home/presentation/home_layout/view/widgets/category_rail_section.dart';
+import 'package:flowrist/features/home/home/presentation/home_layout/view/widgets/occassion_rail_section.dart';
+import 'package:flowrist/features/home/home/presentation/home_layout/view/widgets/product_rail_section.dart';
 import 'package:flutter/material.dart';
 
 class HomeSection extends StatelessWidget {
   final HomeLayoutEntity section;
 
-  const HomeSection({
-    super.key,
-    required this.section,
-  });
+  const HomeSection({super.key, required this.section});
 
   @override
   Widget build(BuildContext context) {
     switch (section) {
       case HomeLayoutEntity(
-          type: 'banner',
-          payload: BannerPayloadEntity payload,
-        ):
+        type: 'banner',
+        payload: BannerPayloadEntity payload,
+      ):
         return GestureDetector(
           onTap: () {},
           child: BannerSection(payload: payload),
         );
 
       case HomeLayoutEntity(
-          type: 'category_rail',
-          payload: CategoryRailPayloadEntity payload,
-        ):
+        type: 'category_rail',
+        payload: CategoryRailPayloadEntity payload,
+      ):
         return GestureDetector(
-          onTap: () {},
+          onTap: () {
+            
+          },
           child: CategoryRailSection(payload: payload),
         );
 
       case HomeLayoutEntity(
-          type: 'product_rail',
-          payload: ProductRailPayloadEntity payload,
-        ):
+        type: 'product_rail',
+        payload: ProductRailPayloadEntity payload,
+      ):
         return GestureDetector(
           onTap: () {},
           child: ProductRailSection(payload: payload),
         );
 
       case HomeLayoutEntity(
-          type: 'occasion_rail',
-          payload: OccasionRailPayloadEntity payload,
-        ):
-        return GestureDetector(
-          onTap: () {},
-          child: OccasionRailSection(payload: payload),
-        );
+        type: 'occasion_rail',
+        payload: OccasionRailPayloadEntity payload,
+      ):
+        return OccasionRailSection(payload: payload);
 
       default:
         return const SizedBox.shrink();

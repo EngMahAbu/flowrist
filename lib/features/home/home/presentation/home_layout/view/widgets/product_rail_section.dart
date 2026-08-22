@@ -1,12 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flowrist/core/constants/app_colors.dart';
+import 'package:flowrist/core/constants/app_router.dart';
 import 'package:flowrist/core/constants/app_styles.dart';
 import 'package:flowrist/features/home/home/domain/entities/home_entities/product_rail_payload_entity.dart';
-import 'package:flowrist/features/home/home/presentation/view/widgets/section_title.dart';
-import 'package:flowrist/features/home/home/presentation/view/widgets/shimmer_widgets/product_card_shimmer.dart';
+import 'package:flowrist/features/home/home/presentation/home_layout/view/widgets/section_title.dart';
+import 'package:flowrist/features/home/home/presentation/home_layout/view/widgets/shimmer_widgets/product_card_shimmer.dart';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ProductRailSection extends StatelessWidget {
   final ProductRailPayloadEntity payload;
@@ -19,7 +21,12 @@ class ProductRailSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SectionTitle(title: localizations.bestSellers, onViewAll: () {}),
+        SectionTitle(
+          title: localizations.bestSellers,
+          onViewAll: () {
+            context.push(AppRoutes.bestSeller);
+          },
+        ),
 
         const SizedBox(height: 8),
 

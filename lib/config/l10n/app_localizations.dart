@@ -406,12 +406,6 @@ abstract class AppLocalizations {
   /// **'Flowery'**
   String get flowery;
 
-  /// No description provided for @search.
-  ///
-  /// In en, this message translates to:
-  /// **'Search'**
-  String get search;
-
   /// No description provided for @deliverTo.
   ///
   /// In en, this message translates to:
@@ -429,12 +423,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Best Sellers'**
   String get bestSellers;
-
-  /// No description provided for @occasion.
-  ///
-  /// In en, this message translates to:
-  /// **'Occasion'**
-  String get occasion;
 }
 
 class _AppLocalizationsDelegate

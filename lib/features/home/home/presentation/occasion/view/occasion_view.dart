@@ -12,7 +12,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class OccasionView extends StatefulWidget {
-  const OccasionView({super.key});
+  const OccasionView({super.key, this.occasionId, required this.initialIndex});
+
+  final String? occasionId;
+  final int initialIndex;
 
   @override
   State<OccasionView> createState() => _OccasionViewState();
@@ -23,23 +26,27 @@ class _OccasionViewState extends State<OccasionView> {
   void initState() {
     super.initState();
 
-    context.read<OccasionCubit>().doEvent(GetOccasionsEvent());
+    context.read<OccasionCubit>().doEvent(
+      GetOccasionsEvent(
+        targetOccasionId: widget.occasionId,
+        initialIndex: widget.initialIndex,
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
         leading: Padding(
-          padding: const EdgeInsetsGeometry.directional(
+          padding: const EdgeInsetsDirectional.only(
             start: AppDimensions.defaultScreenPadding,
           ),
           child: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
+            onPressed: () => Navigator.pop(context),
             icon: const Icon(Icons.arrow_back_ios_new),
           ),
         ),
@@ -62,13 +69,15 @@ class _OccasionViewState extends State<OccasionView> {
         child: BlocBuilder<OccasionCubit, OccasionState>(
           builder: (context, state) {
             final products = state.products.data ?? [];
+            final occasions = state.occasions.data ?? [];
+
             return Column(
               children: [
                 const SizedBox(height: 10),
 
                 if (state.occasions.isLoading)
                   const SelectionShimmer()
-                else
+                else if (occasions.isNotEmpty)
                   SelectionBar(
                     items: (state.occasions.data ?? [])
                         .map((occasion) => occasion.name)
@@ -80,7 +89,9 @@ class _OccasionViewState extends State<OccasionView> {
                       );
                     },
                   ),
-                SizedBox(height: 25),
+
+                const SizedBox(height: 25),
+
                 Expanded(
                   child: state.products.isLoading
                       ? const ProductsShimmer()

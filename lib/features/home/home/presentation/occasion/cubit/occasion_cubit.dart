@@ -17,19 +17,22 @@ class OccasionCubit extends Cubit<OccasionState> {
     : super(OccasionState.initial());
 
   Future<void> doEvent(OccasionEvents event) async {
-    switch (event) {
-      case GetOccasionsEvent():
-        await _getOccasions();
+  switch (event) {
+    case GetOccasionsEvent():
+      await _getOccasions(
+        targetOccasionId: event.targetOccasionId,
+        initialIndex: event.initialIndex,
+      );
 
-      case GetProductsByOccasionEvent():
-        await _getProductsByOccasion(event.occasionId);
+    case GetProductsByOccasionEvent():
+      await _getProductsByOccasion(event.occasionId);
 
-      case SelectOccasionEvent():
-        await _selectOccasion(event.index);
-    }
+    case SelectOccasionEvent():
+      await _selectOccasion(event.index);
   }
+}
 
-  Future<void> _getOccasions() async {
+Future<void> _getOccasions({String? targetOccasionId, int initialIndex = 0}) async {
     emit(
       state.copyWith(
         occasions: state.occasions.copyWith(
@@ -44,6 +47,15 @@ class OccasionCubit extends Cubit<OccasionState> {
     switch (result) {
       case SuccessResponse<List<OccasionEntity>>():
         final occasions = result.data ?? [];
+        int targetIndex = initialIndex;
+
+        // Find matching index if occasion ID was passed
+        if (targetOccasionId != null && occasions.isNotEmpty) {
+          final foundIndex = occasions.indexWhere((e) => e.id == targetOccasionId);
+          if (foundIndex != -1) {
+            targetIndex = foundIndex;
+          }
+        }
 
         emit(
           state.copyWith(
@@ -52,12 +64,12 @@ class OccasionCubit extends Cubit<OccasionState> {
               errorMessage: null,
               data: occasions,
             ),
-            selectedIndex: 0,
+            selectedIndex: targetIndex,
           ),
         );
 
-        if (occasions.isNotEmpty) {
-          await _getProductsByOccasion(occasions.first.id);
+        if (occasions.isNotEmpty && targetIndex < occasions.length) {
+          await _getProductsByOccasion(occasions[targetIndex].id);
         }
 
       case ErrorResponse<List<OccasionEntity>>():

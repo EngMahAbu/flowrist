@@ -12,20 +12,8 @@ import 'package:flowrist/features/home/categories/presentation/cubit/categories_
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class CategoriesTabView extends StatefulWidget {
+class CategoriesTabView extends StatelessWidget {
   const CategoriesTabView({super.key});
-
-  @override
-  State<CategoriesTabView> createState() => _CategoriesTabViewState();
-}
-
-class _CategoriesTabViewState extends State<CategoriesTabView> {
-  @override
-  void initState() {
-    super.initState();
-
-    context.read<CategoriesCubit>().doEvent(GetCategoriesEvent());
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +22,12 @@ class _CategoriesTabViewState extends State<CategoriesTabView> {
         child: BlocBuilder<CategoriesCubit, CategoriesState>(
           builder: (context, state) {
             final products = state.products.data ?? [];
+            final categories = state.categories.data ?? [];
+
             return Column(
               children: [
                 const SizedBox(height: 30),
+
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppDimensions.defaultScreenPadding,
@@ -46,35 +37,29 @@ class _CategoriesTabViewState extends State<CategoriesTabView> {
                       Expanded(
                         flex: 3,
                         child: AppSearchBar(
-                          onChanged: (value) {
-                            // Search will be handled
-                          },
+                          onChanged: (value) {},
                         ),
                       ),
-
                       const SizedBox(width: 8),
-
                       Expanded(
                         flex: 1,
                         child: FilterButton(
-                          onPressed: () {
-                            // Filter will be handled
-                          },
+                          onPressed: () {},
                         ),
                       ),
                     ],
                   ),
                 ),
-                SizedBox(height: 20),
+
+                const SizedBox(height: 20),
+
                 if (state.categories.isLoading)
                   const SelectionShimmer()
                 else
                   SelectionBar(
-                    items:
-                        state.categories.data
-                            ?.map((category) => category.name)
-                            .toList() ??
-                        [],
+                    items: categories
+                        .map((category) => category.name)
+                        .toList(),
                     selectedIndex: state.selectedIndex,
                     onItemSelected: (index) {
                       context.read<CategoriesCubit>().doEvent(
@@ -82,42 +67,47 @@ class _CategoriesTabViewState extends State<CategoriesTabView> {
                       );
                     },
                   ),
-                SizedBox(height: 25),
+
+                const SizedBox(height: 25),
+
                 Expanded(
                   child: state.products.isLoading
                       ? const ProductsShimmer()
                       : products.isEmpty
-                      ? Center(
-                          child: Text(
-                            AppLocalizations.of(context)!.noProductsFound,
-                          ),
-                        )
-                      : GridView.builder(
-                          padding: const EdgeInsets.all(
-                            AppDimensions.defaultScreenPadding,
-                          ),
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
+                          ? Center(
+                              child: Text(
+                                AppLocalizations.of(context)!
+                                    .noProductsFound,
+                              ),
+                            )
+                          : GridView.builder(
+                              padding: const EdgeInsets.all(
+                                AppDimensions.defaultScreenPadding,
+                              ),
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 2,
                                 mainAxisSpacing: 20,
                                 crossAxisSpacing: 16,
                                 childAspectRatio: 0.60,
                               ),
-                          itemCount: products.length,
-                          itemBuilder: (context, index) {
-                            final product = products[index];
+                              itemCount: products.length,
+                              itemBuilder: (context, index) {
+                                final product = products[index];
 
-                            return ProductCard(
-                              title: product.name,
-                              price: product.price.toString(),
-                              oldPrice: product.discountPrice?.toString() ?? '',
-                              discount: product.discountPercentage != null
-                                  ? '${product.discountPercentage!.toInt()}%'
-                                  : '',
-                              image: product.imageUrl,
-                            );
-                          },
-                        ),
+                                return ProductCard(
+                                  title: product.name,
+                                  price: product.price.toString(),
+                                  oldPrice:
+                                      product.discountPrice?.toString() ?? '',
+                                  discount:
+                                      product.discountPercentage != null
+                                          ? '${product.discountPercentage!.toInt()}%'
+                                          : '',
+                                  image: product.imageUrl,
+                                );
+                              },
+                            ),
                 ),
               ],
             );

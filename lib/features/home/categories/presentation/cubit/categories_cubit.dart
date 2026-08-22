@@ -20,8 +20,11 @@ class CategoriesCubit extends Cubit<CategoriesState> {
 
   Future<void> doEvent(CategoriesEvents event) async {
     switch (event) {
-      case GetCategoriesEvent():
-        await _getCategories();
+    case GetCategoriesEvent():
+  await _getCategories(
+    targetCategoryId: event.targetCategoryId,
+    initialIndex: event.initialIndex,
+  );
 
       case GetProductsByCategoryEvent():
         await _getProductsByCategory(event.categoryId);
@@ -31,50 +34,85 @@ class CategoriesCubit extends Cubit<CategoriesState> {
     }
   }
 
-  Future<void> _getCategories() async {
-    emit(
-      state.copyWith(
-        categories: state.categories.copyWith(
-          isLoading: true,
-          errorMessage: null,
-        ),
+Future<void> _getCategories({
+  String? targetCategoryId,
+  int initialIndex = 0,
+}) async {
+  emit(
+    state.copyWith(
+      categories: state.categories.copyWith(
+        isLoading: true,
+        errorMessage: null,
       ),
-    );
+    ),
+  );
 
-    final result = await _getCategoriesUseCase();
+  final result = await _getCategoriesUseCase();
 
-    switch (result) {
-      case SuccessResponse<List<CategoryEntity>>():
-        final categories = result.data ?? [];
+  switch (result) {
+    case SuccessResponse<List<CategoryEntity>>():
+      final categories = result.data ?? [];
 
+      if (categories.isEmpty) {
         emit(
           state.copyWith(
             categories: state.categories.copyWith(
               isLoading: false,
               errorMessage: null,
-              data: categories,
+              data: [],
             ),
             selectedIndex: 0,
           ),
         );
+        return;
+      }
 
-        if (categories.isNotEmpty) {
-          await _getProductsByCategory(
-            categories.first.id,
-          );
-        }
+      int targetIndex = initialIndex;
 
-      case ErrorResponse<List<CategoryEntity>>():
-        emit(
-          state.copyWith(
-            categories: state.categories.copyWith(
-              isLoading: false,
-              errorMessage: result.errorMessage,
-            ),
-          ),
+      // Make sure the initial index is valid.
+      if (targetIndex < 0 || targetIndex >= categories.length) {
+        targetIndex = 0;
+      }
+
+      // If Home passed a category ID,
+      // find its position in the Categories API response.
+      if (targetCategoryId != null) {
+        final foundIndex = categories.indexWhere(
+          (category) => category.id == targetCategoryId,
         );
-    }
+
+        if (foundIndex != -1) {
+          targetIndex = foundIndex;
+        }
+      }
+
+      emit(
+        state.copyWith(
+          categories: state.categories.copyWith(
+            isLoading: false,
+            errorMessage: null,
+            data: categories,
+          ),
+          selectedIndex: targetIndex,
+        ),
+      );
+
+      // Load products for the selected category.
+      await _getProductsByCategory(
+        categories[targetIndex].id,
+      );
+
+    case ErrorResponse<List<CategoryEntity>>():
+      emit(
+        state.copyWith(
+          categories: state.categories.copyWith(
+            isLoading: false,
+            errorMessage: result.errorMessage,
+          ),
+        ),
+      );
   }
+}
 
   Future<void> _getProductsByCategory(String categoryId) async {
     emit(

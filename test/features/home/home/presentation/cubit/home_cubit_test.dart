@@ -5,9 +5,9 @@ import 'package:mockito/mockito.dart';
 import 'package:flowrist/config/base_response/base_response.dart';
 import 'package:flowrist/features/home/home/domain/entities/home_entities/home_layout_entity.dart';
 import 'package:flowrist/features/home/home/domain/use_cases/get_home_layout_usecase.dart';
-import 'package:flowrist/features/home/home/presentation/cubit/home_cubit.dart';
-import 'package:flowrist/features/home/home/presentation/cubit/home_event.dart';
-import 'package:flowrist/features/home/home/presentation/cubit/home_state.dart';
+import 'package:flowrist/features/home/home/presentation/home_layout/cubit/home_cubit.dart';
+import 'package:flowrist/features/home/home/presentation/home_layout/cubit/home_event.dart';
+import 'package:flowrist/features/home/home/presentation/home_layout/cubit/home_state.dart';
 
 import 'home_cubit_test.mocks.dart';
 
