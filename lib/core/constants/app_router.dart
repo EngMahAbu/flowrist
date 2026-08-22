@@ -3,6 +3,7 @@ import 'package:flowrist/features/auth/presentation/signup/view/signup_view.dart
 import 'package:flowrist/config/di/di.dart';
 import 'package:flowrist/features/auth/presentation/login/cubit/login_cubit.dart';
 import 'package:flowrist/features/home/cart/presentation/view/cart_tab_view.dart';
+import 'package:flowrist/features/home/categories/presentation/cubit/categories_cubit.dart';
 import 'package:flowrist/features/home/categories/presentation/view/categories_tab_view.dart';
 import 'package:flowrist/features/home/home/best_seller/presentation/cubit/best_seller_cubit.dart';
 import 'package:flowrist/features/home/home/best_seller/presentation/view/best_seller_view.dart';
@@ -91,7 +92,10 @@ abstract final class AppRouter {
           routes: [
             GoRoute(
               path: AppRoutes.categoriesTab,
-              builder: (context, state) => const CategoriesTabView(),
+              builder: (context, state) => BlocProvider(
+                create: (_) => getIt<CategoriesCubit>(),
+                child: const CategoriesTabView(),
+              ),
             ),
           ],
         ),

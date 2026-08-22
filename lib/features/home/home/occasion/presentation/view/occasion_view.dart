@@ -70,7 +70,7 @@ class _OccasionViewState extends State<OccasionView> {
                   const SelectionShimmer()
                 else
                   SelectionBar(
-                    items: state.occasions.data!
+                    items: (state.occasions.data ?? [])
                         .map((occasion) => occasion.name)
                         .toList(),
                     selectedIndex: state.selectedIndex,
