@@ -1,8 +1,6 @@
 import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../../core/ui/widgets/app_text_field.dart';
 import '../view_model/forget_password_event.dart';
 import '../view_model/forget_password_state.dart';
 import '../view_model/forget_password_view_model.dart';

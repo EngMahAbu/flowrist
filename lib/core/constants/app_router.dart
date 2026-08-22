@@ -6,10 +6,7 @@ import 'package:flowrist/features/splash/presentation/view/splash_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../config/di/di.dart';
 import '../../features/auth/presentation/forget_password/view/forget_password_view.dart';
-import '../../features/auth/presentation/forget_password/view_model/forget_password_view_model.dart';
 import '../../features/home/cart/presentation/view/cart_tab_view.dart';
 import '../../features/home/categories/presentation/view/categories_tab_view.dart';
 import '../../features/home/home/presentation/view/home_tab_view.dart';

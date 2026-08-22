@@ -12,8 +12,6 @@ import 'package:flowrist/features/auth/domain/params/login_params.dart';
 import 'package:flowrist/features/auth/domain/repositories/auth_repository.dart';
 import 'package:injectable/injectable.dart';
 
-import 'auth_repository_impl.dart' as _remoteDataSource;
-
 @Injectable(as: AuthRepository)
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource _remoteDataSource;
