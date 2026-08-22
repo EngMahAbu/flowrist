@@ -7,8 +7,8 @@ class ProductDetailsRequestDto {
   final String id;
   final String name;
   final double price;
-  final double discountedPrice;
-  final double discountPercent;
+  final double? discountedPrice;
+  final double? discountPercent;
   final bool inStock;
   final List<String> images;
   final String description;
@@ -25,8 +25,8 @@ class ProductDetailsRequestDto {
     required this.id,
     required this.name,
     required this.price,
-    required this.discountedPrice,
-    required this.discountPercent,
+    this.discountedPrice,
+    this.discountPercent,
     required this.inStock,
     required this.images,
     required this.description,

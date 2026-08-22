@@ -39,7 +39,7 @@ Future<void> _checkSession() async {
     if (rememberMe || isGuest) {
       context.go(AppRoutes.homeTab);
     } else {
-      context.go(AppRoutes.login);
+      context.go('/product/92397aae-41bc-4e76-ab4b-57498ef6a9f8');
     }
   } catch (e) {
     if (!mounted) return;
