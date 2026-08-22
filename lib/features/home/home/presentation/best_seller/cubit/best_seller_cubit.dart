@@ -1,6 +1,6 @@
 import 'package:flowrist/config/base_response/base_response.dart';
-import 'package:flowrist/features/home/home/best_seller/presentation/cubit/best_seller_events.dart';
-import 'package:flowrist/features/home/home/best_seller/presentation/cubit/best_seller_state.dart';
+import 'package:flowrist/features/home/home/presentation/best_seller/cubit/best_seller_events.dart';
+import 'package:flowrist/features/home/home/presentation/best_seller/cubit/best_seller_state.dart';
 import 'package:flowrist/features/home/home/domain/entities/occasion/product_entity.dart';
 import 'package:flowrist/features/home/home/domain/use_cases/get_products_use_case.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

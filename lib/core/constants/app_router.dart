@@ -5,11 +5,11 @@ import 'package:flowrist/features/auth/presentation/login/cubit/login_cubit.dart
 import 'package:flowrist/features/home/cart/presentation/view/cart_tab_view.dart';
 import 'package:flowrist/features/home/categories/presentation/cubit/categories_cubit.dart';
 import 'package:flowrist/features/home/categories/presentation/view/categories_tab_view.dart';
-import 'package:flowrist/features/home/home/best_seller/presentation/cubit/best_seller_cubit.dart';
-import 'package:flowrist/features/home/home/best_seller/presentation/view/best_seller_view.dart';
-import 'package:flowrist/features/home/home/occasion/presentation/cubit/occasion_cubit.dart';
-import 'package:flowrist/features/home/home/occasion/presentation/view/occasion_view.dart';
-import 'package:flowrist/features/home/home/presentation/view/home_tab_view.dart';
+import 'package:flowrist/features/home/home/presentation/best_seller/cubit/best_seller_cubit.dart';
+import 'package:flowrist/features/home/home/presentation/best_seller/view/best_seller_view.dart';
+import 'package:flowrist/features/home/home/presentation/occasion/cubit/occasion_cubit.dart';
+import 'package:flowrist/features/home/home/presentation/occasion/view/occasion_view.dart';
+import 'package:flowrist/features/home/home/presentation/home_layout/view/home_tab_view.dart';
 import 'package:flowrist/features/home/profile/presentation/view/profile_tab_view.dart';
 import 'package:flowrist/features/home/shared/home_navigation_view.dart';
 import 'package:flowrist/features/splash/presentation/view/splash_view.dart';

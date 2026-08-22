@@ -21,6 +21,8 @@ abstract final class OccasionsMapper {
             id: item.id ?? '',
             name: item.name ?? '',
             price: item.price ?? 0.0,
+            discountPercentage: item.discountPercentage,
+            discountPrice: item.discountPrice,
             inStock: item.inStock ?? false,
             categoryId: item.categoryId ?? '',
             categoryName: item.categoryName ?? '',
