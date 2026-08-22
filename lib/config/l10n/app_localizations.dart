@@ -187,7 +187,7 @@ abstract class AppLocalizations {
   /// No description provided for @confirmPassword.
   ///
   /// In en, this message translates to:
-  /// **'Confirm password'**
+  /// **'Confirm Password'**
   String get confirmPassword;
 
   /// No description provided for @phoneNumber.
@@ -357,6 +357,192 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter your password'**
   String get passwordHint;
+
+  /// No description provided for @forgotPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot Password?'**
+  String get forgotPassword;
+
+  /// No description provided for @forgotPasswordDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email address and we will send you an OTP.'**
+  String get forgotPasswordDescription;
+
+  /// No description provided for @enterYourEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email'**
+  String get enterYourEmail;
+
+  /// No description provided for @invalidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email'**
+  String get invalidEmail;
+
+  /// No description provided for @sendOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Send OTP'**
+  String get sendOtp;
+
+  /// No description provided for @verifyOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify OTP'**
+  String get verifyOtp;
+
+  /// No description provided for @otp.
+  ///
+  /// In en, this message translates to:
+  /// **'OTP'**
+  String get otp;
+
+  /// No description provided for @enterOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter OTP'**
+  String get enterOtp;
+
+  /// No description provided for @otpSentTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the OTP sent to {email}'**
+  String otpSentTo(Object email);
+
+  /// No description provided for @resendOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend OTP'**
+  String get resendOtp;
+
+  /// No description provided for @resendOtpIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend OTP in {seconds} seconds'**
+  String resendOtpIn(Object seconds);
+
+  /// No description provided for @invalidOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'OTP must contain 6 digits'**
+  String get invalidOtp;
+
+  /// No description provided for @seconds.
+  ///
+  /// In en, this message translates to:
+  /// **'seconds'**
+  String get seconds;
+
+  /// No description provided for @resetPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Password'**
+  String get resetPassword;
+
+  /// No description provided for @createNewPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Create New Password'**
+  String get createNewPassword;
+
+  /// No description provided for @newPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'New Password'**
+  String get newPassword;
+
+  /// No description provided for @enterNewPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter new password'**
+  String get enterNewPassword;
+
+  /// No description provided for @confirmYourPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm your password'**
+  String get confirmYourPassword;
+
+  /// No description provided for @passwordMustBeAtLeast8Characters.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 8 characters'**
+  String get passwordMustBeAtLeast8Characters;
+
+  /// No description provided for @passwordMustContainUppercase.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must contain an uppercase letter'**
+  String get passwordMustContainUppercase;
+
+  /// No description provided for @passwordMustContainLowercase.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must contain a lowercase letter'**
+  String get passwordMustContainLowercase;
+
+  /// No description provided for @passwordMustContainNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must contain a number'**
+  String get passwordMustContainNumber;
+
+  /// No description provided for @passwordMustContainSpecialCharacter.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must contain a special character'**
+  String get passwordMustContainSpecialCharacter;
+
+  /// No description provided for @passwordsDoNotMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get passwordsDoNotMatch;
+
+  /// No description provided for @passwordResetSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Password reset successfully'**
+  String get passwordResetSuccessfully;
+
+  /// No description provided for @productDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get productDescription;
+
+  /// No description provided for @productIncludes.
+  ///
+  /// In en, this message translates to:
+  /// **'Includes'**
+  String get productIncludes;
+
+  /// No description provided for @productInStock.
+  ///
+  /// In en, this message translates to:
+  /// **'In Stock'**
+  String get productInStock;
+
+  /// No description provided for @productOutOfStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Out of Stock'**
+  String get productOutOfStock;
+
+  /// No description provided for @productAvailableStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Available Stock'**
+  String get productAvailableStock;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
 
   /// No description provided for @search.
   ///

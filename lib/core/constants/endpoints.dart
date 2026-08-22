@@ -5,4 +5,12 @@ abstract final class Endpoints {
   static const categories = 'api/catalog/categories';
   static const products = 'api/catalog/products';
   static const home = 'api/catalog/home/layout';
+
+
+  static const String forgetPassword = 'auth/forget-password';
+  static const String verifyOTP = 'auth/otp-verification' ;
+  static const String resetPassword = 'auth/reset-password';
+  static const String productDetails = '/api/catalog/products';
+
+
 }

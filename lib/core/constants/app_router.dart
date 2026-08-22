@@ -17,6 +17,13 @@ import 'package:flowrist/features/splash/presentation/view/splash_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../features/auth/presentation/forget_password/view/forget_password_view.dart';
+import '../../features/home/cart/presentation/view/cart_tab_view.dart';
+import '../../features/home/categories/presentation/view/categories_tab_view.dart';
+import '../../features/home/home/presentation/view/home_tab_view.dart';
+import '../../features/home/profile/presentation/view/profile_tab_view.dart';
+import '../../features/home/shared/home_navigation_view.dart';
+import '../../features/product_details/presentation/view/products_details_screen.dart';
 
 abstract final class AppRoutes {
   static const splash = '/';
@@ -28,13 +35,17 @@ abstract final class AppRoutes {
   static const categoriesTab = '/categories-tab';
   static const cartTab = '/cart-tab';
   static const profileTab = '/profile-tab';
+  static const String productDetails = '/product/:productId';
+
+  static const String forgetPassword = '/forgot-password';
 
   static const bestSeller = '/best-seller';
   static const occasions = '/occasions';
 }
 
 abstract final class AppRouter {
-  static final _rootNavigatorKey = GlobalKey<NavigatorState>();
+  static final _rootNavigatorKey =
+  GlobalKey<NavigatorState>();
 
   static final GoRouter router = GoRouter(
     navigatorKey: _rootNavigatorKey,

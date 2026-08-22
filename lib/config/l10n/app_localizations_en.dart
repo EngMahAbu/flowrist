@@ -54,7 +54,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enterPassword => 'Enter password';
 
   @override
-  String get confirmPassword => 'Confirm password';
+  String get confirmPassword => 'Confirm Password';
 
   @override
   String get phoneNumber => 'Phone number';
@@ -144,6 +144,108 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get passwordHint => 'Enter your password';
+
+  @override
+  String get forgotPassword => 'Forgot Password?';
+
+  @override
+  String get forgotPasswordDescription =>
+      'Enter your email address and we will send you an OTP.';
+
+  @override
+  String get enterYourEmail => 'Enter your email';
+
+  @override
+  String get invalidEmail => 'Please enter a valid email';
+
+  @override
+  String get sendOtp => 'Send OTP';
+
+  @override
+  String get verifyOtp => 'Verify OTP';
+
+  @override
+  String get otp => 'OTP';
+
+  @override
+  String get enterOtp => 'Enter OTP';
+
+  @override
+  String otpSentTo(Object email) {
+    return 'Enter the OTP sent to $email';
+  }
+
+  @override
+  String get resendOtp => 'Resend OTP';
+
+  @override
+  String resendOtpIn(Object seconds) {
+    return 'Resend OTP in $seconds seconds';
+  }
+
+  @override
+  String get invalidOtp => 'OTP must contain 6 digits';
+
+  @override
+  String get seconds => 'seconds';
+
+  @override
+  String get resetPassword => 'Reset Password';
+
+  @override
+  String get createNewPassword => 'Create New Password';
+
+  @override
+  String get newPassword => 'New Password';
+
+  @override
+  String get enterNewPassword => 'Enter new password';
+
+  @override
+  String get confirmYourPassword => 'Confirm your password';
+
+  @override
+  String get passwordMustBeAtLeast8Characters =>
+      'Password must be at least 8 characters';
+
+  @override
+  String get passwordMustContainUppercase =>
+      'Password must contain an uppercase letter';
+
+  @override
+  String get passwordMustContainLowercase =>
+      'Password must contain a lowercase letter';
+
+  @override
+  String get passwordMustContainNumber => 'Password must contain a number';
+
+  @override
+  String get passwordMustContainSpecialCharacter =>
+      'Password must contain a special character';
+
+  @override
+  String get passwordsDoNotMatch => 'Passwords do not match';
+
+  @override
+  String get passwordResetSuccessfully => 'Password reset successfully';
+
+  @override
+  String get productDescription => 'Description';
+
+  @override
+  String get productIncludes => 'Includes';
+
+  @override
+  String get productInStock => 'In Stock';
+
+  @override
+  String get productOutOfStock => 'Out of Stock';
+
+  @override
+  String get productAvailableStock => 'Available Stock';
+
+  @override
+  String get retry => 'Retry';
 
   @override
   String get search => 'Search';
