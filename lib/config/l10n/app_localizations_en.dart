@@ -146,6 +146,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get passwordHint => 'Enter your password';
 
   @override
+  String get search => 'Search';
+
+  @override
+  String get egp => 'EGP';
+
+  @override
+  String get addToCart => 'Add to cart';
+
+  @override
+  String get noProductsFound => 'No products found';
+
+  @override
+  String get bestSeller => 'Best Seller';
+
+  @override
+  String get bestSellerSubtitle => 'Bloom with our exquisite best sellers';
+
+  @override
+  String get occasion => 'Occasion';
+
+  @override
   String get flowery => 'Flowery';
 
   @override

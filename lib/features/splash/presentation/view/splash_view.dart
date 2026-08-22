@@ -21,32 +21,30 @@ class _SplashViewState extends State<SplashView> {
     _checkSession();
   }
 
-Future<void> _checkSession() async {
-  await Future.delayed(
-    const Duration(seconds: 5),
-  );
-
-  if (!mounted) return;
-
-  final sessionService = getIt<SessionService>();
-
-  try {
-    final rememberMe = await sessionService.isRemembered();
-    final isGuest = await sessionService.isGuest();
+  Future<void> _checkSession() async {
+    await Future.delayed(const Duration(seconds: 5));
 
     if (!mounted) return;
 
-    if (rememberMe || isGuest) {
-      context.go(AppRoutes.homeTab);
-    } else {
+    final sessionService = getIt<SessionService>();
+
+    try {
+      final rememberMe = await sessionService.isRemembered();
+      final isGuest = await sessionService.isGuest();
+
+      if (!mounted) return;
+
+      if (rememberMe || isGuest) {
+        context.go(AppRoutes.homeTab);
+      } else {
+        context.go(AppRoutes.login);
+      }
+    } catch (e) {
+      if (!mounted) return;
+
       context.go(AppRoutes.login);
     }
-  } catch (e) {
-    if (!mounted) return;
-
-    context.go(AppRoutes.login);
   }
-}
 
   @override
   Widget build(BuildContext context) {
