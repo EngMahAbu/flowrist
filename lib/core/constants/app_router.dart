@@ -20,7 +20,6 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/presentation/forget_password/view/forget_password_view.dart';
 import '../../features/home/cart/presentation/view/cart_tab_view.dart';
 import '../../features/home/categories/presentation/view/categories_tab_view.dart';
-import '../../features/home/home/presentation/view/home_tab_view.dart';
 import '../../features/home/profile/presentation/view/profile_tab_view.dart';
 import '../../features/home/shared/home_navigation_view.dart';
 import '../../features/product_details/presentation/view/products_details_screen.dart';
@@ -35,7 +34,11 @@ abstract final class AppRoutes {
   static const categoriesTab = '/categories-tab';
   static const cartTab = '/cart-tab';
   static const profileTab = '/profile-tab';
-  static const String productDetails = '/product/:productId';
+ static const productDetails = '/product/:productId';
+
+  static String productDetailsPath(String productId) {
+    return '/product/$productId';
+  }
 
   static const String forgetPassword = '/forgot-password';
 
@@ -44,13 +47,27 @@ abstract final class AppRoutes {
 }
 
 abstract final class AppRouter {
-  static final _rootNavigatorKey =
-  GlobalKey<NavigatorState>();
+  static final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
   static final GoRouter router = GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: AppRoutes.splash,
     routes: [
+      GoRoute(
+        path: AppRoutes.productDetails,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          final productId = state.pathParameters['productId'];
+
+          if (productId == null || productId.isEmpty) {
+            return const Scaffold(
+              body: Center(child: Text('Product ID is required')),
+            );
+          }
+
+          return ProductDetailsScreen(productId: productId);
+        },
+      ),
       // --------------------------------------------------
       // Splash
       // --------------------------------------------------
@@ -130,13 +147,9 @@ abstract final class AppRouter {
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return BlocProvider(
-            create: (_) => getIt<CategoriesCubit>()
-              ..doEvent(
-                GetCategoriesEvent(),
-              ),
-            child: HomeNavigationView(
-              tabViewShell: navigationShell,
-            ),
+            create: (_) =>
+                getIt<CategoriesCubit>()..doEvent(GetCategoriesEvent()),
+            child: HomeNavigationView(tabViewShell: navigationShell),
           );
         },
 

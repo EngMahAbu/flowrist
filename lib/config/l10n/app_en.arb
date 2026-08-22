@@ -44,15 +44,12 @@
   "password": "Password",
   "passwordHint": "Enter your password",
   "emptyValidationError": "This field is required",
-
   "forgotPassword": "Forgot Password?",
   "forgotPasswordDescription": "Enter your email address and we will send you an OTP.",
-
   "email": "Email",
   "enterYourEmail": "Enter your email",
   "invalidEmail": "Please enter a valid email",
   "sendOtp": "Send OTP",
-
   "verifyOtp": "Verify OTP",
   "otp": "OTP",
   "enterOtp": "Enter OTP",
@@ -61,33 +58,25 @@
   "resendOtpIn": "Resend OTP in {seconds} seconds",
   "invalidOtp": "OTP must contain 6 digits",
   "seconds": "seconds",
-
   "resetPassword": "Reset Password",
   "createNewPassword": "Create New Password",
   "newPassword": "New Password",
   "enterNewPassword": "Enter new password",
   "confirmPassword": "Confirm Password",
   "confirmYourPassword": "Confirm your password",
-
   "passwordMustBeAtLeast8Characters": "Password must be at least 8 characters",
   "passwordMustContainUppercase": "Password must contain an uppercase letter",
   "passwordMustContainLowercase": "Password must contain a lowercase letter",
   "passwordMustContainNumber": "Password must contain a number",
   "passwordMustContainSpecialCharacter": "Password must contain a special character",
   "passwordsDoNotMatch": "Passwords do not match",
-
   "passwordResetSuccessfully": "Password reset successfully",
-
   "productDescription": "Description",
   "productIncludes": "Includes",
   "productInStock": "In Stock",
   "productOutOfStock": "Out of Stock",
   "productAvailableStock": "Available Stock",
-  "retry": "Retry"
-
-
-
-
+  "retry": "Retry",
   "passwordHint": "Enter your password",
   "search": "Search",
   "egp": "EGP",
