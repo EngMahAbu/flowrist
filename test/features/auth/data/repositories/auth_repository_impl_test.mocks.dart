@@ -134,20 +134,23 @@ class MockAuthRemoteDataSource extends _i1.Mock
 
   @override
   _i8.Future<_i6.ResetPasswordResponseDto> resetPassword({
-    required String? email,
-    required String? newPassword,
+    required String? otpToken,
+    required String? password,
+    required String? confirmPassword,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#resetPassword, [], {
-              #email: email,
-              #newPassword: newPassword,
+              #otpToken: otpToken,
+              #password: password,
+              #confirmPassword: confirmPassword,
             }),
             returnValue: _i8.Future<_i6.ResetPasswordResponseDto>.value(
               _FakeResetPasswordResponseDto_4(
                 this,
                 Invocation.method(#resetPassword, [], {
-                  #email: email,
-                  #newPassword: newPassword,
+                  #otpToken: otpToken,
+                  #password: password,
+                  #confirmPassword: confirmPassword,
                 }),
               ),
             ),

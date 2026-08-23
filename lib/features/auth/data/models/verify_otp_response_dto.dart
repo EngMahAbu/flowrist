@@ -4,8 +4,9 @@ part 'verify_otp_response_dto.g.dart';
 @JsonSerializable()
 class VerifyOtpResponseDto {
   final String? message;
+  final dynamic data;
 
-  const VerifyOtpResponseDto({this.message});
+  const VerifyOtpResponseDto({this.message, this.data});
 
   factory VerifyOtpResponseDto.fromJson(Map<String, dynamic> json) =>
       _$VerifyOtpResponseDtoFromJson(json);

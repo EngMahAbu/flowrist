@@ -21,7 +21,8 @@ class ForgetPasswordState
     with EquatableMixin {
   final ForgetPasswordStep step;
   final ForgetPasswordOperation operation;
-  final String otp;
+  String otp;
+  final String otpToken;
   final String? email;
   final int remainingSeconds;
 
@@ -29,6 +30,7 @@ class ForgetPasswordState
     this.step = ForgetPasswordStep.email,
     this.operation = ForgetPasswordOperation.none,
     this.otp = '',
+    this.otpToken = '',
     this.email,
     this.remainingSeconds = 30,
     bool isLoading = false,
@@ -48,6 +50,7 @@ class ForgetPasswordState
     ForgetPasswordStep? step,
     ForgetPasswordOperation? operation,
     String? otp,
+    String? otpToken,
     String? email,
     int? remainingSeconds,
     bool? isLoading,
@@ -58,6 +61,7 @@ class ForgetPasswordState
       step: step ?? this.step,
       operation: operation ?? this.operation,
       otp: otp ?? this.otp,
+      otpToken: otpToken ?? this.otpToken,
       email: email ?? this.email,
       remainingSeconds:
       remainingSeconds ?? this.remainingSeconds,
@@ -72,6 +76,7 @@ class ForgetPasswordState
     step,
     operation,
     otp,
+    otpToken,
     email,
     remainingSeconds,
     isLoading,

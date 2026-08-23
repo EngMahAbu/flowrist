@@ -85,37 +85,44 @@ class MockAuthRepository extends _i1.Mock implements _i2.AuthRepository {
           as _i3.Future<_i4.BaseResponse<void>>);
 
   @override
-  _i3.Future<_i4.BaseResponse<void>> verifyOtp({
+  _i3.Future<_i4.BaseResponse<Map<String, dynamic>>> verifyOtp({
     required String? email,
     required String? otp,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#verifyOtp, [], {#email: email, #otp: otp}),
-            returnValue: _i3.Future<_i4.BaseResponse<void>>.value(
-              _i7.dummyValue<_i4.BaseResponse<void>>(
-                this,
-                Invocation.method(#verifyOtp, [], {#email: email, #otp: otp}),
-              ),
-            ),
+            returnValue:
+                _i3.Future<_i4.BaseResponse<Map<String, dynamic>>>.value(
+                  _i7.dummyValue<_i4.BaseResponse<Map<String, dynamic>>>(
+                    this,
+                    Invocation.method(#verifyOtp, [], {
+                      #email: email,
+                      #otp: otp,
+                    }),
+                  ),
+                ),
           )
-          as _i3.Future<_i4.BaseResponse<void>>);
+          as _i3.Future<_i4.BaseResponse<Map<String, dynamic>>>);
 
   @override
   _i3.Future<_i4.BaseResponse<void>> resetPassword({
-    required String? email,
-    required String? newPassword,
+    required String? otpToken,
+    required String? password,
+    required String? confirmPassword,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#resetPassword, [], {
-              #email: email,
-              #newPassword: newPassword,
+              #otpToken: otpToken,
+              #password: password,
+              #confirmPassword: confirmPassword,
             }),
             returnValue: _i3.Future<_i4.BaseResponse<void>>.value(
               _i7.dummyValue<_i4.BaseResponse<void>>(
                 this,
                 Invocation.method(#resetPassword, [], {
-                  #email: email,
-                  #newPassword: newPassword,
+                  #otpToken: otpToken,
+                  #password: password,
+                  #confirmPassword: confirmPassword,
                 }),
               ),
             ),

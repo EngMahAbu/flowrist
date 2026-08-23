@@ -4,12 +4,14 @@ import 'package:flutter/services.dart';
 class OtpInputField extends StatefulWidget {
   final int length;
   final String initialValue;
+  final TextInputType keyboardType;
   final ValueChanged<String> onChanged;
 
   const OtpInputField({
     super.key,
     this.length = 6,
     this.initialValue = '',
+    this.keyboardType = TextInputType.number,
     required this.onChanged,
   });
 
@@ -122,16 +124,13 @@ class _OtpInputFieldState extends State<OtpInputField> {
               child: TextField(
                 controller: _controllers[index],
                 focusNode: _focusNodes[index],
-                keyboardType: TextInputType.number,
+                keyboardType: widget.keyboardType,
                 textAlign: TextAlign.center,
                 maxLength: 1,
                 style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                ],
                 decoration: InputDecoration(
                   counterText: '',
                   border: OutlineInputBorder(
