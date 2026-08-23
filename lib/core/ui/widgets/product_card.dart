@@ -74,10 +74,14 @@ class ProductCard extends StatelessWidget {
               ),
               onPressed: () async {
                 final canContinue = await checkGuestMode(context);
-                if (!canContinue) {
+                if (!canContinue || !context.mounted) {
                   return;
                 }
-                context.push(AppRoutes.cartTab);
+                try {
+                  StatefulNavigationShell.of(context).goBranch(2);
+                } catch (_) {
+                  context.go(AppRoutes.cartTab);
+                }
               },
               label: Text(AppLocalizations.of(context)!.addToCart),
             ),

@@ -3,8 +3,6 @@ import 'package:flowrist/config/session/session_guard.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../config/session/session_guard.dart';
-
 class HomeNavigationView extends StatelessWidget {
   final StatefulNavigationShell tabViewShell;
 

@@ -1,5 +1,6 @@
 import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flowrist/core/constants/app_dimensions.dart';
+import 'package:flowrist/core/constants/app_router.dart';
 import 'package:flowrist/core/constants/app_styles.dart';
 import 'package:flowrist/core/ui/widgets/products_shimmer.dart';
 import 'package:flowrist/core/ui/widgets/selection_shimmer.dart';
@@ -10,6 +11,7 @@ import 'package:flowrist/features/home/home/presentation/occasion/cubit/occasion
 import 'package:flowrist/features/home/home/presentation/occasion/cubit/occassion_events.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class OccasionView extends StatefulWidget {
   const OccasionView({super.key, this.occasionId, required this.initialIndex});
@@ -112,14 +114,21 @@ class _OccasionViewState extends State<OccasionView> {
                           itemBuilder: (context, index) {
                             final product = products[index];
 
-                            return ProductCard(
-                              title: product.name,
-                              price: product.price.toString(),
-                              oldPrice: product.discountPrice?.toString() ?? '',
-                              discount: product.discountPercentage != null
-                                  ? '${product.discountPercentage!.toInt()}%'
-                                  : '',
-                              image: product.imageUrl,
+                            return GestureDetector(
+                              onTap: () {
+                                context.push(
+                                  AppRoutes.productDetailsPath(product.id),
+                                );
+                              },
+                              child: ProductCard(
+                                title: product.name,
+                                price: product.price.toString(),
+                                oldPrice: product.discountPrice?.toString() ?? '',
+                                discount: product.discountPercentage != null
+                                    ? '${product.discountPercentage!.toInt()}%'
+                                    : '',
+                                image: product.imageUrl,
+                              ),
                             );
                           },
                         ),
