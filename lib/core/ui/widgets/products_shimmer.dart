@@ -16,7 +16,7 @@ class ProductsShimmer extends StatelessWidget {
         crossAxisSpacing: 16,
         childAspectRatio: 0.60,
       ),
-      itemBuilder: (_, __) {
+      itemBuilder: (_, _) {
         return Shimmer(
           duration: const Duration(milliseconds: 1200),
           interval: const Duration(milliseconds: 300),

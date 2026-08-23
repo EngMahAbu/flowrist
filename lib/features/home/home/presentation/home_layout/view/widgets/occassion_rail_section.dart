@@ -12,10 +12,7 @@ import 'package:go_router/go_router.dart';
 class OccasionRailSection extends StatelessWidget {
   final OccasionRailPayloadEntity payload;
 
-  const OccasionRailSection({
-    super.key,
-    required this.payload,
-  });
+  const OccasionRailSection({super.key, required this.payload});
 
   void _openOccasion(
     BuildContext context, {
@@ -24,10 +21,7 @@ class OccasionRailSection extends StatelessWidget {
   }) {
     context.push(
       AppRoutes.occasions,
-      extra: {
-        'occasionId': occasionId,
-        'initialIndex': initialIndex,
-      },
+      extra: {'occasionId': occasionId, 'initialIndex': initialIndex},
     );
   }
 
@@ -65,7 +59,7 @@ class OccasionRailSection extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
             itemCount: payload.items.length,
-            separatorBuilder: (_, __) {
+            separatorBuilder: (_, _) {
               return const SizedBox(width: 12);
             },
             itemBuilder: (context, index) {
@@ -127,9 +121,7 @@ class OccasionRailSection extends StatelessWidget {
                         item.name,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: AppStyles.medium18Inter.copyWith(
-                          fontSize: 15,
-                        ),
+                        style: AppStyles.medium18Inter.copyWith(fontSize: 15),
                       ),
                     ],
                   ),

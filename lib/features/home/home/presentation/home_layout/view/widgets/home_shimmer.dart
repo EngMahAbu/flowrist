@@ -15,6 +15,7 @@ class HomeShimmer extends StatelessWidget {
     return Shimmer.fromColors(
       baseColor: AppColors.white40,
       highlightColor: AppColors.white60,
+
       child: ListView(
         padding: EdgeInsets.zero,
         children: const [
@@ -28,7 +29,3 @@ class HomeShimmer extends StatelessWidget {
     );
   }
 }
-
-
-
-

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../config/l10n/app_localizations.dart';
@@ -9,6 +8,7 @@ class StockStatus extends StatelessWidget {
   final AppLocalizations localizations;
 
   const StockStatus({
+    super.key,
     required this.product,
     required this.localizations,
   });
@@ -20,9 +20,7 @@ class StockStatus extends StatelessWidget {
     return Row(
       children: [
         Icon(
-          product.inStock
-              ? Icons.check_circle
-              : Icons.cancel,
+          product.inStock ? Icons.check_circle : Icons.cancel,
           color: color,
           size: 20,
         ),
@@ -31,10 +29,7 @@ class StockStatus extends StatelessWidget {
           product.inStock
               ? localizations.productInStock
               : localizations.productOutOfStock,
-          style: TextStyle(
-            color: color,
-            fontWeight: FontWeight.w600,
-          ),
+          style: TextStyle(color: color, fontWeight: FontWeight.w600),
         ),
       ],
     );

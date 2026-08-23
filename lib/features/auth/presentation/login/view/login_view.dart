@@ -51,6 +51,9 @@ class _LoginViewState extends State<LoginView> {
     final loginCubit = context.read<LoginCubit>();
 
     _subscription = loginCubit.uiStream.listen((event) {
+      if (!mounted) {
+        return;
+      }
       switch (event) {
         case ShowMessage():
           ScaffoldMessenger.of(context).showSnackBar(
@@ -210,9 +213,10 @@ class _LoginViewState extends State<LoginView> {
                           TextSpan(
                             text: localizations.signUp,
                             style: AppStyles.medium16InterUnderline,
-                            recognizer: TapGestureRecognizer()..onTap = () {
-                              context.push(AppRoutes.signUp);
-                            },
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                context.push(AppRoutes.signUp);
+                              },
                           ),
                         ],
                       ),

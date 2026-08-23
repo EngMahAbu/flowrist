@@ -20,10 +20,10 @@ class ForgetPasswordBloc
   Timer? _timer;
 
   ForgetPasswordBloc(
-      this._forgetPasswordUseCase,
-      this._verifyOtpUseCase,
-      this._resetPasswordUseCase,
-      ) : super(ForgetPasswordState()) {
+    this._forgetPasswordUseCase,
+    this._verifyOtpUseCase,
+    this._resetPasswordUseCase,
+  ) : super(ForgetPasswordState()) {
     on<CheckEmailEvent>(_onCheckEmail);
     on<ResendOtpEvent>(_onResendOtp);
     on<VerifyOtpEvent>(_onVerifyOtp);
@@ -33,9 +33,9 @@ class ForgetPasswordBloc
   }
 
   Future<void> _onCheckEmail(
-      CheckEmailEvent event,
-      Emitter<ForgetPasswordState> emit,
-      ) async {
+    CheckEmailEvent event,
+    Emitter<ForgetPasswordState> emit,
+  ) async {
     emit(
       state.copyWith(
         isLoading: true,
@@ -73,9 +73,9 @@ class ForgetPasswordBloc
   }
 
   Future<void> _onResendOtp(
-      ResendOtpEvent event,
-      Emitter<ForgetPasswordState> emit,
-      ) async {
+    ResendOtpEvent event,
+    Emitter<ForgetPasswordState> emit,
+  ) async {
     if (state.email == null || !state.canResend) {
       return;
     }
@@ -115,9 +115,9 @@ class ForgetPasswordBloc
   }
 
   Future<void> _onVerifyOtp(
-      VerifyOtpEvent event,
-      Emitter<ForgetPasswordState> emit,
-      ) async {
+    VerifyOtpEvent event,
+    Emitter<ForgetPasswordState> emit,
+  ) async {
     if (state.email == null) {
       return;
     }
@@ -157,9 +157,9 @@ class ForgetPasswordBloc
   }
 
   Future<void> _onResetPassword(
-      ResetPasswordEvent event,
-      Emitter<ForgetPasswordState> emit,
-      ) async {
+    ResetPasswordEvent event,
+    Emitter<ForgetPasswordState> emit,
+  ) async {
     if (state.email == null) {
       return;
     }
@@ -199,46 +199,31 @@ class ForgetPasswordBloc
   }
 
   void _onStartOtpTimer(
-      StartOtpTimerEvent event,
-      Emitter<ForgetPasswordState> emit,
-      ) {
+    StartOtpTimerEvent event,
+    Emitter<ForgetPasswordState> emit,
+  ) {
     _timer?.cancel();
 
-    emit(
-      state.copyWith(
-        remainingSeconds: 30,
-      ),
-    );
+    emit(state.copyWith(remainingSeconds: 30));
 
-    _timer = Timer.periodic(
-      const Duration(seconds: 1),
-          (_) {
-        add(const TickOtpTimerEvent());
-      },
-    );
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      add(const TickOtpTimerEvent());
+    });
   }
 
   void _onTickOtpTimer(
-      TickOtpTimerEvent event,
-      Emitter<ForgetPasswordState> emit,
-      ) {
+    TickOtpTimerEvent event,
+    Emitter<ForgetPasswordState> emit,
+  ) {
     if (state.remainingSeconds <= 1) {
       _timer?.cancel();
 
-      emit(
-        state.copyWith(
-          remainingSeconds: 0,
-        ),
-      );
+      emit(state.copyWith(remainingSeconds: 0));
 
       return;
     }
 
-    emit(
-      state.copyWith(
-        remainingSeconds: state.remainingSeconds - 1,
-      ),
-    );
+    emit(state.copyWith(remainingSeconds: state.remainingSeconds - 1));
   }
 
   @override

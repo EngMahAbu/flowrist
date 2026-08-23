@@ -12,45 +12,34 @@ import 'package:flutter/material.dart';
 class HomeSection extends StatelessWidget {
   final HomeLayoutEntity section;
 
-  const HomeSection({
-    super.key,
-    required this.section,
-  });
+  const HomeSection({super.key, required this.section});
 
   @override
   Widget build(BuildContext context) {
     switch (section) {
       case HomeLayoutEntity(
-          type: 'banner',
-          payload: BannerPayloadEntity payload,
-        ):
-        return BannerSection(
-          payload: payload,
-        );
+        type: 'banner',
+        payload: BannerPayloadEntity payload,
+      ):
+        return BannerSection(payload: payload);
 
       case HomeLayoutEntity(
-          type: 'category_rail',
-          payload: CategoryRailPayloadEntity payload,
-        ):
-        return CategoryRailSection(
-          payload: payload,
-        );
+        type: 'category_rail',
+        payload: CategoryRailPayloadEntity payload,
+      ):
+        return CategoryRailSection(payload: payload);
 
       case HomeLayoutEntity(
-          type: 'product_rail',
-          payload: ProductRailPayloadEntity payload,
-        ):
-        return ProductRailSection(
-          payload: payload,
-        );
+        type: 'product_rail',
+        payload: ProductRailPayloadEntity payload,
+      ):
+        return ProductRailSection(payload: payload);
 
       case HomeLayoutEntity(
-          type: 'occasion_rail',
-          payload: OccasionRailPayloadEntity payload,
-        ):
-        return OccasionRailSection(
-          payload: payload,
-        );
+        type: 'occasion_rail',
+        payload: OccasionRailPayloadEntity payload,
+      ):
+        return OccasionRailSection(payload: payload);
 
       default:
         return const SizedBox.shrink();

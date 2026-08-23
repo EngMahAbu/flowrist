@@ -264,7 +264,7 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
                                   fit: BoxFit.cover,
                                   width: double.infinity,
                                   height: double.infinity,
-                                  errorBuilder: (_, __, ___) {
+                                  errorBuilder: (_, _, _) {
                                     return Container(
                                       color: const Color(0xFFF5F5F5),
                                       child: const Center(

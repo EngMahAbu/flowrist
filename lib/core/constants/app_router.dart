@@ -29,7 +29,7 @@ abstract final class AppRoutes {
   static const categoriesTab = '/categories-tab';
   static const cartTab = '/cart-tab';
   static const profileTab = '/profile-tab';
- static const productDetails = '/product/:productId';
+  static const productDetails = '/product/:productId';
 
   static String productDetailsPath(String productId) {
     return '/product/$productId';

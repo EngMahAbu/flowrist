@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../config/l10n/app_localizations.dart';
@@ -9,6 +8,7 @@ class StockInformation extends StatelessWidget {
   final AppLocalizations localizations;
 
   const StockInformation({
+    super.key,
     required this.product,
     required this.localizations,
   });
@@ -19,9 +19,7 @@ class StockInformation extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: Theme.of(context)
-            .colorScheme
-            .surfaceContainerHighest,
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
       ),
       child: Row(
         children: [
@@ -29,10 +27,8 @@ class StockInformation extends StatelessWidget {
           const SizedBox(width: 12),
           Text(
             '${localizations.productAvailableStock}: '
-                '${product.availableStock}',
-            style: const TextStyle(
-              fontWeight: FontWeight.w600,
-            ),
+            '${product.availableStock}',
+            style: const TextStyle(fontWeight: FontWeight.w600),
           ),
         ],
       ),
