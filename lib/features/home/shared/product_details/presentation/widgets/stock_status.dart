@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../config/l10n/app_localizations.dart';
+import '../../../../../../config/l10n/app_localizations.dart';
 import '../../data/models/product_details_request_dto.dart';
 
 class StockStatus extends StatelessWidget {

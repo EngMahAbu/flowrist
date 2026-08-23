@@ -1,4 +1,4 @@
-import 'package:flowrist/features/product_details/data/models/product_details_request_dto.dart';
+import 'package:flowrist/features/home/shared/product_details/data/models/product_details_request_dto.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 

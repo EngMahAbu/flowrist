@@ -17,7 +17,7 @@ import 'package:flowrist/features/splash/presentation/view/splash_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import '../../features/product_details/presentation/view/products_details_screen.dart';
+import '../../features/home/shared/product_details/presentation/view/products_details_screen.dart';
 
 abstract final class AppRoutes {
   static const splash = '/';
