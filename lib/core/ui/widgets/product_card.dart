@@ -104,13 +104,13 @@ class ProductCard extends StatelessWidget {
         width: double.infinity,
         height: 150,
         fit: BoxFit.cover,
-        placeholder: (context, url) {
-          return const SizedBox(
-            width: double.infinity,
-            height: 150,
-            child: Center(child: CircularProgressIndicator()),
-          );
-        },
+        // placeholder: (context, url) {
+        //   return const SizedBox(
+        //     width: double.infinity,
+        //     height: 150,
+        //     child: Center(child: CircularProgressIndicator()),
+        //   );
+        // },
         errorWidget: (context, url, error) {
           return Image.asset(
             AppImages.cardDefultImage,

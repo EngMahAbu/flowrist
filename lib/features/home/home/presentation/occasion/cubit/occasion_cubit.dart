@@ -3,8 +3,8 @@ import 'package:flowrist/features/home/home/domain/entities/occasion/occasion_en
 import 'package:flowrist/features/home/home/domain/entities/occasion/product_entity.dart';
 import 'package:flowrist/features/home/home/domain/use_cases/get_occasions_use_case.dart';
 import 'package:flowrist/features/home/home/domain/use_cases/get_products_use_case.dart';
-import 'package:flowrist/features/home/home/occasion/presentation/cubit/occasion_state.dart';
-import 'package:flowrist/features/home/home/occasion/presentation/cubit/occassion_events.dart';
+import 'package:flowrist/features/home/home/presentation/occasion/cubit/occasion_state.dart';
+import 'package:flowrist/features/home/home/presentation/occasion/cubit/occassion_events.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 

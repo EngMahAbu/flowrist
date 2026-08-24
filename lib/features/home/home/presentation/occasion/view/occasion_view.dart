@@ -5,9 +5,9 @@ import 'package:flowrist/core/ui/widgets/products_shimmer.dart';
 import 'package:flowrist/core/ui/widgets/selection_shimmer.dart';
 import 'package:flowrist/core/ui/widgets/product_card.dart';
 import 'package:flowrist/core/ui/widgets/selection_bar.dart';
-import 'package:flowrist/features/home/home/occasion/presentation/cubit/occasion_cubit.dart';
-import 'package:flowrist/features/home/home/occasion/presentation/cubit/occasion_state.dart';
-import 'package:flowrist/features/home/home/occasion/presentation/cubit/occassion_events.dart';
+import 'package:flowrist/features/home/home/presentation/occasion/cubit/occasion_cubit.dart';
+import 'package:flowrist/features/home/home/presentation/occasion/cubit/occasion_state.dart';
+import 'package:flowrist/features/home/home/presentation/occasion/cubit/occassion_events.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -70,7 +70,7 @@ class _OccasionViewState extends State<OccasionView> {
                   const SelectionShimmer()
                 else
                   SelectionBar(
-                    items: state.occasions.data!
+                    items: (state.occasions.data ?? [])
                         .map((occasion) => occasion.name)
                         .toList(),
                     selectedIndex: state.selectedIndex,
@@ -104,8 +104,10 @@ class _OccasionViewState extends State<OccasionView> {
                             return ProductCard(
                               title: product.name,
                               price: product.price.toString(),
-                              oldPrice: '622',
-                              discount: '20',
+                              oldPrice: product.discountPrice?.toString() ?? '',
+                              discount: product.discountPercentage != null
+                                  ? '${product.discountPercentage!.toInt()}%'
+                                  : '',
                               image: product.imageUrl,
                             );
                           },

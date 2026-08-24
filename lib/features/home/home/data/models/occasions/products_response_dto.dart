@@ -40,6 +40,8 @@ class ProductDto {
   final String? id;
   final String? name;
   final double? price;
+  final double? discountPercentage;
+  final double? discountPrice;
   final bool? inStock;
   final String? categoryId;
   final String? categoryName;
@@ -50,6 +52,8 @@ class ProductDto {
     this.id,
     this.name,
     this.price,
+    this.discountPercentage,
+    this.discountPrice,
     this.inStock,
     this.categoryId,
     this.categoryName,
