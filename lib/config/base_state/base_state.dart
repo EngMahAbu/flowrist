@@ -18,4 +18,9 @@ class BaseState<T> {
       data: data ?? this.data,
     );
   }
+
+  @override
+  String toString() {
+    return '$runtimeType (isLoading: $isLoading, errorMessage: $errorMessage, data: ${data.toString()})';
+  }
 }
