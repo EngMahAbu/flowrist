@@ -33,6 +33,12 @@ abstract final class AppStyles {
     fontSize: 13,
     color: AppColors.blackBase,
   );
+  
+  static final TextStyle regular13W500 = GoogleFonts.inter(
+    fontWeight: FontWeight.w500,
+    fontSize: 13,
+    color: AppColors.blackBase,
+  );
 
   static final TextStyle regular14Roboto = GoogleFonts.roboto(
     fontWeight: FontWeight.w400,
@@ -44,6 +50,11 @@ abstract final class AppStyles {
     fontWeight: FontWeight.w400,
     fontSize: 14,
     color: AppColors.grey,
+  );
+  static final TextStyle regular14InterW500 = GoogleFonts.inter(
+    fontWeight: FontWeight.w500,
+    fontSize: 14,
+    color: AppColors.blackBase,
   );
 
   static final TextStyle regular16 = GoogleFonts.inter(
