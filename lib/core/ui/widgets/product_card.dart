@@ -3,12 +3,17 @@ import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flowrist/config/session/session_guard.dart';
 import 'package:flowrist/core/constants/app_colors.dart';
 import 'package:flowrist/core/constants/app_images.dart';
-import 'package:flowrist/core/constants/app_router.dart';
 import 'package:flowrist/core/constants/app_styles.dart';
+import 'package:flowrist/features/home/cart/domain/entities/cart_item_entity.dart';
+import 'package:flowrist/features/home/cart/presentation/cubit/cart_cubit.dart';
+import 'package:flowrist/features/home/cart/presentation/cubit/cart_event.dart';
+import 'package:flowrist/features/home/cart/presentation/cubit/cart_state.dart';
+import 'package:flowrist/features/home/cart/presentation/helpers/cart_auth_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProductCard extends StatelessWidget {
+  final String productId;
   final String title;
   final String price;
   final String oldPrice;
@@ -17,6 +22,7 @@ class ProductCard extends StatelessWidget {
 
   const ProductCard({
     super.key,
+    required this.productId,
     required this.title,
     required this.price,
     required this.oldPrice,
@@ -39,7 +45,12 @@ class ProductCard extends StatelessWidget {
           const SizedBox(height: 10),
           Align(
             alignment: Alignment.centerLeft,
-            child: Text(title, style: AppStyles.regular13),
+            child: Text(
+              title,
+              style: AppStyles.regular13,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
           const SizedBox(height: 8),
           Row(
@@ -49,23 +60,39 @@ class ProductCard extends StatelessWidget {
                 style: AppStyles.regular14InterW500,
               ),
               const SizedBox(width: 6),
-              Text(
-                oldPrice,
-                style: AppStyles.regular14Inter.copyWith(
-                  decoration: TextDecoration.lineThrough,
+              if (oldPrice.isNotEmpty)
+                Text(
+                  oldPrice,
+                  style: AppStyles.regular14Inter.copyWith(
+                    decoration: TextDecoration.lineThrough,
+                  ),
                 ),
-              ),
               const SizedBox(width: 6),
-              Text(
-                discount,
-                style: AppStyles.regular14Inter.copyWith(
-                  color: AppColors.green,
+              if (discount.isNotEmpty)
+                Text(
+                  discount,
+                  style: AppStyles.regular14Inter.copyWith(
+                    color: AppColors.green,
+                  ),
                 ),
-              ),
             ],
           ),
           const Spacer(),
-          SizedBox(
+          _buildAddToCartSection(context),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAddToCartSection(BuildContext context) {
+    return BlocBuilder<CartCubit, CartState>(
+      buildWhen: (previous, current) =>
+          previous.getQuantity(productId) != current.getQuantity(productId),
+      builder: (context, state) {
+        final quantity = state.getQuantity(productId);
+
+        if (quantity == 0) {
+          return SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
               icon: const Icon(Icons.shopping_cart_outlined, size: 18),
@@ -73,21 +100,73 @@ class ProductCard extends StatelessWidget {
                 textStyle: AppStyles.regular13W500,
               ),
               onPressed: () async {
+                final event = AddToCartEvent(
+                  productId: productId,
+                  optimisticItem: CartItemEntity(
+                    itemId: 'temp_${DateTime.now().millisecondsSinceEpoch}',
+                    productId: productId,
+                    productName: title,
+                    productImage: image,
+                    unitPrice: num.tryParse(price) ?? 0,
+                    priceAtAdd: num.tryParse(price) ?? 0,
+                    quantity: 1,
+                    availableStock: 99,
+                  ),
+                );
+
                 final canContinue = await checkGuestMode(context);
-                if (!canContinue || !context.mounted) {
+                if (!canContinue) {
+                  CartAuthHelper.setPendingAction(event);
                   return;
                 }
-                try {
-                  StatefulNavigationShell.of(context).goBranch(2);
-                } catch (_) {
-                  context.go(AppRoutes.cartTab);
-                }
+                if (!context.mounted) return;
+
+                context.read<CartCubit>().doIntent(event);
               },
               label: Text(AppLocalizations.of(context)!.addToCart),
             ),
+          );
+        }
+
+        return Container(
+          height: 38,
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primaryContainer,
+            borderRadius: BorderRadius.circular(8),
           ),
-        ],
-      ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.remove, size: 18),
+                onPressed: () {
+                  context.read<CartCubit>().doIntent(
+                    ChangeCartQuantityEvent(productId: productId, delta: -1),
+                  );
+                },
+              ),
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                transitionBuilder: (child, animation) =>
+                    ScaleTransition(scale: animation, child: child),
+                child: Text(
+                  '$quantity',
+                  key: ValueKey<int>(quantity),
+                  style: AppStyles.regular14InterW500,
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.add, size: 18),
+                onPressed: () {
+                  context.read<CartCubit>().doIntent(
+                    ChangeCartQuantityEvent(productId: productId, delta: 1),
+                  );
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -108,13 +187,6 @@ class ProductCard extends StatelessWidget {
         width: double.infinity,
         height: 150,
         fit: BoxFit.cover,
-        // placeholder: (context, url) {
-        //   return const SizedBox(
-        //     width: double.infinity,
-        //     height: 150,
-        //     child: Center(child: CircularProgressIndicator()),
-        //   );
-        // },
         errorWidget: (context, url, error) {
           return Image.asset(
             AppImages.cardDefultImage,

@@ -1,7 +1,11 @@
 import 'package:flowrist/config/base_state/base_state.dart';
 import 'package:flowrist/config/di/di.dart';
 import 'package:flowrist/config/session/session_guard.dart';
-import 'package:flowrist/core/constants/app_router.dart';
+import 'package:flowrist/features/home/cart/domain/entities/cart_item_entity.dart';
+import 'package:flowrist/features/home/cart/presentation/cubit/cart_cubit.dart';
+import 'package:flowrist/features/home/cart/presentation/cubit/cart_event.dart';
+import 'package:flowrist/features/home/cart/presentation/cubit/cart_state.dart';
+import 'package:flowrist/features/home/cart/presentation/helpers/cart_auth_helper.dart';
 import 'package:flowrist/features/home/shared/product_details/data/models/product_details_request_dto.dart';
 import 'package:flowrist/features/home/shared/product_details/presentation/view/product_details_shimmer.dart';
 import 'package:flowrist/features/home/shared/product_details/presentation/view_model/product_details_event/product_details_event.dart';
@@ -38,16 +42,10 @@ class _ProductDetailsView extends StatelessWidget {
       BaseState<ProductDetailsRequestDto>
     >(
       builder: (context, state) {
-        // -----------------------------
-        // Loading
-        // -----------------------------
         if (state.isLoading) {
           return const Scaffold(body: ProductDetailsShimmer());
         }
 
-        // -----------------------------
-        // Error
-        // -----------------------------
         if (state.errorMessage != null) {
           return Scaffold(
             appBar: AppBar(
@@ -69,13 +67,9 @@ class _ProductDetailsView extends StatelessWidget {
                       size: 50,
                       color: Colors.red,
                     ),
-
                     const SizedBox(height: 12),
-
                     Text(state.errorMessage!, textAlign: TextAlign.center),
-
                     const SizedBox(height: 16),
-
                     ElevatedButton(
                       onPressed: () {
                         context.read<ProductDetailsViewModel>().add(
@@ -91,9 +85,6 @@ class _ProductDetailsView extends StatelessWidget {
           );
         }
 
-        // -----------------------------
-        // Success
-        // -----------------------------
         final product = state.data;
 
         if (product == null) {
@@ -127,9 +118,7 @@ class _ProductDetailsBody extends StatefulWidget {
 
 class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
   static const double _expandedHeight = 460;
-
   final PageController _pageController = PageController();
-
   int _currentImageIndex = 0;
 
   @override
@@ -141,49 +130,165 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
   @override
   Widget build(BuildContext context) {
     final product = widget.product;
-
     final images = product.images;
 
     return Scaffold(
       backgroundColor: Colors.white,
 
       // ==========================================
-      // ADD TO CART
+      // ADD TO CART / QUANTITY CONTROLLER
       // ==========================================
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           child: SizedBox(
             height: 52,
-            child: ElevatedButton(
-              onPressed: product.inStock
-                  ? () async {
-                      final canContinue = await checkGuestMode(context);
-                      if (!canContinue || !context.mounted) return;
+            child: BlocBuilder<CartCubit, CartState>(
+              buildWhen: (previous, current) =>
+                  previous.getQuantity(product.id) !=
+                  current.getQuantity(product.id),
+              builder: (context, cartState) {
+                final quantity = cartState.getQuantity(product.id);
 
-                      if (context.canPop()) {
-                        context.pop();
+                if (!product.inStock) {
+                  return ElevatedButton(
+                    onPressed: null,
+                    style: ElevatedButton.styleFrom(
+                      disabledBackgroundColor: Colors.grey.shade300,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(26),
+                      ),
+                      elevation: 0,
+                    ),
+                    child: const Text(
+                      'Out of stock',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                  );
+                }
+
+                if (quantity == 0) {
+                  return ElevatedButton(
+                    onPressed: () async {
+                      final effectivePrice =
+                          product.discountedPrice ?? product.price;
+
+                      final event = AddToCartEvent(
+                        productId: product.id,
+                        optimisticItem: CartItemEntity(
+                          itemId:
+                              'temp_${DateTime.now().millisecondsSinceEpoch}',
+                          productId: product.id,
+                          productName: product.name,
+                          productImage: product.images.isNotEmpty
+                              ? product.images.first
+                              : '',
+                          unitPrice: effectivePrice,
+                          priceAtAdd: effectivePrice,
+                          quantity: 1,
+                          availableStock: product.availableStock,
+                        ),
+                      );
+
+                      final canContinue = await checkGuestMode(context);
+                      if (!canContinue) {
+                        CartAuthHelper.setPendingAction(event);
+                        return;
                       }
 
-                      context.go(AppRoutes.cartTab);
-                    }
-                  : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFCE1567),
-                disabledBackgroundColor: Colors.grey.shade300,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(26),
-                ),
-                elevation: 0,
-              ),
-              child: const Text(
-                'Add to cart',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
-              ),
+                      if (!context.mounted) return;
+                      context.read<CartCubit>().doIntent(event);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFCE1567),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(26),
+                      ),
+                      elevation: 0,
+                    ),
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.shopping_cart_outlined,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          'Add to cart',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
+                return Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFCE1567),
+                    borderRadius: BorderRadius.circular(26),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.remove, color: Colors.white),
+                        onPressed: () {
+                          context.read<CartCubit>().doIntent(
+                            ChangeCartQuantityEvent(
+                              productId: product.id,
+                              delta: -1,
+                            ),
+                          );
+                        },
+                      ),
+                      AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 200),
+                        transitionBuilder: (child, animation) =>
+                            ScaleTransition(scale: animation, child: child),
+                        child: Text(
+                          '$quantity in cart',
+                          key: ValueKey<int>(quantity),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.add, color: Colors.white),
+                        onPressed: () {
+                          if (quantity >= product.availableStock) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Reached max available stock'),
+                                duration: Duration(seconds: 1),
+                              ),
+                            );
+                            return;
+                          }
+                          context.read<CartCubit>().doIntent(
+                            ChangeCartQuantityEvent(
+                              productId: product.id,
+                              delta: 1,
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
           ),
         ),
@@ -194,15 +299,11 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
       // ==========================================
       body: CustomScrollView(
         slivers: [
-          // ========================================
-          // PRODUCT IMAGE
-          // ========================================
           SliverAppBar(
             expandedHeight: _expandedHeight,
             pinned: true,
             elevation: 0,
             backgroundColor: const Color(0xFFF9F9F9),
-
             leading: IconButton(
               icon: const Icon(
                 Icons.arrow_back_ios_new,
@@ -211,26 +312,18 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
               ),
               onPressed: () => context.pop(),
             ),
-
             flexibleSpace: LayoutBuilder(
               builder: (context, constraints) {
                 final top = constraints.biggest.height;
-
                 final delta = top - kToolbarHeight;
-
                 final totalExpand = _expandedHeight - kToolbarHeight;
-
                 final expandRatio = (delta / totalExpand).clamp(0.0, 1.0);
 
                 return FlexibleSpaceBar(
                   collapseMode: CollapseMode.pin,
-
                   background: Stack(
                     fit: StackFit.expand,
                     children: [
-                      // ==================================
-                      // NO IMAGES
-                      // ==================================
                       if (images.isEmpty)
                         Container(
                           color: const Color(0xFFF5F5F5),
@@ -242,9 +335,6 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
                             ),
                           ),
                         )
-                      // ==================================
-                      // IMAGES
-                      // ==================================
                       else
                         Transform.scale(
                           scale: 0.85 + (0.15 * expandRatio),
@@ -281,10 +371,6 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
                             ),
                           ),
                         ),
-
-                      // ==================================
-                      // IMAGE INDICATORS
-                      // ==================================
                       if (images.length > 1 && expandRatio > 0.2)
                         Positioned(
                           bottom: 16,
@@ -321,23 +407,16 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
             ),
           ),
 
-          // ==========================================
-          // PRODUCT INFORMATION
-          // ==========================================
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // ==================================
-                  // PRICE + STOCK
-                  // ==================================
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // PRICE
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -351,7 +430,6 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
                                   color: Color(0xFF111111),
                                 ),
                               ),
-
                               if (product.discountedPrice != null &&
                                   product.discountedPrice! < product.price) ...[
                                 const SizedBox(width: 8),
@@ -366,9 +444,7 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
                               ],
                             ],
                           ),
-
                           const SizedBox(height: 4),
-
                           Text(
                             'All prices include tax',
                             style: TextStyle(
@@ -378,8 +454,6 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
                           ),
                         ],
                       ),
-
-                      // STOCK
                       Row(
                         children: [
                           const Text(
@@ -390,7 +464,6 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
                               color: Color(0xFF111111),
                             ),
                           ),
-
                           Text(
                             product.inStock ? 'In stock' : 'Out of stock',
                             style: TextStyle(
@@ -405,12 +478,7 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 16),
-
-                  // ==================================
-                  // PRODUCT NAME
-                  // ==================================
                   Text(
                     product.name,
                     style: const TextStyle(
@@ -419,12 +487,7 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
                       color: Color(0xFF111111),
                     ),
                   ),
-
                   const SizedBox(height: 24),
-
-                  // ==================================
-                  // DESCRIPTION
-                  // ==================================
                   const Text(
                     'Description',
                     style: TextStyle(
@@ -433,9 +496,7 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
                       color: Color(0xFF111111),
                     ),
                   ),
-
                   const SizedBox(height: 8),
-
                   Text(
                     product.description.isNotEmpty
                         ? product.description
@@ -446,10 +507,6 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
                       color: Colors.grey.shade700,
                     ),
                   ),
-
-                  // ==================================
-                  // AVAILABLE STOCK
-                  // ==================================
                   if (product.availableStock > 0) ...[
                     const SizedBox(height: 8),
                     Text(
@@ -461,13 +518,8 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
                       ),
                     ),
                   ],
-
-                  // ==================================
-                  // INCLUDES
-                  // ==================================
                   if (product.includes.isNotEmpty) ...[
                     const SizedBox(height: 24),
-
                     const Text(
                       'Bouquet include',
                       style: TextStyle(
@@ -476,9 +528,7 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
                         color: Color(0xFF111111),
                       ),
                     ),
-
                     const SizedBox(height: 8),
-
                     ...product.includes.map((item) {
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 4),
@@ -492,9 +542,6 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
                       );
                     }),
                   ],
-
-                  // Bottom spacing for the
-                  // Add to Cart button.
                   const SizedBox(height: 100),
                 ],
               ),

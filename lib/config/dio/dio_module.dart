@@ -1,15 +1,14 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
-import 'package:flowrist/config/storage/secure_storage_service.dart';
-import 'package:flowrist/core/constants/app_constants.dart';
+import 'package:flowrist/config/session/session_service.dart';
 import 'package:flowrist/core/constants/endpoints.dart';
 import 'package:injectable/injectable.dart';
 
 @module
 abstract class DioModule {
   @lazySingleton
-  Dio dio(SecureStorageService secureStorageService) {
+  Dio dio(SessionService sessionService) {
     final dio = Dio(
       BaseOptions(
         baseUrl: Endpoints.baseUrl,
@@ -22,12 +21,10 @@ abstract class DioModule {
       InterceptorsWrapper(
         onRequest: (options, handler) async {
           try {
-            final token = await secureStorageService.get(
-              AppConstants.storageTokenKey,
-            );
+            final token = await sessionService.getToken();
 
             if (token.isNotEmpty) {
-            options.headers['Authorization'] = 'Bearer $token';
+              options.headers['Authorization'] = 'Bearer $token';
             }
           } catch (error, stackTrace) {
             log(

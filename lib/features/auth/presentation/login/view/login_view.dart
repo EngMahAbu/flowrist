@@ -10,6 +10,9 @@ import 'package:flowrist/core/ui/widgets/app_text_field.dart';
 import 'package:flowrist/features/auth/presentation/login/cubit/login_event.dart';
 import 'package:flowrist/features/auth/presentation/login/cubit/login_cubit.dart';
 import 'package:flowrist/features/auth/presentation/login/cubit/login_state.dart';
+import 'package:flowrist/features/home/cart/presentation/cubit/cart_cubit.dart';
+import 'package:flowrist/features/home/cart/presentation/cubit/cart_event.dart';
+import 'package:flowrist/features/home/cart/presentation/helpers/cart_auth_helper.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -67,7 +70,10 @@ class _LoginViewState extends State<LoginView> {
           );
 
         case LoginSuccess():
+          context.read<CartCubit>().doIntent(GetCartEvent());
+          CartAuthHelper.executePendingActionIfAny(context.read<CartCubit>());
           context.go(AppRoutes.homeTab);
+          
 
         case GuestLoginSuccess():
           context.go(AppRoutes.homeTab);

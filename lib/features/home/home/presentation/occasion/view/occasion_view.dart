@@ -121,6 +121,7 @@ class _OccasionViewState extends State<OccasionView> {
                                 );
                               },
                               child: ProductCard(
+                                productId: product.id,
                                 title: product.name,
                                 price: product.price.toString(),
                                 oldPrice: product.discountPrice?.toString() ?? '',
