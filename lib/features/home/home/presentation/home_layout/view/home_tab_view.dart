@@ -1,4 +1,7 @@
 import 'package:flowrist/config/di/di.dart';
+import 'package:flowrist/config/session/session_service.dart';
+import 'package:flowrist/features/home/cart/presentation/cubit/cart_cubit.dart';
+import 'package:flowrist/features/home/cart/presentation/cubit/cart_event.dart';
 import 'package:flowrist/features/home/home/presentation/home_layout/cubit/home_cubit.dart';
 import 'package:flowrist/features/home/home/presentation/home_layout/cubit/home_event.dart';
 import 'package:flowrist/features/home/home/presentation/home_layout/cubit/home_state.dart';
@@ -8,8 +11,29 @@ import 'package:flowrist/features/home/home/presentation/home_layout/view/widget
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class HomeTabView extends StatelessWidget {
+class HomeTabView extends StatefulWidget {
   const HomeTabView({super.key});
+
+  @override
+  State<HomeTabView> createState() => _HomeTabViewState();
+}
+
+class _HomeTabViewState extends State<HomeTabView> {
+  @override
+  void initState() {
+    super.initState();
+    _checkAndFetchCart();
+  }
+
+  Future<void> _checkAndFetchCart() async {
+    final sessionService = getIt<SessionService>();
+    final isGuest = await sessionService.isGuest();
+    final token = await sessionService.getToken();
+
+    if (!isGuest && token.isNotEmpty && mounted) {
+      context.read<CartCubit>().doIntent(GetCartEvent());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +63,7 @@ class HomeTabView extends StatelessWidget {
               itemBuilder: (context, index) {
                 // Header
                 if (index == 0) {
-                  return HomeHeader();
+                  return const HomeHeader();
                 }
 
                 // Home sections

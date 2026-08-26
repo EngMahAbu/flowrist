@@ -97,6 +97,7 @@ class _BestSellerViewState extends State<BestSellerView> {
                     context.push(AppRoutes.productDetailsPath(product.id));
                   },
                   child: ProductCard(
+                    productId: product.id,
                     title: product.name,
                     price: product.price.toString(),
                     oldPrice: product.discountPrice?.toString() ?? '',

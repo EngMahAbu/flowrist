@@ -94,6 +94,7 @@ class CategoriesTabView extends StatelessWidget {
                                 );
                               },
                               child: ProductCard(
+                                productId: product.id,
                                 title: product.name,
                                 price: product.price.toString(),
                                 oldPrice:
