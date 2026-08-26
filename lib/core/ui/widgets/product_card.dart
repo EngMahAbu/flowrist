@@ -1,14 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flowrist/config/di/di.dart';
 import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flowrist/config/session/session_guard.dart';
 import 'package:flowrist/core/constants/app_colors.dart';
 import 'package:flowrist/core/constants/app_images.dart';
 import 'package:flowrist/core/constants/app_styles.dart';
-import 'package:flowrist/features/home/cart/domain/entities/cart_item_entity.dart';
 import 'package:flowrist/features/home/cart/presentation/cubit/cart_cubit.dart';
 import 'package:flowrist/features/home/cart/presentation/cubit/cart_event.dart';
 import 'package:flowrist/features/home/cart/presentation/cubit/cart_state.dart';
-import 'package:flowrist/features/home/cart/presentation/helpers/cart_auth_helper.dart';
+import 'package:flowrist/features/home/cart/presentation/helpers/pending_cart_action_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -87,43 +87,48 @@ class ProductCard extends StatelessWidget {
   Widget _buildAddToCartSection(BuildContext context) {
     return BlocBuilder<CartCubit, CartState>(
       buildWhen: (previous, current) =>
-          previous.getQuantity(productId) != current.getQuantity(productId),
+          previous.getQuantity(productId) != current.getQuantity(productId) ||
+          previous.isProductLoading(productId) !=
+              current.isProductLoading(productId),
       builder: (context, state) {
+        final isAdding = state.isProductLoading(productId);
         final quantity = state.getQuantity(productId);
 
         if (quantity == 0) {
           return SizedBox(
             width: double.infinity,
-            child: ElevatedButton.icon(
-              icon: const Icon(Icons.shopping_cart_outlined, size: 18),
+            child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 textStyle: AppStyles.regular13W500,
               ),
-              onPressed: () async {
-                final event = AddToCartEvent(
-                  productId: productId,
-                  optimisticItem: CartItemEntity(
-                    itemId: 'temp_${DateTime.now().millisecondsSinceEpoch}',
-                    productId: productId,
-                    productName: title,
-                    productImage: image,
-                    unitPrice: num.tryParse(price) ?? 0,
-                    priceAtAdd: num.tryParse(price) ?? 0,
-                    quantity: 1,
-                    availableStock: 99,
-                  ),
-                );
+              onPressed: isAdding
+                  ? null
+                  : () async {
+                      final event = AddToCartEvent(productId: productId);
 
-                final canContinue = await checkGuestMode(context);
-                if (!canContinue) {
-                  CartAuthHelper.setPendingAction(event);
-                  return;
-                }
-                if (!context.mounted) return;
+                      final canContinue = await checkGuestMode(context);
+                      if (!canContinue) {
+                        getIt<PendingCartActionStore>().setPendingAction(event);
+                        return;
+                      }
+                      if (!context.mounted) return;
 
-                context.read<CartCubit>().doIntent(event);
-              },
-              label: Text(AppLocalizations.of(context)!.addToCart),
+                      context.read<CartCubit>().doIntent(event);
+                    },
+              child: isAdding
+                  ? const SizedBox(
+                      height: 18,
+                      width: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.shopping_cart_outlined, size: 18),
+                        const SizedBox(width: 8),
+                        Text(AppLocalizations.of(context)!.addToCart),
+                      ],
+                    ),
             ),
           );
         }

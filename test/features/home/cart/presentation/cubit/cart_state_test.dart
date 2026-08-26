@@ -34,11 +34,12 @@ void main() {
 
   group('CartState Unit Tests', () {
     test(
-      'default state has isLoading=false, errorMessage=null, and cart=null',
+      'default state has isLoading=false, loadingProductId=null, errorMessage=null, and cart=null',
       () {
         const state = CartState();
 
         expect(state.isLoading, isFalse);
+        expect(state.loadingProductId, isNull);
         expect(state.errorMessage, isNull);
         expect(state.cart, isNull);
         expect(state.items, isEmpty);
@@ -85,6 +86,16 @@ void main() {
       },
     );
 
+    test(
+      'isProductLoading returns true only for matching loadingProductId',
+      () {
+        const state = CartState(loadingProductId: 'prod_1');
+
+        expect(state.isProductLoading('prod_1'), isTrue);
+        expect(state.isProductLoading('prod_2'), isFalse);
+      },
+    );
+
     test('getItemByProductId returns matching item or null if not found', () {
       final state = CartState(cart: tCart);
 
@@ -92,22 +103,45 @@ void main() {
       expect(state.getItemByProductId('non_existing_prod'), isNull);
     });
 
-    test('copyWith updates specified fields correctly', () {
-      const initialState = CartState();
-      final updatedState = initialState.copyWith(
-        isLoading: true,
-        errorMessage: 'Something went wrong',
-        cart: tCart,
-      );
+    test(
+      'copyWith updates and clears fields correctly using function getters',
+      () {
+        const initialState = CartState(errorMessage: 'Old Error');
 
-      expect(updatedState.isLoading, isTrue);
-      expect(updatedState.errorMessage, equals('Something went wrong'));
-      expect(updatedState.cart, equals(tCart));
-    });
+        final updatedState = initialState.copyWith(
+          isLoading: true,
+          loadingProductId: () => 'prod_1',
+          errorMessage: () => 'Something went wrong',
+          cart: tCart,
+        );
+
+        expect(updatedState.isLoading, isTrue);
+        expect(updatedState.loadingProductId, equals('prod_1'));
+        expect(updatedState.errorMessage, equals('Something went wrong'));
+        expect(updatedState.cart, equals(tCart));
+
+        // Test explicit clearing to null
+        final clearedState = updatedState.copyWith(
+          loadingProductId: () => null,
+          errorMessage: () => null,
+        );
+
+        expect(clearedState.loadingProductId, isNull);
+        expect(clearedState.errorMessage, isNull);
+      },
+    );
 
     test('props equality holds for identical states', () {
-      final stateA = CartState(cart: tCart, isLoading: false);
-      final stateB = CartState(cart: tCart, isLoading: false);
+      final stateA = CartState(
+        cart: tCart,
+        isLoading: false,
+        loadingProductId: 'prod_1',
+      );
+      final stateB = CartState(
+        cart: tCart,
+        isLoading: false,
+        loadingProductId: 'prod_1',
+      );
 
       expect(stateA, equals(stateB));
     });

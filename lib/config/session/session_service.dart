@@ -54,7 +54,7 @@ class SessionService {
   }
 
   Future<String> getToken() async {
-    if (_inMemoryToken != null && _inMemoryToken!.isNotEmpty) {
+    if (_inMemoryToken?.isNotEmpty == true) {
       return _inMemoryToken!;
     }
     final storedToken = await _secureStorage.get(

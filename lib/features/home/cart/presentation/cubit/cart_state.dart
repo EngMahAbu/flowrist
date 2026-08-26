@@ -4,10 +4,16 @@ import 'package:flowrist/features/home/cart/domain/entities/cart_item_entity.dar
 
 class CartState extends Equatable {
   final bool isLoading;
+  final String? loadingProductId;
   final String? errorMessage;
   final CartEntity? cart;
 
-  const CartState({this.isLoading = false, this.errorMessage, this.cart});
+  const CartState({
+    this.isLoading = false,
+    this.loadingProductId,
+    this.errorMessage,
+    this.cart,
+  });
 
   List<CartItemEntity> get items => cart?.items ?? const [];
 
@@ -19,6 +25,8 @@ class CartState extends Equatable {
 
   int getQuantity(String productId) => productQuantityMap[productId] ?? 0;
 
+  bool isProductLoading(String productId) => loadingProductId == productId;
+
   CartItemEntity? getItemByProductId(String productId) {
     try {
       return items.firstWhere((element) => element.productId == productId);
@@ -29,16 +37,20 @@ class CartState extends Equatable {
 
   CartState copyWith({
     bool? isLoading,
-    String? errorMessage,
+    String? Function()? loadingProductId,
+    String? Function()? errorMessage,
     CartEntity? cart,
   }) {
     return CartState(
       isLoading: isLoading ?? this.isLoading,
-      errorMessage: errorMessage,
+      loadingProductId: loadingProductId != null
+          ? loadingProductId()
+          : this.loadingProductId,
+      errorMessage: errorMessage != null ? errorMessage() : this.errorMessage,
       cart: cart ?? this.cart,
     );
   }
 
   @override
-  List<Object?> get props => [isLoading, errorMessage, cart];
+  List<Object?> get props => [isLoading, loadingProductId, errorMessage, cart];
 }

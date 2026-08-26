@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flowrist/core/constants/app_constants.dart';
 import 'package:flowrist/core/constants/endpoints.dart';
 import 'package:flowrist/features/home/cart/data/models/request/add_to_cart_request_dto.dart';
 import 'package:flowrist/features/home/cart/data/models/request/update_cart_item_request_dto.dart';
@@ -18,18 +19,16 @@ abstract class CartApiClient {
   Future<CartResponseDto> getCart();
 
   @POST(Endpoints.cartItems)
-  Future<dynamic> addToCart(
-    @Body() AddToCartRequestDto request,
-  );
+  Future<dynamic> addToCart(@Body() AddToCartRequestDto request);
 
-  @PATCH('${Endpoints.cartItems}/{itemId}')
+  @PATCH('${Endpoints.cartItems}/{${AppConstants.itemIdKey}}')
   Future<CartResponseDto> updateCartItemQuantity(
-    @Path('itemId') String itemId,
+    @Path(AppConstants.itemIdKey) String itemId,
     @Body() UpdateCartItemRequestDto request,
   );
 
-  @DELETE('${Endpoints.cartItems}/{itemId}')
+  @DELETE('${Endpoints.cartItems}/{${AppConstants.itemIdKey}}')
   Future<CartResponseDto> removeCartItem(
-    @Path('itemId') String itemId,
+    @Path(AppConstants.itemIdKey) String itemId,
   );
 }

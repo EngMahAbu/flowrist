@@ -5,16 +5,24 @@ import 'package:flowrist/features/home/cart/domain/entities/cart_item_entity.dar
 abstract final class CartMapper {
   static CartEntity toCartEntity(CartResponseDto dto) {
     final data = dto.data;
+
     final items = (data?.items ?? [])
+        .where(
+          (item) =>
+              item.itemId != null &&
+              item.itemId!.isNotEmpty &&
+              item.productId != null &&
+              item.productId!.isNotEmpty,
+        )
         .map(
           (item) => CartItemEntity(
-            itemId: item.itemId ?? '',
-            productId: item.productId ?? '',
+            itemId: item.itemId!,
+            productId: item.productId!,
             productName: item.productName ?? '',
             productImage: item.productImage ?? '',
             unitPrice: item.unitPrice ?? 0,
             priceAtAdd: item.priceAtAdd ?? 0,
-            quantity: item.quantity ?? 0,
+            quantity: item.quantity ?? 1,
             availableStock: item.availableStock ?? 0,
           ),
         )

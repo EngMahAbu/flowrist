@@ -1,11 +1,10 @@
 import 'package:flowrist/config/base_state/base_state.dart';
 import 'package:flowrist/config/di/di.dart';
 import 'package:flowrist/config/session/session_guard.dart';
-import 'package:flowrist/features/home/cart/domain/entities/cart_item_entity.dart';
 import 'package:flowrist/features/home/cart/presentation/cubit/cart_cubit.dart';
 import 'package:flowrist/features/home/cart/presentation/cubit/cart_event.dart';
 import 'package:flowrist/features/home/cart/presentation/cubit/cart_state.dart';
-import 'package:flowrist/features/home/cart/presentation/helpers/cart_auth_helper.dart';
+import 'package:flowrist/features/home/cart/presentation/helpers/pending_cart_action_store.dart';
 import 'package:flowrist/features/home/shared/product_details/data/models/product_details_request_dto.dart';
 import 'package:flowrist/features/home/shared/product_details/presentation/view/product_details_shimmer.dart';
 import 'package:flowrist/features/home/shared/product_details/presentation/view_model/product_details_event/product_details_event.dart';
@@ -146,8 +145,11 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
             child: BlocBuilder<CartCubit, CartState>(
               buildWhen: (previous, current) =>
                   previous.getQuantity(product.id) !=
-                  current.getQuantity(product.id),
+                      current.getQuantity(product.id) ||
+                  previous.isProductLoading(product.id) !=
+                      current.isProductLoading(product.id),
               builder: (context, cartState) {
+                final isAdding = cartState.isProductLoading(product.id);
                 final quantity = cartState.getQuantity(product.id);
 
                 if (!product.inStock) {
@@ -173,36 +175,22 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
 
                 if (quantity == 0) {
                   return ElevatedButton(
-                    onPressed: () async {
-                      final effectivePrice =
-                          product.discountedPrice ?? product.price;
+                    onPressed: isAdding
+                        ? null
+                        : () async {
+                            final event = AddToCartEvent(productId: product.id);
 
-                      final event = AddToCartEvent(
-                        productId: product.id,
-                        optimisticItem: CartItemEntity(
-                          itemId:
-                              'temp_${DateTime.now().millisecondsSinceEpoch}',
-                          productId: product.id,
-                          productName: product.name,
-                          productImage: product.images.isNotEmpty
-                              ? product.images.first
-                              : '',
-                          unitPrice: effectivePrice,
-                          priceAtAdd: effectivePrice,
-                          quantity: 1,
-                          availableStock: product.availableStock,
-                        ),
-                      );
+                            final canContinue = await checkGuestMode(context);
+                            if (!canContinue) {
+                              getIt<PendingCartActionStore>().setPendingAction(
+                                event,
+                              );
+                              return;
+                            }
 
-                      final canContinue = await checkGuestMode(context);
-                      if (!canContinue) {
-                        CartAuthHelper.setPendingAction(event);
-                        return;
-                      }
-
-                      if (!context.mounted) return;
-                      context.read<CartCubit>().doIntent(event);
-                    },
+                            if (!context.mounted) return;
+                            context.read<CartCubit>().doIntent(event);
+                          },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFCE1567),
                       shape: RoundedRectangleBorder(
@@ -210,25 +198,36 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
                       ),
                       elevation: 0,
                     ),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.shopping_cart_outlined,
-                          color: Colors.white,
-                          size: 20,
-                        ),
-                        SizedBox(width: 8),
-                        Text(
-                          'Add to cart',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
+                    child: isAdding
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.5,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.white,
+                              ),
+                            ),
+                          )
+                        : const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.shopping_cart_outlined,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                              SizedBox(width: 8),
+                              Text(
+                                'Add to cart',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
                   );
                 }
 

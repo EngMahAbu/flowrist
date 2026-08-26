@@ -1,14 +1,11 @@
-import 'package:flowrist/features/home/cart/domain/entities/cart_item_entity.dart';
-
 sealed class CartEvent {}
 
 class GetCartEvent extends CartEvent {}
 
 class AddToCartEvent extends CartEvent {
   final String productId;
-  final CartItemEntity optimisticItem;
 
-  AddToCartEvent({required this.productId, required this.optimisticItem});
+  AddToCartEvent({required this.productId});
 }
 
 class ChangeCartQuantityEvent extends CartEvent {
@@ -16,4 +13,10 @@ class ChangeCartQuantityEvent extends CartEvent {
   final int delta;
 
   ChangeCartQuantityEvent({required this.productId, required this.delta});
+}
+
+class RemoveCartItemEvent extends CartEvent {
+  final String itemId;
+
+  RemoveCartItemEvent({required this.itemId});
 }
