@@ -80,7 +80,7 @@ lib/
 `doIntent(Intent intent)` or (`doEvent(Event event)`) method that routes incoming intents
 internally, rather than using Bloc's formal event-stream mapping.
 
-**State modeling:** Every feature's state extends a shared base state class with:
+**State modeling:** Every feature's state leverages a shared base state class for consistency.
 
 - `isLoading` — `bool` flag
 - `errorMessage` — nullable error string
@@ -105,8 +105,42 @@ class BaseState<T> {
 - Feature Cubits live in `presentation/view_model/` alongside their `intent` and `state` classes.
 - All intents for a feature are routed through the single `doIntent` entry point on the Cubit — no
   separate public methods per action.
-- All feature states extend the shared `BaseState<T>`, keeping loading/error/data handling
-  consistent across the app.
+- **Simple States:** For simple "Request-Response" screens (e.g., Login, Signup), use a `typedef`
+  to alias the `BaseState`:
+  `typedef SignUpState = BaseState<UserEntity>;`
+- **Complex States (Composition):** For interactive screens (e.g., Search, Dashboards), use
+  **composition** instead of inheritance. Define a custom state class where `BaseState` is a field.
+  This allows tracking independent user inputs (queries, filters) and the server's response
+  separately.
+
+  Example:
+  ```dart
+  class SearchState {
+    final BaseState<List<FlowerEntity>> results;
+    final String query;
+    final List<String> filters;
+
+    const SearchState({
+      required this.results,
+      this.query = '',
+      this.filters = const [],
+    });
+
+    SearchState copyWith({
+      BaseState<List<FlowerEntity>>? results,
+      String? query,
+      List<String>? filters,
+    }) {
+      return SearchState(
+        results: results ?? this.results,
+        query: query ?? this.query,
+        filters: filters ?? this.filters,
+      );
+    }
+  }
+  ```
+- All feature states must either be a `typedef` of `BaseState` or compose `BaseState` as a field to
+  keep loading/error/data handling consistent across the app.
 
 ---
 

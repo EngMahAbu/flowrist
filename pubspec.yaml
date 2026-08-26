@@ -47,6 +47,7 @@ dev_dependencies:
   json_serializable: ^6.10.0
   mockito: ^5.4.4
   retrofit_generator: ^10.0.1
+#  very_good_analysis: ^10.3.0
 
 flutter:
   generate: true
