@@ -7,8 +7,8 @@ import 'package:injectable/injectable.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import '../../../../config/location_service/location_service.dart';
-import '../../../../config/permission_handler/permission_handler.dart';
+import '../data_sources/location_service.dart';
+import '../data_sources/permission_handler.dart';
 
 @LazySingleton(as: LocationRepository)
 class LocationRepositoryImpl implements LocationRepository {

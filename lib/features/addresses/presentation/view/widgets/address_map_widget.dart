@@ -1,5 +1,4 @@
 import 'package:flowrist/core/constants/app_colors.dart';
-import 'package:flowrist/core/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart' hide Path;
@@ -7,11 +6,13 @@ import 'package:latlong2/latlong.dart' hide Path;
 class AddressMapWidget extends StatefulWidget {
   final LatLng? selectedLocation;
   final ValueChanged<LatLng>? onLocationSelected;
+  final String mapTilerApiKey;
 
   const AddressMapWidget({
     super.key,
     this.selectedLocation,
     this.onLocationSelected,
+    required this.mapTilerApiKey,
   });
 
   @override
@@ -73,7 +74,7 @@ class _AddressMapWidgetState extends State<AddressMapWidget> {
               urlTemplate:
                   'https://api.maptiler.com/maps/dataviz-light/256/{z}/{x}/{y}.png?key={key}',
               additionalOptions: {
-                'key': AppConstants.mapTilerApiKey,
+                'key': widget.mapTilerApiKey,
               },
               userAgentPackageName: 'com.elevate.t5.flowrist',
               fallbackUrl:

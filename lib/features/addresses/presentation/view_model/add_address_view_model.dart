@@ -1,4 +1,5 @@
 import 'package:flowrist/config/base_state/base_state.dart';
+import 'package:flowrist/core/config/app_config.dart';
 import 'package:flowrist/features/addresses/domain/entities/permission_status_entity.dart';
 import 'package:flowrist/features/addresses/domain/entities/service_status_entity.dart';
 import 'package:flowrist/features/addresses/domain/use_cases/check_location_permission_use_case.dart';
@@ -23,6 +24,7 @@ class AddAddressViewModel extends Cubit<AddAddressState> {
   final OpenAppSettingsUseCase _openAppSettingsUseCase;
   final FetchUserCurrentLocationUseCase _fetchUserCurrentLocationUseCase;
   final GetAddressFromLocationUseCase _getAddressFromLocationUseCase;
+  final AppConfig _appConfig;
 
   AddAddressViewModel(this._checkLocationPermissionUseCase,
       this._requestLocationPermissionUseCase,
@@ -30,7 +32,10 @@ class AddAddressViewModel extends Cubit<AddAddressState> {
       this._requestLocationServiceUseCase,
       this._openAppSettingsUseCase,
       this._fetchUserCurrentLocationUseCase,
-      this._getAddressFromLocationUseCase,) : super(AddAddressState.initial());
+      this._getAddressFromLocationUseCase,
+      this._appConfig,) : super(AddAddressState.initial());
+
+  String get mapTilerApiKey => _appConfig.mapTilerApiKey;
 
   void doEvent(AddAddressEvent event) {
     switch (event) {

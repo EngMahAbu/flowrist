@@ -62,6 +62,7 @@ class _AddAddressFormViewState extends State<AddAddressFormView> {
     return Stack(
       children: [
         AddressMapWidget(
+          mapTilerApiKey: context.read<AddAddressViewModel>().mapTilerApiKey,
           selectedLocation: state.selectedLocation,
           onLocationSelected: (LatLng location) {
             context.read<AddAddressViewModel>().doEvent(
