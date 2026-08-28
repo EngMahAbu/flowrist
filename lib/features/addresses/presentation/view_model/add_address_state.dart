@@ -9,7 +9,6 @@ class AddAddressState extends Equatable {
   final bool? couldOpenAppSettings;
   final BaseState<String>? userLocation;
   final CoordinatesEntity? selectedLocation;
-  final bool manualEntry;
   final bool isMapConfigured;
 
   const AddAddressState({
@@ -18,7 +17,6 @@ class AddAddressState extends Equatable {
     this.couldOpenAppSettings,
     required this.userLocation,
     this.selectedLocation,
-    this.manualEntry = false,
     this.isMapConfigured = true,
   });
 
@@ -28,7 +26,6 @@ class AddAddressState extends Equatable {
       couldOpenAppSettings = null,
       userLocation = BaseState.initial(),
       selectedLocation = null,
-      manualEntry = false,
       isMapConfigured = true;
 
   AddAddressState copyWith({
@@ -37,7 +34,6 @@ class AddAddressState extends Equatable {
     bool? couldOpenAppSettings,
     BaseState<String>? userLocation,
     CoordinatesEntity? selectedLocation,
-    bool? manualEntry,
     bool? isMapConfigured,
   }) {
     return AddAddressState(
@@ -46,7 +42,6 @@ class AddAddressState extends Equatable {
       couldOpenAppSettings: couldOpenAppSettings ?? this.couldOpenAppSettings,
       userLocation: userLocation ?? this.userLocation,
       selectedLocation: selectedLocation ?? this.selectedLocation,
-      manualEntry: manualEntry ?? this.manualEntry,
       isMapConfigured: isMapConfigured ?? this.isMapConfigured,
     );
   }
@@ -58,7 +53,6 @@ class AddAddressState extends Equatable {
     couldOpenAppSettings,
     userLocation,
     selectedLocation,
-    manualEntry,
     isMapConfigured,
   ];
 }

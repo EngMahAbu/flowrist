@@ -34,9 +34,21 @@ class _AddAddressFormViewState extends State<AddAddressFormView> {
   Widget build(BuildContext context) {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
 
-    return BlocBuilder<AddAddressViewModel, AddAddressState>(
-      builder: (context, state) {
-        return SingleChildScrollView(
+    return BlocListener<AddAddressViewModel, AddAddressState>(
+      listenWhen: (prev, curr) =>
+      curr.userLocation != null &&
+          !curr.userLocation!.isLoading &&
+          prev.userLocation?.data != curr.userLocation?.data,
+      listener: (context, state) {
+        _addressController.text = state.userLocation!.data ?? "";
+      },
+      child: BlocBuilder<AddAddressViewModel, AddAddressState>(
+        buildWhen: (prev, curr) =>
+        prev.selectedLocation != curr.selectedLocation ||
+            prev.isMapConfigured != curr.isMapConfigured ||
+            prev.userLocation?.errorMessage != curr.userLocation?.errorMessage,
+        builder: (context, state) {
+          return SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,6 +69,7 @@ class _AddAddressFormViewState extends State<AddAddressFormView> {
           ),
         );
       },
+      ),
     );
   }
 
@@ -322,13 +335,15 @@ class _AddAddressFormViewState extends State<AddAddressFormView> {
   List<Widget> _buildAddressForm({required AppLocalizations localizations}) {
     return [
       BlocBuilder<AddAddressViewModel, AddAddressState>(
+        buildWhen: (prev, curr) =>
+        prev.userLocation?.isLoading != curr.userLocation?.isLoading ||
+            prev.userLocation?.data != curr.userLocation?.data,
         builder: ((context, state) {
-          if (state.userLocation == null) return SizedBox.shrink();
+          if (state.userLocation == null) return const SizedBox.shrink();
 
           if (state.userLocation!.isLoading) {
             return _buildLocationLoadingField(localizations);
           } else {
-            _addressController.text = state.userLocation!.data ?? "";
             return AppTextField(
               label: localizations.address,
               hint: localizations.enterAddress,

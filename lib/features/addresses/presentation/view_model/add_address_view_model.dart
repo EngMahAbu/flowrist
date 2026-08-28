@@ -1,6 +1,7 @@
 import 'package:flowrist/config/base_response/base_response.dart';
 import 'package:flowrist/config/base_state/base_state.dart';
 import 'package:flowrist/core/config/app_config.dart';
+import 'package:flowrist/core/constants/app_strings.dart';
 import 'package:flowrist/features/addresses/domain/entities/coordinates_entity.dart';
 import 'package:flowrist/features/addresses/domain/entities/permission_status_entity.dart';
 import 'package:flowrist/features/addresses/domain/entities/service_status_entity.dart';
@@ -136,7 +137,11 @@ class AddAddressViewModel extends Cubit<AddAddressState> {
 
       if (response is SuccessResponse<String?>) {
         if (response.data == null) {
-          emit(state.copyWith(userLocation: BaseState.error('')));
+          emit(
+            state.copyWith(
+              userLocation: BaseState.error(AppStrings.addressNotFoundMessage),
+            ),
+          );
         } else {
           emit(state.copyWith(userLocation: BaseState.success(response.data!)));
         }
@@ -165,7 +170,7 @@ class AddAddressViewModel extends Cubit<AddAddressState> {
         if (address == null) {
           emit(
             state.copyWith(
-              userLocation: BaseState.error(''),
+              userLocation: BaseState.error(AppStrings.addressNotFoundMessage),
               selectedLocation: location,
             ),
           );

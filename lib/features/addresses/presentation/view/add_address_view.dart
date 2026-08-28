@@ -57,12 +57,12 @@ class _AddAddressViewState extends State<AddAddressView>
         title: Text(localizations.address, style: AppStyles.bold20Inter),
       ),
       body: BlocBuilder<AddAddressViewModel, AddAddressState>(
-        bloc: context.read<AddAddressViewModel>(),
+        buildWhen: (prev, curr) =>
+            prev.locationPermission != curr.locationPermission ||
+            prev.locationEnabled != curr.locationEnabled,
         builder: ((context, state) {
           if (state.locationPermission.isLoading) {
             return _loadingView();
-          } else if (state.manualEntry) {
-            return AddAddressFormView();
           } else {
             return _buildViewByPermissionStatus(
               permissionStatus:
