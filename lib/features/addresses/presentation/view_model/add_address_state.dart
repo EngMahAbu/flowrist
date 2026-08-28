@@ -1,27 +1,31 @@
 import 'package:equatable/equatable.dart';
 import 'package:flowrist/config/base_state/base_state.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-// TODO: check the warning here later
 class AddAddressState extends Equatable {
-  BaseState<PermissionStatus> locationPermission;
-  bool locationEnabled;
-  bool? couldOpenAppSettings;
-  BaseState<String>? userLocation;
-  bool manualEntry = false;
+  final BaseState<PermissionStatus> locationPermission;
+  final bool locationEnabled;
+  final bool? couldOpenAppSettings;
+  final BaseState<String>? userLocation;
+  final LatLng? selectedLocation;
+  final bool manualEntry;
 
-  AddAddressState({
+  const AddAddressState({
     required this.locationPermission,
     required this.locationEnabled,
     this.couldOpenAppSettings,
     required this.userLocation,
-    bool manualEntry = false,
+    this.selectedLocation,
+    this.manualEntry = false,
   });
 
   AddAddressState.initial()
     : locationPermission = BaseState.initial(),
       locationEnabled = false,
+      couldOpenAppSettings = null,
       userLocation = BaseState.initial(),
+      selectedLocation = null,
       manualEntry = false;
 
   AddAddressState copyWith({
@@ -29,6 +33,7 @@ class AddAddressState extends Equatable {
     bool? locationEnabled,
     bool? couldOpenAppSettings,
     BaseState<String>? userLocation,
+    LatLng? selectedLocation,
     bool? manualEntry,
   }) {
     return AddAddressState(
@@ -36,6 +41,7 @@ class AddAddressState extends Equatable {
       locationEnabled: locationEnabled ?? this.locationEnabled,
       couldOpenAppSettings: couldOpenAppSettings ?? this.couldOpenAppSettings,
       userLocation: userLocation ?? this.userLocation,
+      selectedLocation: selectedLocation ?? this.selectedLocation,
       manualEntry: manualEntry ?? this.manualEntry,
     );
   }
@@ -46,6 +52,7 @@ class AddAddressState extends Equatable {
     locationEnabled,
     couldOpenAppSettings,
     userLocation,
+    selectedLocation,
     manualEntry,
   ];
 }

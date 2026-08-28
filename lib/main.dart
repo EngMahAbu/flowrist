@@ -8,12 +8,14 @@ import 'package:flowrist/features/home/cart/presentation/cubit/cart_state.dart';
 import 'package:flowrist/flowrist_bloc_observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'config/l10n/app_localizations.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: '.env');
   configureDependencies();
   Bloc.observer = FlowristBlocObserver();
 

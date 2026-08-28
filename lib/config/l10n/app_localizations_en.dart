@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -72,7 +73,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get male => 'Male';
 
   @override
-  String get termsAndConditionsPrefix => 'Creating an account, you agree to our ';
+  String get termsAndConditionsPrefix =>
+      'Creating an account, you agree to our ';
 
   @override
   String get termsAndConditions => 'Terms&Conditions';
@@ -84,16 +86,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get passwordLengthError => 'Password must be at least 8 characters';
 
   @override
-  String get passwordUppercaseError => 'Password must contain at least 1 uppercase letter (A-Z)';
+  String get passwordUppercaseError =>
+      'Password must contain at least 1 uppercase letter (A-Z)';
 
   @override
-  String get passwordLowercaseError => 'Password must contain at least 1 lowercase letter (a-z)';
+  String get passwordLowercaseError =>
+      'Password must contain at least 1 lowercase letter (a-z)';
 
   @override
-  String get passwordNumberError => 'Password must contain at least 1 number (0-9)';
+  String get passwordNumberError =>
+      'Password must contain at least 1 number (0-9)';
 
   @override
-  String get passwordSpecialCharError => 'Password must contain at least 1 special character (#?!@\$%^&*-)';
+  String get passwordSpecialCharError =>
+      'Password must contain at least 1 special character (#?!@\$%^&*-)';
 
   @override
   String get registrationSuccessful => 'Registration Successful!';
@@ -144,7 +150,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get forgotPassword => 'Forgot Password?';
 
   @override
-  String get forgotPasswordDescription => 'Enter your email address and we will send you an OTP.';
+  String get forgotPasswordDescription =>
+      'Enter your email address and we will send you an OTP.';
 
   @override
   String get enterYourEmail => 'Enter your email';
@@ -199,19 +206,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirmYourPassword => 'Confirm your password';
 
   @override
-  String get passwordMustBeAtLeast8Characters => 'Password must be at least 8 characters';
+  String get passwordMustBeAtLeast8Characters =>
+      'Password must be at least 8 characters';
 
   @override
-  String get passwordMustContainUppercase => 'Password must contain an uppercase letter';
+  String get passwordMustContainUppercase =>
+      'Password must contain an uppercase letter';
 
   @override
-  String get passwordMustContainLowercase => 'Password must contain a lowercase letter';
+  String get passwordMustContainLowercase =>
+      'Password must contain a lowercase letter';
 
   @override
   String get passwordMustContainNumber => 'Password must contain a number';
 
   @override
-  String get passwordMustContainSpecialCharacter => 'Password must contain a special character';
+  String get passwordMustContainSpecialCharacter =>
+      'Password must contain a special character';
 
   @override
   String get passwordsDoNotMatch => 'Passwords do not match';
@@ -277,7 +288,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get locationPermissionNeeded => 'Location permission needed';
 
   @override
-  String get allowAccessDescription => 'Allow access to auto-fill your address.';
+  String get allowAccessDescription =>
+      'Allow access to auto-fill your address.';
 
   @override
   String get allowAccess => 'Allow access';
@@ -286,7 +298,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get couldntResolveAddress => 'Couldn\'t resolve address';
 
   @override
-  String get couldntResolveAddressDescription => 'We found your coordinates but not a street address. Enter it manually below, or ';
+  String get couldntResolveAddressDescription =>
+      'We found your coordinates but not a street address. Enter it manually below, or ';
 
   @override
   String get tryAgain => 'try again';
@@ -322,7 +335,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get turnOnLocation => 'Turn on location';
 
   @override
-  String get locationDisabledDescription => 'Your device\'s location service is off. Turn it on so we can find your address automatically.';
+  String get locationDisabledDescription =>
+      'Your device\'s location service is off. Turn it on so we can find your address automatically.';
 
   @override
   String get enableLocation => 'Enable location';
@@ -334,7 +348,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get locationAccessBlocked => 'Location access blocked';
 
   @override
-  String get locationBlockedDescription => 'You\'ve turned off location for this app. Enable it in settings to use your current address.';
+  String get locationBlockedDescription =>
+      'You\'ve turned off location for this app. Enable it in settings to use your current address.';
 
   @override
   String get openSettings => 'Open settings';
@@ -343,5 +358,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get permissionRequired => 'Permission Required';
 
   @override
-  String get locationPermissionDeniedSettingsMessage => 'The location permission is permanently denied. Please enable it in settings to use the address auto-detection.';
+  String get locationPermissionDeniedSettingsMessage =>
+      'The location permission is permanently denied. Please enable it in settings to use the address auto-detection.';
 }

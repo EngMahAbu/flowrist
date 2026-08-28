@@ -17,8 +17,11 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.1
+  flutter_dotenv: ^5.2.1
   flutter_localizations:
     sdk: flutter
+  flutter_map: ^7.0.2
+  latlong2: ^0.9.1
   flutter_secure_storage: ^9.2.4
   flutter_svg: ^2.3.0
   geocoding: ^5.0.0
@@ -56,6 +59,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - .env
     - assets/images/
 
   fonts:

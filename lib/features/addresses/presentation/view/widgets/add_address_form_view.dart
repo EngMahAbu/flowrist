@@ -3,11 +3,13 @@ import 'package:flowrist/core/constants/app_colors.dart';
 import 'package:flowrist/core/constants/app_styles.dart';
 import 'package:flowrist/core/ui/widgets/app_button.dart';
 import 'package:flowrist/core/ui/widgets/app_text_field.dart';
+import 'package:flowrist/features/addresses/presentation/view/widgets/address_map_widget.dart';
 import 'package:flowrist/features/addresses/presentation/view_model/add_address_event.dart';
 import 'package:flowrist/features/addresses/presentation/view_model/add_address_state.dart';
 import 'package:flowrist/features/addresses/presentation/view_model/add_address_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:latlong2/latlong.dart';
 
 class AddAddressFormView extends StatefulWidget {
   final bool showSoftPermissionBanner;
@@ -38,7 +40,7 @@ class _AddAddressFormViewState extends State<AddAddressFormView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildMapView(context, localizations),
+              _buildMapView(context, localizations, state),
               if (state.userLocation != null &&
                   state.userLocation!.errorMessage != null)
                 ..._buildAddressErrorView(context, localizations),
@@ -52,28 +54,20 @@ class _AddAddressFormViewState extends State<AddAddressFormView> {
     );
   }
 
-  // TODO: dummy map placeholder, remove when map is integrated
-  Widget _buildMapView(BuildContext context, AppLocalizations localizations) {
+  Widget _buildMapView(
+    BuildContext context,
+    AppLocalizations localizations,
+    AddAddressState state,
+  ) {
     return Stack(
       children: [
-        Container(
-          height: 180,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: AppColors.white50,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: AppColors.white60),
-          ),
-          child: const Stack(
-            alignment: Alignment.center,
-            children: [
-              Opacity(
-                opacity: 0.1,
-                child: Center(child: Icon(Icons.grid_4x4, size: 100)),
-              ),
-              Icon(Icons.location_on, color: AppColors.purpleBase, size: 40),
-            ],
-          ),
+        AddressMapWidget(
+          selectedLocation: state.selectedLocation,
+          onLocationSelected: (LatLng location) {
+            context.read<AddAddressViewModel>().doEvent(
+              SelectMapLocation(location),
+            );
+          },
         ),
         if (widget.showSoftPermissionBanner)
           _buildPermissionNeededView(context, localizations),
