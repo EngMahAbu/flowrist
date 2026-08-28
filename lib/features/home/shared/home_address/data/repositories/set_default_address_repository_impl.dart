@@ -5,7 +5,7 @@ import 'package:flowrist/features/home/shared/home_address/domain/entities/addre
 import 'package:flowrist/features/home/shared/home_address/domain/repositories/set_default_address_repository.dart';
 import 'package:injectable/injectable.dart';
 
-@LazySingleton(as: SetDefaultAddressRepository)
+@Injectable(as: SetDefaultAddressRepository)
 class SetDefaultAddressRepositoryImpl implements SetDefaultAddressRepository {
   final SetDefaultAddressDataSource _dataSource;
 

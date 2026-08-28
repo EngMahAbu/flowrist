@@ -17,6 +17,6 @@ abstract class HomeAddressApiClient {
 
   @PATCH(Endpoints.setDefaultAddress)
   Future<SetDefaultAddressResponseModel> setDefaultAddress(
-    @Path('addressId') String addressId,
+    @Path(Endpoints.addressId) String addressId,
   );
 }
