@@ -6,4 +6,5 @@ import 'package:flowrist/features/home/home/data/models/home_model/home_response
 
 abstract class HomeRemoteDataSource {
   Future<BaseResponse<List<HomeResponseModel>>> getHomeLayout();
+  
 }
