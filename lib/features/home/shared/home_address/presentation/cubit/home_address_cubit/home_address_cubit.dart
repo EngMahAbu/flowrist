@@ -130,10 +130,7 @@ class HomeAddressCubit extends Cubit<HomeAddressState> {
             // Only call PATCH if the nearest address
             // isn't already the default.
             if (currentDefault?.id != nearestAddress.id) {
-              debugPrint(
-                'CHANGING DEFAULT ADDRESS TO: '
-                '${nearestAddress.id}',
-              );
+               
 
               await _makeAddressDefault(nearestAddress, addresses);
 
@@ -157,10 +154,7 @@ class HomeAddressCubit extends Cubit<HomeAddressState> {
           );
 
         case ErrorResponse<List<AddressEntity>>():
-          debugPrint(
-            'GET ADDRESSES ERROR: '
-            '${response.errorMessage}',
-          );
+       
 
           emit(
             state.copyWith(
@@ -174,7 +168,7 @@ class HomeAddressCubit extends Cubit<HomeAddressState> {
           );
       }
     } catch (e, stackTrace) {
-      debugPrint('INITIALIZE ADDRESS ERROR: $e');
+     
 
       debugPrintStack(stackTrace: stackTrace);
 
@@ -300,10 +294,7 @@ class HomeAddressCubit extends Cubit<HomeAddressState> {
         address.lng,
       );
 
-      // debugPrint(
-      //   '${address.addressLine} '
-      //   '→ ${distance.toStringAsFixed(2)} meters',
-      // );
+     
 
       if (distance < shortestDistance) {
         shortestDistance = distance;

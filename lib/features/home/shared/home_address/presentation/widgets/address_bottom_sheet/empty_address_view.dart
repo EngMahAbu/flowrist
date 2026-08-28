@@ -39,7 +39,7 @@ class EmptyAddressView extends StatelessWidget {
             'You have no saved address yet.\n'
             'Add one to complete your gifting experience.',
             textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.grey.shade600),
+            style: TextStyle(color: AppColors.white70),
           ),
         ],
       ),
