@@ -1,3 +1,4 @@
+import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flowrist/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -6,6 +7,8 @@ class EmptyAddressView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -25,11 +28,9 @@ class EmptyAddressView extends StatelessWidget {
 
           const SizedBox(height: 12),
 
-          const Text(
-            'No addresses saved',
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-            ),
+          Text(
+            localizations.noAddressessaved,
+            style: TextStyle(fontWeight: FontWeight.w600),
           ),
 
           const SizedBox(height: 12),
@@ -38,9 +39,7 @@ class EmptyAddressView extends StatelessWidget {
             'You have no saved address yet.\n'
             'Add one to complete your gifting experience.',
             textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.grey.shade600,
-            ),
+            style: TextStyle(color: Colors.grey.shade600),
           ),
         ],
       ),

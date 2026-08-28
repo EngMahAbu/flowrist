@@ -9,9 +9,7 @@ class SetDefaultAddressUseCase {
 
   SetDefaultAddressUseCase(this._repository);
 
-  Future<BaseResponse<DefaultAddressEntity>> call(
-    String addressId,
-  ) {
+  Future<BaseResponse<DefaultAddressEntity>> call(String addressId) {
     return _repository.setDefaultAddress(addressId);
   }
 }

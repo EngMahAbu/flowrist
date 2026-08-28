@@ -1,8 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flowrist/core/constants/endpoints.dart';
-import 'package:flowrist/features/home/shared/home_address/data/model/address_model/address_api_response_model.dart';
-import 'package:flowrist/features/home/shared/home_address/data/model/address_model/address_model.dart';
-import 'package:flowrist/features/home/shared/home_address/data/model/address_model/set_default_address_response_model.dart';
 import 'package:flowrist/features/home/home/data/models/home_model/home_api_response_model.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';

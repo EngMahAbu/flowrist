@@ -5,29 +5,38 @@ import 'package:flowrist/features/home/shared/home_address/domain/entities/addre
 import 'package:flowrist/features/home/shared/home_address/domain/entities/address_entities/default_address_entity.dart';
 import 'package:flowrist/features/home/shared/home_address/domain/use_cases/get_all_user_addresses_use_case.dart';
 import 'package:flowrist/features/home/shared/home_address/domain/use_cases/set_default_address_use_case.dart';
+import 'package:flowrist/features/home/shared/home_address/presentation/cubit/home_address_cubit/home_address_event.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:injectable/injectable.dart';
-
-import 'address_state.dart';
+import 'home_address_state.dart';
 
 @injectable
-class AddressCubit extends Cubit<AddressState> {
+class HomeAddressCubit extends Cubit<HomeAddressState> {
   final GetAllUserAddressesUseCase _getAllUserAddressesUseCase;
   final SetDefaultAddressUseCase _setDefaultAddressUseCase;
   final LocationService _locationService;
 
-  AddressCubit(
+  HomeAddressCubit(
     this._getAllUserAddressesUseCase,
     this._locationService,
     this._setDefaultAddressUseCase,
   ) : super(
-          AddressState(
-            addressesState: BaseState.initial(),
-            setDefaultAddressState: BaseState.initial(),
-          ),
-        );
+        HomeAddressState(
+          addressesState: BaseState.initial(),
+          setDefaultAddressState: BaseState.initial(),
+        ),
+      );
+
+  Future<void> doEvent(HomeAddressEvent event) async {
+    switch (event) {
+      case InitializeAddress():
+        await initializeAddress();
+      case SetDefaultAddress():
+        await setDefaultAddress(event.addressId);
+    }
+  }
 
   // ============================================================
   // INITIALIZE ADDRESS
@@ -53,17 +62,8 @@ class AddressCubit extends Cubit<AddressState> {
 
       try {
         position = await _locationService.getCurrentPosition();
-
-        // if (position != null) {
-        //   debugPrint(
-        //     'USER LOCATION: '
-        //     '${position.latitude}, ${position.longitude}',
-        //   );
-        // }
       } catch (e) {
-        debugPrint(
-          'LOCATION NOT AVAILABLE: $e',
-        );
+        debugPrint('LOCATION NOT AVAILABLE: $e');
       }
 
       // ========================================================
@@ -76,10 +76,6 @@ class AddressCubit extends Cubit<AddressState> {
         case SuccessResponse<List<AddressEntity>>():
           final addresses = response.data ?? [];
 
-          // debugPrint(
-          //   'ADDRESSES COUNT: ${addresses.length}',
-          // );
-
           // ====================================================
           // NO ADDRESSES
           // ====================================================
@@ -87,8 +83,7 @@ class AddressCubit extends Cubit<AddressState> {
           if (addresses.isEmpty) {
             emit(
               state.copyWith(
-                addressesState:
-                    state.addressesState.copyWith(
+                addressesState: state.addressesState.copyWith(
                   data: const [],
                   isLoading: false,
                   errorMessage: null,
@@ -107,10 +102,7 @@ class AddressCubit extends Cubit<AddressState> {
           AddressEntity? nearestAddress;
 
           if (position != null) {
-            nearestAddress = _findNearestAddress(
-              addresses,
-              position,
-            );
+            nearestAddress = _findNearestAddress(addresses, position);
           }
 
           // ====================================================
@@ -118,8 +110,7 @@ class AddressCubit extends Cubit<AddressState> {
           // USE EXISTING DEFAULT
           // ====================================================
 
-          nearestAddress ??=
-              _findDefaultAddress(addresses);
+          nearestAddress ??= _findDefaultAddress(addresses);
 
           // ====================================================
           // 5. NO DEFAULT
@@ -128,24 +119,13 @@ class AddressCubit extends Cubit<AddressState> {
 
           nearestAddress ??= addresses.first;
 
-          // debugPrint(
-          //   'SELECTED ADDRESS: '
-          //   '${nearestAddress.addressLine}',
-          // );
-
-          // debugPrint(
-          //   'SELECTED ADDRESS ID: '
-          //   '${nearestAddress.id}',
-          // );
-
           // ====================================================
           // 6. IF GPS WAS AVAILABLE
           // MAKE NEAREST ADDRESS DEFAULT
           // ====================================================
 
           if (position != null) {
-            final currentDefault =
-                _findDefaultAddress(addresses);
+            final currentDefault = _findDefaultAddress(addresses);
 
             // Only call PATCH if the nearest address
             // isn't already the default.
@@ -155,10 +135,7 @@ class AddressCubit extends Cubit<AddressState> {
                 '${nearestAddress.id}',
               );
 
-              await _makeAddressDefault(
-                nearestAddress,
-                addresses,
-              );
+              await _makeAddressDefault(nearestAddress, addresses);
 
               return;
             }
@@ -170,8 +147,7 @@ class AddressCubit extends Cubit<AddressState> {
 
           emit(
             state.copyWith(
-              addressesState:
-                  state.addressesState.copyWith(
+              addressesState: state.addressesState.copyWith(
                 data: addresses,
                 isLoading: false,
                 errorMessage: null,
@@ -188,8 +164,7 @@ class AddressCubit extends Cubit<AddressState> {
 
           emit(
             state.copyWith(
-              addressesState:
-                  state.addressesState.copyWith(
+              addressesState: state.addressesState.copyWith(
                 data: const [],
                 isLoading: false,
                 errorMessage: response.errorMessage,
@@ -199,18 +174,13 @@ class AddressCubit extends Cubit<AddressState> {
           );
       }
     } catch (e, stackTrace) {
-      debugPrint(
-        'INITIALIZE ADDRESS ERROR: $e',
-      );
+      debugPrint('INITIALIZE ADDRESS ERROR: $e');
 
-      debugPrintStack(
-        stackTrace: stackTrace,
-      );
+      debugPrintStack(stackTrace: stackTrace);
 
       emit(
         state.copyWith(
-          addressesState:
-              state.addressesState.copyWith(
+          addressesState: state.addressesState.copyWith(
             data: const [],
             isLoading: false,
             errorMessage: e.toString(),
@@ -231,8 +201,7 @@ class AddressCubit extends Cubit<AddressState> {
   ) async {
     emit(
       state.copyWith(
-        addressesState:
-            state.addressesState.copyWith(
+        addressesState: state.addressesState.copyWith(
           data: addresses,
           isLoading: true,
           errorMessage: null,
@@ -242,25 +211,17 @@ class AddressCubit extends Cubit<AddressState> {
     );
 
     try {
-      final response =
-          await _setDefaultAddressUseCase(
-        nearestAddress.id,
-      );
+      final response = await _setDefaultAddressUseCase(nearestAddress.id);
 
       switch (response) {
         case SuccessResponse<DefaultAddressEntity>():
           final defaultAddress = response.data;
 
           if (defaultAddress == null) {
-            // debugPrint(
-            //   'PATCH SUCCESS BUT RESPONSE DATA IS NULL',
-            // );
-
             // Still use the nearest address locally.
             emit(
               state.copyWith(
-                addressesState:
-                    state.addressesState.copyWith(
+                addressesState: state.addressesState.copyWith(
                   data: addresses,
                   isLoading: false,
                   errorMessage: null,
@@ -272,36 +233,23 @@ class AddressCubit extends Cubit<AddressState> {
             return;
           }
 
-          // debugPrint(
-          //   'DEFAULT ADDRESS UPDATED: '
-          //   '${defaultAddress.addressId}',
-          // );
-
           // Refresh addresses so isDefault values
           // come from the backend.
-          await _refreshAddresses(
-            defaultAddress,
-          );
+          await _refreshAddresses(defaultAddress);
 
         case ErrorResponse<DefaultAddressEntity>():
-          // debugPrint(
-          //   'SET DEFAULT ERROR: '
-          //   '${response.errorMessage}',
-          // );
 
           // PATCH failed.
           // Still show nearest address locally.
           emit(
             state.copyWith(
-              addressesState:
-                  state.addressesState.copyWith(
+              addressesState: state.addressesState.copyWith(
                 data: addresses,
                 isLoading: false,
                 errorMessage: null,
               ),
               selectedAddress: nearestAddress,
-              setDefaultAddressState:
-                  state.setDefaultAddressState.copyWith(
+              setDefaultAddressState: state.setDefaultAddressState.copyWith(
                 isLoading: false,
                 errorMessage: response.errorMessage,
               ),
@@ -309,23 +257,17 @@ class AddressCubit extends Cubit<AddressState> {
           );
       }
     } catch (e) {
-      // debugPrint(
-      //   'MAKE DEFAULT ERROR: $e',
-      // );
-
       // Don't prevent the user from entering Home
       // if PATCH fails.
       emit(
         state.copyWith(
-          addressesState:
-              state.addressesState.copyWith(
+          addressesState: state.addressesState.copyWith(
             data: addresses,
             isLoading: false,
             errorMessage: null,
           ),
           selectedAddress: nearestAddress,
-          setDefaultAddressState:
-              state.setDefaultAddressState.copyWith(
+          setDefaultAddressState: state.setDefaultAddressState.copyWith(
             isLoading: false,
             errorMessage: e.toString(),
           ),
@@ -369,31 +311,6 @@ class AddressCubit extends Cubit<AddressState> {
       }
     }
 
-    if (nearestAddress != null) {
-      debugPrint(
-        '========================================',
-      );
-
-      // debugPrint(
-      //   'NEAREST ADDRESS: '
-      //   '${nearestAddress.addressLine}',
-      // );
-
-      // debugPrint(
-      //   'NEAREST ID: '
-      //   '${nearestAddress.id}',
-      // );
-
-      // debugPrint(
-      //   'DISTANCE: '
-      //   '${shortestDistance.toStringAsFixed(2)} meters',
-      // );
-
-      // debugPrint(
-      //   '========================================',
-      // );
-    }
-
     return nearestAddress;
   }
 
@@ -401,9 +318,7 @@ class AddressCubit extends Cubit<AddressState> {
   // FIND DEFAULT ADDRESS
   // ============================================================
 
-  AddressEntity? _findDefaultAddress(
-    List<AddressEntity> addresses,
-  ) {
+  AddressEntity? _findDefaultAddress(List<AddressEntity> addresses) {
     for (final address in addresses) {
       if (address.isDefault) {
         return address;
@@ -417,27 +332,18 @@ class AddressCubit extends Cubit<AddressState> {
   // MANUAL SELECT
   // ============================================================
 
-  void selectAddress(
-    AddressEntity address,
-  ) {
-    emit(
-      state.copyWith(
-        selectedAddress: address,
-      ),
-    );
+  void selectAddress(AddressEntity address) {
+    emit(state.copyWith(selectedAddress: address));
   }
 
   // ============================================================
   // MANUAL SET DEFAULT
   // ============================================================
 
-  Future<void> setDefaultAddress(
-    String addressId,
-  ) async {
+  Future<void> setDefaultAddress(String addressId) async {
     emit(
       state.copyWith(
-        setDefaultAddressState:
-            state.setDefaultAddressState.copyWith(
+        setDefaultAddressState: state.setDefaultAddressState.copyWith(
           isLoading: true,
           errorMessage: null,
         ),
@@ -445,10 +351,7 @@ class AddressCubit extends Cubit<AddressState> {
     );
 
     try {
-      final response =
-          await _setDefaultAddressUseCase(
-        addressId,
-      );
+      final response = await _setDefaultAddressUseCase(addressId);
 
       switch (response) {
         case SuccessResponse<DefaultAddressEntity>():
@@ -457,11 +360,9 @@ class AddressCubit extends Cubit<AddressState> {
           if (defaultAddress == null) {
             emit(
               state.copyWith(
-                setDefaultAddressState:
-                    state.setDefaultAddressState.copyWith(
+                setDefaultAddressState: state.setDefaultAddressState.copyWith(
                   isLoading: false,
-                  errorMessage:
-                      'Default address response is empty.',
+                  errorMessage: 'Default address response is empty.',
                 ),
               ),
             );
@@ -469,18 +370,14 @@ class AddressCubit extends Cubit<AddressState> {
             return;
           }
 
-          await _refreshAddresses(
-            defaultAddress,
-          );
+          await _refreshAddresses(defaultAddress);
 
         case ErrorResponse<DefaultAddressEntity>():
           emit(
             state.copyWith(
-              setDefaultAddressState:
-                  state.setDefaultAddressState.copyWith(
+              setDefaultAddressState: state.setDefaultAddressState.copyWith(
                 isLoading: false,
-                errorMessage:
-                    response.errorMessage,
+                errorMessage: response.errorMessage,
               ),
             ),
           );
@@ -488,8 +385,7 @@ class AddressCubit extends Cubit<AddressState> {
     } catch (e) {
       emit(
         state.copyWith(
-          setDefaultAddressState:
-              state.setDefaultAddressState.copyWith(
+          setDefaultAddressState: state.setDefaultAddressState.copyWith(
             isLoading: false,
             errorMessage: e.toString(),
           ),
@@ -502,11 +398,8 @@ class AddressCubit extends Cubit<AddressState> {
   // REFRESH AFTER PATCH
   // ============================================================
 
-  Future<void> _refreshAddresses(
-    DefaultAddressEntity defaultAddress,
-  ) async {
-    final response =
-        await _getAllUserAddressesUseCase();
+  Future<void> _refreshAddresses(DefaultAddressEntity defaultAddress) async {
+    final response = await _getAllUserAddressesUseCase();
 
     switch (response) {
       case SuccessResponse<List<AddressEntity>>():
@@ -515,32 +408,25 @@ class AddressCubit extends Cubit<AddressState> {
         AddressEntity? selectedAddress;
 
         for (final address in addresses) {
-          if (address.id ==
-              defaultAddress.addressId) {
+          if (address.id == defaultAddress.addressId) {
             selectedAddress = address;
             break;
           }
         }
 
-        selectedAddress ??=
-            _findDefaultAddress(addresses);
+        selectedAddress ??= _findDefaultAddress(addresses);
 
-        selectedAddress ??=
-            addresses.isNotEmpty
-                ? addresses.first
-                : null;
+        selectedAddress ??= addresses.isNotEmpty ? addresses.first : null;
 
         emit(
           state.copyWith(
-            addressesState:
-                state.addressesState.copyWith(
+            addressesState: state.addressesState.copyWith(
               data: addresses,
               isLoading: false,
               errorMessage: null,
             ),
             selectedAddress: selectedAddress,
-            setDefaultAddressState:
-                state.setDefaultAddressState.copyWith(
+            setDefaultAddressState: state.setDefaultAddressState.copyWith(
               data: defaultAddress,
               isLoading: false,
               errorMessage: null,
@@ -551,13 +437,11 @@ class AddressCubit extends Cubit<AddressState> {
       case ErrorResponse<List<AddressEntity>>():
         emit(
           state.copyWith(
-            addressesState:
-                state.addressesState.copyWith(
+            addressesState: state.addressesState.copyWith(
               isLoading: false,
               errorMessage: null,
             ),
-            setDefaultAddressState:
-                state.setDefaultAddressState.copyWith(
+            setDefaultAddressState: state.setDefaultAddressState.copyWith(
               data: defaultAddress,
               isLoading: false,
               errorMessage: response.errorMessage,

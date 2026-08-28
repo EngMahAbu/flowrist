@@ -14,54 +14,36 @@ class HomeTabView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) =>
-          getIt<HomeCubit>()
-            ..doEvent(GetHomeLayout()),
+      create: (_) => getIt<HomeCubit>()..doEvent(GetHomeLayout()),
       child: Scaffold(
         body: BlocBuilder<HomeCubit, HomeState>(
           builder: (context, state) {
-            final homeState =
-                state.homeLayout;
+            final homeState = state.homeLayout;
 
             if (homeState.isLoading) {
               return const HomeShimmer();
             }
 
             if (homeState.errorMessage != null) {
-              return Center(
-                child: Text(
-                  homeState.errorMessage!,
-                ),
-              );
+              return Center(child: Text(homeState.errorMessage!));
             }
 
-            if (homeState.data == null ||
-                homeState.data!.isEmpty) {
-              return const Center(
-                child: Text(
-                  'No content available',
-                ),
-              );
+            if (homeState.data == null || homeState.data!.isEmpty) {
+              return const Center(child: Text('No content available'));
             }
 
-            final sections =
-                homeState.data!;
+            final sections = homeState.data!;
 
             return ListView.builder(
-              itemCount:
-                  sections.length + 1,
-              itemBuilder:
-                  (context, index) {
+              itemCount: sections.length + 1,
+              itemBuilder: (context, index) {
                 if (index == 0) {
                   return const HomeHeader();
                 }
 
-                final section =
-                    sections[index - 1];
+                final section = sections[index - 1];
 
-                return HomeSection(
-                  section: section,
-                );
+                return HomeSection(section: section);
               },
             );
           },

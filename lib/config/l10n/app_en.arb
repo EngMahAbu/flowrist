@@ -92,5 +92,9 @@
   "deliverTo": "Deliver to",
   "viewAll": "View All",
   "bestSellers": "Best Sellers",
-  "occasion": "Occasion"
+  "occasion": "Occasion",
+  "selectAddress":"Select Address",
+  "setAsDefault":"Set as default",
+  "addNewaddress":"Add new address",
+  "noAddressessaved":"No addresses saved"
 }

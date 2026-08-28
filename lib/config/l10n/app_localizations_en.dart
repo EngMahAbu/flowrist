@@ -279,4 +279,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get bestSellers => 'Best Sellers';
+
+  @override
+  String get selectAddress => 'Select Address';
+
+  @override
+  String get setAsDefault => 'Set as default';
+
+  @override
+  String get addNewaddress => 'Add new address';
+
+  @override
+  String get noAddressessaved => 'No addresses saved';
 }
