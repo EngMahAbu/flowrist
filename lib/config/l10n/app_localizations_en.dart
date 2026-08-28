@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -60,7 +61,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get phoneNumber => 'Phone number';
 
   @override
-  String get enterPhoneNumber => 'Enter phone number';
+  String get enterPhoneNumber => 'Enter the phone number';
 
   @override
   String get gender => 'Gender';
@@ -279,4 +280,91 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get bestSellers => 'Best Sellers';
+
+  @override
+  String get address => 'Address';
+
+  @override
+  String get locationPermissionNeeded => 'Location permission needed';
+
+  @override
+  String get allowAccessDescription =>
+      'Allow access to auto-fill your address.';
+
+  @override
+  String get allowAccess => 'Allow access';
+
+  @override
+  String get couldntResolveAddress => 'Couldn\'t resolve address';
+
+  @override
+  String get couldntResolveAddressDescription =>
+      'We found your coordinates but not a street address. Enter it manually below, or ';
+
+  @override
+  String get tryAgain => 'try again';
+
+  @override
+  String get findingLocation => 'Finding your location...';
+
+  @override
+  String get enterAddress => 'Enter the address';
+
+  @override
+  String get recipientName => 'Recipient name';
+
+  @override
+  String get enterRecipientName => 'Enter the recipient name';
+
+  @override
+  String get city => 'City';
+
+  @override
+  String get cairo => 'Cairo';
+
+  @override
+  String get area => 'Area';
+
+  @override
+  String get october => 'October';
+
+  @override
+  String get saveAddress => 'Save address';
+
+  @override
+  String get turnOnLocation => 'Turn on location';
+
+  @override
+  String get locationDisabledDescription =>
+      'Your device\'s location service is off. Turn it on so we can find your address automatically.';
+
+  @override
+  String get enableLocation => 'Enable location';
+
+  @override
+  String get enterAddressManually => 'Enter address manually';
+
+  @override
+  String get locationAccessBlocked => 'Location access blocked';
+
+  @override
+  String get locationBlockedDescription =>
+      'You\'ve turned off location for this app. Enable it in settings to use your current address.';
+
+  @override
+  String get openSettings => 'Open settings';
+
+  @override
+  String get permissionRequired => 'Permission Required';
+
+  @override
+  String get locationPermissionDeniedSettingsMessage =>
+      'The location permission is permanently denied. Please enable it in settings to use the address auto-detection.';
+
+  @override
+  String get mapConfigWarning => 'High-quality maps are unavailable';
+
+  @override
+  String get mapConfigWarningDescription =>
+      'Using basic map provider. Some map details may be missing.';
 }
