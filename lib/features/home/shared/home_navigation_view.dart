@@ -4,7 +4,6 @@ import 'package:flowrist/features/home/shared/home_address/presentation/cubit/ho
 import 'package:flowrist/features/home/cart/presentation/cubit/cart_cubit.dart';
 import 'package:flowrist/features/home/cart/presentation/cubit/cart_state.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class HomeNavigationView extends StatefulWidget {
@@ -21,17 +20,12 @@ class _HomeNavigationViewState extends State<HomeNavigationView> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _initializeAddress();
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   _initializeAddress();
+    // });
   }
 
-  Future<void> _initializeAddress() async {
-    final addressCubit =
-        context.read<HomeAddressCubit>();
 
-    await addressCubit.initializeAddress();
-  }
 
   @override
   Widget build(BuildContext context) {

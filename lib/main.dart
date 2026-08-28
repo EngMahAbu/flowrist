@@ -20,12 +20,7 @@ void main() async {
 
   Bloc.observer = FlowristBlocObserver();
 
-  runApp(
-    BlocProvider(
-      create: (_) => getIt<HomeAddressCubit>(),
-      child: const FlowristApp(),
-    ),
-  );
+  runApp(const FlowristApp());
   runApp(
     BlocProvider(create: (_) => getIt<CartCubit>(), child: const FlowristApp()),
   );
