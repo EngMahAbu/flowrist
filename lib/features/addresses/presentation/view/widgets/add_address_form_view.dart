@@ -9,7 +9,8 @@ import 'package:flowrist/features/addresses/presentation/view_model/add_address_
 import 'package:flowrist/features/addresses/presentation/view_model/add_address_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:latlong2/latlong.dart';
+
+import '../../../domain/entities/coordinates_entity.dart';
 
 class AddAddressFormView extends StatefulWidget {
   final bool showSoftPermissionBanner;
@@ -44,7 +45,11 @@ class _AddAddressFormViewState extends State<AddAddressFormView> {
               if (!state.isMapConfigured) _buildMapWarningView(localizations),
               if (state.userLocation != null &&
                   state.userLocation!.errorMessage != null)
-                ..._buildAddressErrorView(context, localizations),
+                ..._buildAddressErrorView(
+                  context,
+                  localizations,
+                  state.userLocation!.errorMessage!,
+                ),
               const SizedBox(height: 32),
               ..._buildAddressForm(localizations: localizations),
               const SizedBox(height: 24),
@@ -104,8 +109,8 @@ class _AddAddressFormViewState extends State<AddAddressFormView> {
       children: [
         AddressMapWidget(
           mapTilerApiKey: context.read<AddAddressViewModel>().mapTilerApiKey,
-          selectedLocation: state.selectedLocation,
-          onLocationSelected: (LatLng location) {
+          selectedLocation: state.selectedLocation!,
+          onLocationSelected: (CoordinatesEntity location) {
             context.read<AddAddressViewModel>().doEvent(
               SelectMapLocation(location),
             );
@@ -193,6 +198,7 @@ class _AddAddressFormViewState extends State<AddAddressFormView> {
   List<Widget> _buildAddressErrorView(
     BuildContext context,
     AppLocalizations localizations,
+    String errorMessage,
   ) {
     return [
       const SizedBox(height: 16),
@@ -216,7 +222,9 @@ class _AddAddressFormViewState extends State<AddAddressFormView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    localizations.couldntResolveAddress,
+                    errorMessage.isNotEmpty
+                        ? errorMessage
+                        : localizations.couldntResolveAddress,
                     style: AppStyles.bold16Amber100,
                   ),
                   const SizedBox(height: 4),

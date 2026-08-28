@@ -1,6 +1,7 @@
+import 'package:flowrist/config/base_response/base_response.dart';
+import 'package:flowrist/features/addresses/domain/entities/coordinates_entity.dart';
 import 'package:flowrist/features/addresses/domain/repositories/location_repository.dart';
 import 'package:injectable/injectable.dart';
-import 'package:latlong2/latlong.dart';
 
 @injectable
 class FetchUserCurrentLocationUseCase {
@@ -8,7 +9,7 @@ class FetchUserCurrentLocationUseCase {
 
   FetchUserCurrentLocationUseCase(this._locationRepository);
 
-  Future<(LatLng, String?)> call() async {
+  Future<BaseResponse<(CoordinatesEntity, String?)>> call() async {
     return await _locationRepository.fetchUserCurrentLocation();
   }
 }

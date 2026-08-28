@@ -1,12 +1,13 @@
 import 'package:flowrist/core/constants/app_colors.dart';
 import 'package:flowrist/core/constants/app_constants.dart';
+import 'package:flowrist/features/addresses/data/mappers/latlng_coordinates_mapper.dart';
+import 'package:flowrist/features/addresses/domain/entities/coordinates_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart' hide Path;
 
 class AddressMapWidget extends StatefulWidget {
-  final LatLng? selectedLocation;
-  final ValueChanged<LatLng>? onLocationSelected;
+  final CoordinatesEntity? selectedLocation;
+  final ValueChanged<CoordinatesEntity>? onLocationSelected;
   final String mapTilerApiKey;
 
   const AddressMapWidget({
@@ -22,7 +23,12 @@ class AddressMapWidget extends StatefulWidget {
 
 class _AddressMapWidgetState extends State<AddressMapWidget> {
   late final MapController _mapController;
-  static const LatLng _defaultLocation = LatLng(30.0444, 31.2357); // Cairo
+
+  // TODO: check the business if they would like to change this default value
+  static const CoordinatesEntity _defaultLocation = CoordinatesEntity(
+    latitude: 30.0444,
+    longitude: 31.2357,
+  ); // Cairo
 
   @override
   void initState() {
@@ -35,7 +41,7 @@ class _AddressMapWidgetState extends State<AddressMapWidget> {
     super.didUpdateWidget(oldWidget);
     if (widget.selectedLocation != null &&
         widget.selectedLocation != oldWidget.selectedLocation) {
-      _mapController.move(widget.selectedLocation!, 16.0);
+      _mapController.move(widget.selectedLocation!.toLatLng(), 16.0);
     }
   }
 
@@ -57,7 +63,7 @@ class _AddressMapWidgetState extends State<AddressMapWidget> {
         child: FlutterMap(
           mapController: _mapController,
           options: MapOptions(
-            initialCenter: activeLocation,
+            initialCenter: activeLocation.toLatLng(),
             initialZoom: 15.0,
             minZoom: 3.0,
             maxZoom: 18.0,
@@ -68,7 +74,7 @@ class _AddressMapWidgetState extends State<AddressMapWidget> {
                   InteractiveFlag.doubleTapZoom,
             ),
             onTap: (tapPosition, point) {
-              widget.onLocationSelected?.call(point);
+              widget.onLocationSelected?.call(point.toEntity());
             },
           ),
           children: [
@@ -84,7 +90,7 @@ class _AddressMapWidgetState extends State<AddressMapWidget> {
               MarkerLayer(
                 markers: [
                   Marker(
-                    point: widget.selectedLocation!,
+                    point: widget.selectedLocation!.toLatLng(),
                     width: 44,
                     height: 44,
                     alignment: Alignment.topCenter,

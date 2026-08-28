@@ -1,14 +1,14 @@
 import 'package:equatable/equatable.dart';
 import 'package:flowrist/config/base_state/base_state.dart';
+import 'package:flowrist/features/addresses/domain/entities/coordinates_entity.dart';
 import 'package:flowrist/features/addresses/domain/entities/permission_status_entity.dart';
-import 'package:latlong2/latlong.dart';
 
 class AddAddressState extends Equatable {
   final BaseState<PermissionStatusEntity> locationPermission;
   final bool locationEnabled;
   final bool? couldOpenAppSettings;
   final BaseState<String>? userLocation;
-  final LatLng? selectedLocation;
+  final CoordinatesEntity? selectedLocation;
   final bool manualEntry;
   final bool isMapConfigured;
 
@@ -36,7 +36,7 @@ class AddAddressState extends Equatable {
     bool? locationEnabled,
     bool? couldOpenAppSettings,
     BaseState<String>? userLocation,
-    LatLng? selectedLocation,
+    CoordinatesEntity? selectedLocation,
     bool? manualEntry,
     bool? isMapConfigured,
   }) {

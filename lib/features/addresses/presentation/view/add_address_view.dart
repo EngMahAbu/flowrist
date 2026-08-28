@@ -25,7 +25,6 @@ class _AddAddressViewState extends State<AddAddressView>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     context.read<AddAddressViewModel>().doEvent(CheckLocationPermission());
-    context.read<AddAddressViewModel>().doEvent(CheckLocationService());
   }
 
   @override

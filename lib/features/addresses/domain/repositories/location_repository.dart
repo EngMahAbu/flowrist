@@ -1,6 +1,7 @@
+import 'package:flowrist/config/base_response/base_response.dart';
+import 'package:flowrist/features/addresses/domain/entities/coordinates_entity.dart';
 import 'package:flowrist/features/addresses/domain/entities/permission_status_entity.dart';
 import 'package:flowrist/features/addresses/domain/entities/service_status_entity.dart';
-import 'package:latlong2/latlong.dart';
 
 abstract interface class LocationRepository {
   Future<PermissionStatusEntity> checkLocationPermission();
@@ -13,7 +14,9 @@ abstract interface class LocationRepository {
 
   Future<bool> openAppSettings();
 
-  Future<String?> getAddressFromLocation(LatLng location);
+  Future<BaseResponse<String?>> getAddressFromLocation(
+    CoordinatesEntity location,
+  );
 
-  Future<(LatLng, String?)> fetchUserCurrentLocation();
+  Future<BaseResponse<(CoordinatesEntity, String?)>> fetchUserCurrentLocation();
 }

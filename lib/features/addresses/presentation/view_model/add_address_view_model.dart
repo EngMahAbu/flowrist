@@ -1,5 +1,7 @@
+import 'package:flowrist/config/base_response/base_response.dart';
 import 'package:flowrist/config/base_state/base_state.dart';
 import 'package:flowrist/core/config/app_config.dart';
+import 'package:flowrist/features/addresses/domain/entities/coordinates_entity.dart';
 import 'package:flowrist/features/addresses/domain/entities/permission_status_entity.dart';
 import 'package:flowrist/features/addresses/domain/entities/service_status_entity.dart';
 import 'package:flowrist/features/addresses/domain/use_cases/check_location_permission_use_case.dart';
@@ -14,7 +16,6 @@ import 'package:flowrist/features/addresses/presentation/view_model/add_address_
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:latlong2/latlong.dart';
 
 @injectable
 class AddAddressViewModel extends Cubit<AddAddressState> {
@@ -122,7 +123,7 @@ class AddAddressViewModel extends Cubit<AddAddressState> {
     emit(state.copyWith(couldOpenAppSettings: couldOpenAppSettings));
   }
 
-  void _selectMapLocation(LatLng location) async {
+  void _selectMapLocation(CoordinatesEntity location) async {
     emit(
       state.copyWith(
         selectedLocation: location,
@@ -131,12 +132,20 @@ class AddAddressViewModel extends Cubit<AddAddressState> {
     );
 
     try {
-      final address = await _getAddressFromLocationUseCase(location);
+      final response = await _getAddressFromLocationUseCase(location);
 
-      if (address == null) {
-        emit(state.copyWith(userLocation: BaseState.error('')));
-      } else {
-        emit(state.copyWith(userLocation: BaseState.success(address)));
+      if (response is SuccessResponse<String?>) {
+        if (response.data == null) {
+          emit(state.copyWith(userLocation: BaseState.error('')));
+        } else {
+          emit(state.copyWith(userLocation: BaseState.success(response.data!)));
+        }
+      } else if (response is ErrorResponse<String?>) {
+        emit(
+          state.copyWith(
+            userLocation: BaseState.error(response.errorMessage),
+          ),
+        );
       }
     } catch (e) {
       emit(state.copyWith(userLocation: BaseState.error(e.toString())));
@@ -147,20 +156,31 @@ class AddAddressViewModel extends Cubit<AddAddressState> {
     emit(state.copyWith(userLocation: BaseState.loading()));
 
     try {
-      final (latLng, address) = await _fetchUserCurrentLocationUseCase();
+      final response = await _fetchUserCurrentLocationUseCase();
 
-      if (address == null) {
+      if (response is SuccessResponse<(CoordinatesEntity, String?)>) {
+        final data = response.data!;
+        final location = data.$1;
+        final address = data.$2;
+        if (address == null) {
+          emit(
+            state.copyWith(
+              userLocation: BaseState.error(''),
+              selectedLocation: location,
+            ),
+          );
+        } else {
+          emit(
+            state.copyWith(
+              userLocation: BaseState.success(address),
+              selectedLocation: location,
+            ),
+          );
+        }
+      } else if (response is ErrorResponse<(CoordinatesEntity, String?)>) {
         emit(
           state.copyWith(
-            userLocation: BaseState.error(''),
-            selectedLocation: latLng,
-          ),
-        );
-      } else {
-        emit(
-          state.copyWith(
-            userLocation: BaseState.success(address),
-            selectedLocation: latLng,
+            userLocation: BaseState.error(response.errorMessage),
           ),
         );
       }

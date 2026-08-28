@@ -19,7 +19,7 @@ class LocationService {
     return await _location.getLocation();
   }
 
-  Future<List<Placemark>> getCurrentAddresses({
+  Future<List<Placemark>> getAddressesFromCoordinates({
     double? lat,
     double? long,
   }) async {
