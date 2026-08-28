@@ -11,6 +11,7 @@ import 'package:flowrist/features/addresses/domain/use_cases/request_location_pe
 import 'package:flowrist/features/addresses/domain/use_cases/request_location_service_use_case.dart';
 import 'package:flowrist/features/addresses/presentation/view_model/add_address_event.dart';
 import 'package:flowrist/features/addresses/presentation/view_model/add_address_state.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:latlong2/latlong.dart';
@@ -26,14 +27,28 @@ class AddAddressViewModel extends Cubit<AddAddressState> {
   final GetAddressFromLocationUseCase _getAddressFromLocationUseCase;
   final AppConfig _appConfig;
 
-  AddAddressViewModel(this._checkLocationPermissionUseCase,
-      this._requestLocationPermissionUseCase,
-      this._checkLocationServiceUseCase,
-      this._requestLocationServiceUseCase,
-      this._openAppSettingsUseCase,
-      this._fetchUserCurrentLocationUseCase,
-      this._getAddressFromLocationUseCase,
-      this._appConfig,) : super(AddAddressState.initial());
+  AddAddressViewModel(
+    this._checkLocationPermissionUseCase,
+    this._requestLocationPermissionUseCase,
+    this._checkLocationServiceUseCase,
+    this._requestLocationServiceUseCase,
+    this._openAppSettingsUseCase,
+    this._fetchUserCurrentLocationUseCase,
+    this._getAddressFromLocationUseCase,
+    this._appConfig,
+  ) : super(AddAddressState.initial()) {
+    _checkMapConfig();
+  }
+
+  void _checkMapConfig() {
+    final isConfigured = _appConfig.mapTilerApiKey.isNotEmpty;
+    if (!isConfigured) {
+      debugPrint(
+        'WARNING: MAPTILER_API_KEY is missing. Falling back to OpenStreetMap.',
+      );
+    }
+    emit(state.copyWith(isMapConfigured: isConfigured));
+  }
 
   String get mapTilerApiKey => _appConfig.mapTilerApiKey;
 
@@ -87,7 +102,8 @@ class AddAddressViewModel extends Cubit<AddAddressState> {
     final status = await _checkLocationServiceUseCase();
 
     emit(
-        state.copyWith(locationEnabled: status == ServiceStatusEntity.enabled));
+      state.copyWith(locationEnabled: status == ServiceStatusEntity.enabled),
+    );
   }
 
   void _requestLocationService() async {

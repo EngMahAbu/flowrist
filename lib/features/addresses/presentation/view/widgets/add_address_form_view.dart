@@ -41,6 +41,7 @@ class _AddAddressFormViewState extends State<AddAddressFormView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildMapView(context, localizations, state),
+              if (!state.isMapConfigured) _buildMapWarningView(localizations),
               if (state.userLocation != null &&
                   state.userLocation!.errorMessage != null)
                 ..._buildAddressErrorView(context, localizations),
@@ -51,6 +52,46 @@ class _AddAddressFormViewState extends State<AddAddressFormView> {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildMapWarningView(AppLocalizations localizations) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 12.0),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: AppColors.amber10,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          children: [
+            const Icon(
+              Icons.warning_amber_rounded,
+              color: AppColors.amber90,
+              size: 20,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    localizations.mapConfigWarning,
+                    style: AppStyles.bold16Amber100.copyWith(fontSize: 13),
+                  ),
+                  Text(
+                    localizations.mapConfigWarningDescription,
+                    style: AppStyles.regular13Amber90Height14.copyWith(
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

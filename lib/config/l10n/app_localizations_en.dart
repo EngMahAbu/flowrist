@@ -360,4 +360,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get locationPermissionDeniedSettingsMessage =>
       'The location permission is permanently denied. Please enable it in settings to use the address auto-detection.';
+
+  @override
+  String get mapConfigWarning => 'High-quality maps are unavailable';
+
+  @override
+  String get mapConfigWarningDescription =>
+      'Using basic map provider. Some map details may be missing.';
 }

@@ -10,6 +10,7 @@ class AddAddressState extends Equatable {
   final BaseState<String>? userLocation;
   final LatLng? selectedLocation;
   final bool manualEntry;
+  final bool isMapConfigured;
 
   const AddAddressState({
     required this.locationPermission,
@@ -18,6 +19,7 @@ class AddAddressState extends Equatable {
     required this.userLocation,
     this.selectedLocation,
     this.manualEntry = false,
+    this.isMapConfigured = true,
   });
 
   AddAddressState.initial()
@@ -26,7 +28,8 @@ class AddAddressState extends Equatable {
       couldOpenAppSettings = null,
       userLocation = BaseState.initial(),
       selectedLocation = null,
-      manualEntry = false;
+      manualEntry = false,
+      isMapConfigured = true;
 
   AddAddressState copyWith({
     BaseState<PermissionStatusEntity>? locationPermission,
@@ -35,6 +38,7 @@ class AddAddressState extends Equatable {
     BaseState<String>? userLocation,
     LatLng? selectedLocation,
     bool? manualEntry,
+    bool? isMapConfigured,
   }) {
     return AddAddressState(
       locationPermission: locationPermission ?? this.locationPermission,
@@ -43,6 +47,7 @@ class AddAddressState extends Equatable {
       userLocation: userLocation ?? this.userLocation,
       selectedLocation: selectedLocation ?? this.selectedLocation,
       manualEntry: manualEntry ?? this.manualEntry,
+      isMapConfigured: isMapConfigured ?? this.isMapConfigured,
     );
   }
 
@@ -54,5 +59,6 @@ class AddAddressState extends Equatable {
     userLocation,
     selectedLocation,
     manualEntry,
+    isMapConfigured,
   ];
 }

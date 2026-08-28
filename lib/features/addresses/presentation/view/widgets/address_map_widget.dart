@@ -1,4 +1,5 @@
 import 'package:flowrist/core/constants/app_colors.dart';
+import 'package:flowrist/core/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart' hide Path;
@@ -61,7 +62,8 @@ class _AddressMapWidgetState extends State<AddressMapWidget> {
             minZoom: 3.0,
             maxZoom: 18.0,
             interactionOptions: const InteractionOptions(
-              flags: InteractiveFlag.drag |
+              flags:
+                  InteractiveFlag.drag |
                   InteractiveFlag.pinchZoom |
                   InteractiveFlag.doubleTapZoom,
             ),
@@ -71,14 +73,12 @@ class _AddressMapWidgetState extends State<AddressMapWidget> {
           ),
           children: [
             TileLayer(
-              urlTemplate:
-                  'https://api.maptiler.com/maps/dataviz-light/256/{z}/{x}/{y}.png?key={key}',
+              urlTemplate: AppConstants.mapTilerUrlTemplate,
               additionalOptions: {
-                'key': widget.mapTilerApiKey,
+                AppConstants.mapTilerApiKeyQueryParam: widget.mapTilerApiKey,
               },
-              userAgentPackageName: 'com.elevate.t5.flowrist',
-              fallbackUrl:
-                  'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+              userAgentPackageName: AppConstants.appPackageName,
+              fallbackUrl: AppConstants.mapFallbackUrl,
             ),
             if (widget.selectedLocation != null)
               MarkerLayer(

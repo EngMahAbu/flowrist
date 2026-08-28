@@ -759,6 +759,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The location permission is permanently denied. Please enable it in settings to use the address auto-detection.'**
   String get locationPermissionDeniedSettingsMessage;
+
+  /// No description provided for @mapConfigWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'High-quality maps are unavailable'**
+  String get mapConfigWarning;
+
+  /// No description provided for @mapConfigWarningDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Using basic map provider. Some map details may be missing.'**
+  String get mapConfigWarningDescription;
 }
 
 class _AppLocalizationsDelegate
