@@ -1,10 +1,8 @@
 import 'package:flowrist/config/di/di.dart';
 import 'package:flowrist/config/session/session_service.dart';
 import 'package:flowrist/core/constants/app_router.dart';
-import 'package:flowrist/features/home/shared/home_address/presentation/cubit/home_address_cubit/address_cubit.dart';
 import 'package:flowrist/gallery_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class SplashView extends StatefulWidget {

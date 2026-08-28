@@ -5,9 +5,9 @@ import 'package:flowrist/features/home/shared/home_address/data/client/home_addr
 import 'package:flowrist/features/home/shared/home_address/data/data_sources/contract/remote/set_default_address_data_source.dart';
 import 'package:flowrist/features/home/shared/home_address/data/model/address_model/default_address_response_model.dart';
 import 'package:injectable/injectable.dart';
+
 @LazySingleton(as: SetDefaultAddressDataSource)
-class SetDefaultAddressDataSourceImpl
-    implements SetDefaultAddressDataSource {
+class SetDefaultAddressDataSourceImpl implements SetDefaultAddressDataSource {
   final HomeAddressApiClient _apiClient;
 
   SetDefaultAddressDataSourceImpl(this._apiClient);
@@ -20,14 +20,10 @@ class SetDefaultAddressDataSourceImpl
       final response = await _apiClient.setDefaultAddress(addressId);
 
       if (response.status && response.data != null) {
-        return SuccessResponse<DefaultAddressResponseModel>(
-          response.data!,
-        );
+        return SuccessResponse<DefaultAddressResponseModel>(response.data!);
       }
 
-      return ErrorResponse<DefaultAddressResponseModel>(
-        response.message,
-      );
+      return ErrorResponse<DefaultAddressResponseModel>(response.message);
     } on DioException catch (e) {
       return ApiErrorHandler.handleException(e);
     }

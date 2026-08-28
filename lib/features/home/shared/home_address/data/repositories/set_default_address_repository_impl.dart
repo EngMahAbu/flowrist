@@ -6,8 +6,7 @@ import 'package:flowrist/features/home/shared/home_address/domain/repositories/s
 import 'package:injectable/injectable.dart';
 
 @LazySingleton(as: SetDefaultAddressRepository)
-class SetDefaultAddressRepositoryImpl
-    implements SetDefaultAddressRepository {
+class SetDefaultAddressRepositoryImpl implements SetDefaultAddressRepository {
   final SetDefaultAddressDataSource _dataSource;
 
   SetDefaultAddressRepositoryImpl(this._dataSource);
@@ -20,14 +19,10 @@ class SetDefaultAddressRepositoryImpl
 
     switch (response) {
       case SuccessResponse<DefaultAddressResponseModel>():
-        return SuccessResponse(
-          response.data?.toEntity(),
-        );
+        return SuccessResponse(response.data?.toEntity());
 
       case ErrorResponse<DefaultAddressResponseModel>():
-        return ErrorResponse(
-          response.errorMessage,
-        );
+        return ErrorResponse(response.errorMessage);
     }
   }
 }

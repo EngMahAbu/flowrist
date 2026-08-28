@@ -3,8 +3,8 @@ import 'package:flowrist/core/constants/app_colors.dart';
 import 'package:flowrist/core/constants/app_styles.dart';
 import 'package:flowrist/core/constants/flowery_icons.dart';
 import 'package:flowrist/features/home/shared/home_address/domain/entities/address_entities/address_entity.dart';
-import 'package:flowrist/features/home/shared/home_address/presentation/cubit/home_address_cubit/address_cubit.dart';
-import 'package:flowrist/features/home/shared/home_address/presentation/cubit/home_address_cubit/address_state.dart';
+import 'package:flowrist/features/home/shared/home_address/presentation/cubit/home_address_cubit/home_address_cubit.dart';
+import 'package:flowrist/features/home/shared/home_address/presentation/cubit/home_address_cubit/home_address_state.dart';
 import 'package:flowrist/features/home/shared/home_address/presentation/widgets/address_bottom_sheet/address_bottom_sheet_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,7 +16,7 @@ class DeliveryLocationHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
 
-    return BlocBuilder<AddressCubit, AddressState>(
+    return BlocBuilder<HomeAddressCubit, HomeAddressState>(
       builder: (context, state) {
         final selectedAddress = state.selectedAddress;
 
@@ -71,13 +71,15 @@ class DeliveryLocationHeader extends StatelessWidget {
     );
   }
 
-  void _showAddressBottomSheet(BuildContext context, AddressState state) {
+  void _showAddressBottomSheet(BuildContext context, HomeAddressState state) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      useSafeArea: true,
+      useRootNavigator: true,
       builder: (_) {
         return BlocProvider.value(
-          value: context.read<AddressCubit>(),
+          value: context.read<HomeAddressCubit>(),
           child: AddressBottomSheetContent(
             addresses: state.addressesState.data ?? [],
             selectedAddressId: state.selectedAddress?.id,

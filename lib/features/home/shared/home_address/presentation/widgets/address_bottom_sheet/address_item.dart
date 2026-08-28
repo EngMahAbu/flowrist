@@ -1,3 +1,4 @@
+import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flowrist/core/constants/app_colors.dart';
 import 'package:flowrist/features/home/shared/home_address/domain/entities/address_entities/address_entity.dart';
 import 'package:flutter/material.dart';
@@ -16,21 +17,18 @@ class AddressItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 18,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected
-                ? AppColors.purpleBase
-                : Colors.grey.shade300,
+            color: isSelected ? AppColors.purpleBase : Colors.grey.shade300,
             width: isSelected ? 1.5 : 1,
           ),
         ),
@@ -58,7 +56,7 @@ class AddressItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Delivered to ${address.city}',
+                    '${localizations.deliverTo} ${address.city}',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
@@ -73,10 +71,7 @@ class AddressItem extends StatelessWidget {
                     '${address.area} • ${address.addressLine}',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.grey.shade600,
-                    ),
+                    style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
                   ),
                 ],
               ),

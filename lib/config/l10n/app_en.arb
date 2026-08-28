@@ -93,6 +93,11 @@
   "viewAll": "View All",
   "bestSellers": "Best Sellers",
   "occasion": "Occasion",
+  "selectAddress":"Select Address",
+  "setAsDefault":"Set as default",
+  "addNewaddress":"Add new address",
+  "noAddressessaved":"No addresses saved"
+  "occasion": "Occasion",
   "address": "Address",
   "locationPermissionNeeded": "Location permission needed",
   "allowAccessDescription": "Allow access to auto-fill your address.",

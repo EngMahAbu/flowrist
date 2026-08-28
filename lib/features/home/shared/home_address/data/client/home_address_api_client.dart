@@ -12,11 +12,11 @@ abstract class HomeAddressApiClient {
   @factoryMethod
   factory HomeAddressApiClient(Dio dio) = _HomeAddressApiClient;
 
-  @GET(Endpoints.homeAddress)
+  @GET(Endpoints.getAllAddress)
   Future<AddressApiResponseModel> getAllUserAddresses();
 
-@PATCH('/api/address-cart/users/me/addresses/{addressId}/default')
-Future<SetDefaultAddressResponseModel> setDefaultAddress(
-  @Path('addressId') String addressId,
-);
+  @PATCH(Endpoints.setDefaultAddress)
+  Future<SetDefaultAddressResponseModel> setDefaultAddress(
+    @Path('addressId') String addressId,
+  );
 }

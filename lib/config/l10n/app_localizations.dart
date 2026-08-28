@@ -610,6 +610,30 @@ abstract class AppLocalizations {
   /// **'Best Sellers'**
   String get bestSellers;
 
+  /// No description provided for @selectAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Address'**
+  String get selectAddress;
+
+  /// No description provided for @setAsDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Set as default'**
+  String get setAsDefault;
+
+  /// No description provided for @addNewaddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Add new address'**
+  String get addNewaddress;
+
+  /// No description provided for @noAddressessaved.
+  ///
+  /// In en, this message translates to:
+  /// **'No addresses saved'**
+  String get noAddressessaved;
+
   /// No description provided for @address.
   ///
   /// In en, this message translates to:

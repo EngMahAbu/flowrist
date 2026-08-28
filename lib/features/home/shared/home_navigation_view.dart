@@ -1,6 +1,6 @@
 import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flowrist/config/session/session_guard.dart';
-import 'package:flowrist/features/home/shared/home_address/presentation/cubit/home_address_cubit/address_cubit.dart';
+import 'package:flowrist/features/home/shared/home_address/presentation/cubit/home_address_cubit/home_address_cubit.dart';
 import 'package:flowrist/features/home/cart/presentation/cubit/cart_cubit.dart';
 import 'package:flowrist/features/home/cart/presentation/cubit/cart_state.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +28,7 @@ class _HomeNavigationViewState extends State<HomeNavigationView> {
 
   Future<void> _initializeAddress() async {
     final addressCubit =
-        context.read<AddressCubit>();
+        context.read<HomeAddressCubit>();
 
     await addressCubit.initializeAddress();
   }
