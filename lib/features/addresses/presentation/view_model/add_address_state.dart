@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:flowrist/config/base_state/base_state.dart';
+import 'package:flowrist/features/addresses/domain/entities/permission_status_entity.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class AddAddressState extends Equatable {
-  final BaseState<PermissionStatus> locationPermission;
+  final BaseState<PermissionStatusEntity> locationPermission;
   final bool locationEnabled;
   final bool? couldOpenAppSettings;
   final BaseState<String>? userLocation;
@@ -29,7 +29,7 @@ class AddAddressState extends Equatable {
       manualEntry = false;
 
   AddAddressState copyWith({
-    BaseState<PermissionStatus>? locationPermission,
+    BaseState<PermissionStatusEntity>? locationPermission,
     bool? locationEnabled,
     bool? couldOpenAppSettings,
     BaseState<String>? userLocation,

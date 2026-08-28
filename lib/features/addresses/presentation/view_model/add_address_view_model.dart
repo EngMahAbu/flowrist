@@ -1,20 +1,36 @@
 import 'package:flowrist/config/base_state/base_state.dart';
-import 'package:flowrist/config/location_service/location_service.dart';
-import 'package:flowrist/config/permission_handler/permission_handler.dart';
+import 'package:flowrist/features/addresses/domain/entities/permission_status_entity.dart';
+import 'package:flowrist/features/addresses/domain/entities/service_status_entity.dart';
+import 'package:flowrist/features/addresses/domain/use_cases/check_location_permission_use_case.dart';
+import 'package:flowrist/features/addresses/domain/use_cases/check_location_service_use_case.dart';
+import 'package:flowrist/features/addresses/domain/use_cases/fetch_user_current_location_use_case.dart';
+import 'package:flowrist/features/addresses/domain/use_cases/get_address_from_location_use_case.dart';
+import 'package:flowrist/features/addresses/domain/use_cases/open_app_settings_use_case.dart';
+import 'package:flowrist/features/addresses/domain/use_cases/request_location_permission_use_case.dart';
+import 'package:flowrist/features/addresses/domain/use_cases/request_location_service_use_case.dart';
 import 'package:flowrist/features/addresses/presentation/view_model/add_address_event.dart';
 import 'package:flowrist/features/addresses/presentation/view_model/add_address_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 @injectable
 class AddAddressViewModel extends Cubit<AddAddressState> {
-  final PermissionsHandler _permissionsHandler;
-  final LocationService _locationService;
+  final CheckLocationPermissionUseCase _checkLocationPermissionUseCase;
+  final RequestLocationPermissionUseCase _requestLocationPermissionUseCase;
+  final CheckLocationServiceUseCase _checkLocationServiceUseCase;
+  final RequestLocationServiceUseCase _requestLocationServiceUseCase;
+  final OpenAppSettingsUseCase _openAppSettingsUseCase;
+  final FetchUserCurrentLocationUseCase _fetchUserCurrentLocationUseCase;
+  final GetAddressFromLocationUseCase _getAddressFromLocationUseCase;
 
-  AddAddressViewModel(this._permissionsHandler, this._locationService)
-    : super(AddAddressState.initial());
+  AddAddressViewModel(this._checkLocationPermissionUseCase,
+      this._requestLocationPermissionUseCase,
+      this._checkLocationServiceUseCase,
+      this._requestLocationServiceUseCase,
+      this._openAppSettingsUseCase,
+      this._fetchUserCurrentLocationUseCase,
+      this._getAddressFromLocationUseCase,) : super(AddAddressState.initial());
 
   void doEvent(AddAddressEvent event) {
     switch (event) {
@@ -38,14 +54,13 @@ class AddAddressViewModel extends Cubit<AddAddressState> {
   void _checkLocationPermission() async {
     emit(state.copyWith(locationPermission: BaseState.loading()));
 
-    final status = await _permissionsHandler.checkForegroundLocation();
+    final status = await _checkLocationPermissionUseCase();
 
     emit(state.copyWith(locationPermission: BaseState.success(status)));
 
-    if (status == PermissionStatus.granted) {
-      final serviceStatus = await _permissionsHandler
-          .checkLocationServiceStatus();
-      if (serviceStatus == ServiceStatus.enabled) {
+    if (status == PermissionStatusEntity.granted) {
+      final serviceStatus = await _checkLocationServiceUseCase();
+      if (serviceStatus == ServiceStatusEntity.enabled) {
         _fetchUserLocation();
       }
     }
@@ -54,35 +69,35 @@ class AddAddressViewModel extends Cubit<AddAddressState> {
   void _requestLocationPermission() async {
     emit(state.copyWith(locationPermission: BaseState.loading()));
 
-    final status = await _permissionsHandler.requestPermission(
-      Permission.locationWhenInUse,
-    );
+    final status = await _requestLocationPermissionUseCase();
 
     emit(state.copyWith(locationPermission: BaseState.success(status)));
 
-    if (status == PermissionStatus.granted) {
+    if (status == PermissionStatusEntity.granted) {
       _fetchUserLocation();
     }
   }
 
   void _checkLocationService() async {
-    final status = await _permissionsHandler.checkLocationServiceStatus();
+    final status = await _checkLocationServiceUseCase();
 
-    emit(state.copyWith(locationEnabled: status == ServiceStatus.enabled));
+    emit(
+        state.copyWith(locationEnabled: status == ServiceStatusEntity.enabled));
   }
 
   void _requestLocationService() async {
-    final status = await _locationService.requestLocationService();
+    final status = await _requestLocationServiceUseCase();
 
     emit(state.copyWith(locationEnabled: status));
 
-    if (status && state.locationPermission.data == PermissionStatus.granted) {
+    if (status &&
+        state.locationPermission.data == PermissionStatusEntity.granted) {
       _fetchUserLocation();
     }
   }
 
   void _openAppSettings() async {
-    final bool couldOpenAppSettings = await _permissionsHandler.openSettings();
+    final bool couldOpenAppSettings = await _openAppSettingsUseCase();
     emit(state.copyWith(couldOpenAppSettings: couldOpenAppSettings));
   }
 
@@ -95,22 +110,12 @@ class AddAddressViewModel extends Cubit<AddAddressState> {
     );
 
     try {
-      final locations = await _locationService.getCurrentAddresses(
-        lat: location.latitude,
-        long: location.longitude,
-      );
+      final address = await _getAddressFromLocationUseCase(location);
 
-      if (locations.isEmpty) {
-        emit(state.copyWith(userLocation: BaseState.error('')));
-        return;
-      }
-
-      final street = _locationService.formatAddress(locations[0]);
-
-      if (street.isEmpty) {
+      if (address == null) {
         emit(state.copyWith(userLocation: BaseState.error('')));
       } else {
-        emit(state.copyWith(userLocation: BaseState.success(street)));
+        emit(state.copyWith(userLocation: BaseState.success(address)));
       }
     } catch (e) {
       emit(state.copyWith(userLocation: BaseState.error(e.toString())));
@@ -121,26 +126,9 @@ class AddAddressViewModel extends Cubit<AddAddressState> {
     emit(state.copyWith(userLocation: BaseState.loading()));
 
     try {
-      final locationData = await _locationService.fetchUserCurrentLocation();
-      final latLng = LatLng(locationData.latitude, locationData.longitude);
-      final locations = await _locationService.getCurrentAddresses(
-        lat: locationData.latitude,
-        long: locationData.longitude,
-      );
+      final (latLng, address) = await _fetchUserCurrentLocationUseCase();
 
-      if (locations.isEmpty) {
-        emit(
-          state.copyWith(
-            userLocation: BaseState.error(''),
-            selectedLocation: latLng,
-          ),
-        );
-        return;
-      }
-
-      final street = _locationService.formatAddress(locations[0]);
-
-      if (street.isEmpty) {
+      if (address == null) {
         emit(
           state.copyWith(
             userLocation: BaseState.error(''),
@@ -150,7 +138,7 @@ class AddAddressViewModel extends Cubit<AddAddressState> {
       } else {
         emit(
           state.copyWith(
-            userLocation: BaseState.success(street),
+            userLocation: BaseState.success(address),
             selectedLocation: latLng,
           ),
         );

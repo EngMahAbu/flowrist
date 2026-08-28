@@ -8,7 +8,8 @@ import 'package:flowrist/features/addresses/presentation/view_model/add_address_
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:permission_handler/permission_handler.dart';
+
+import '../../domain/entities/permission_status_entity.dart';
 
 class AddAddressView extends StatefulWidget {
   const AddAddressView({super.key});
@@ -66,7 +67,8 @@ class _AddAddressViewState extends State<AddAddressView>
           } else {
             return _buildViewByPermissionStatus(
               permissionStatus:
-                  state.locationPermission.data ?? PermissionStatus.denied,
+                  state.locationPermission.data ??
+                  PermissionStatusEntity.denied,
               isServiceEnabled: state.locationEnabled,
               localizations: localizations,
             );
@@ -85,23 +87,23 @@ class _AddAddressViewState extends State<AddAddressView>
   }
 
   Widget _buildViewByPermissionStatus({
-    required PermissionStatus permissionStatus,
+    required PermissionStatusEntity permissionStatus,
     required bool isServiceEnabled,
     required AppLocalizations localizations,
   }) {
     switch (permissionStatus) {
-      case PermissionStatus.denied:
+      case PermissionStatusEntity.denied:
         return AddAddressFormView(showSoftPermissionBanner: true);
-      case PermissionStatus.granted:
+      case PermissionStatusEntity.granted:
         return _buildViewByServiceStatus(
           isLocationEnabled: isServiceEnabled,
           context: context,
           localizations: localizations,
         );
-      case PermissionStatus.restricted:
-      case PermissionStatus.limited:
-      case PermissionStatus.permanentlyDenied:
-      case PermissionStatus.provisional:
+      case PermissionStatusEntity.restricted:
+      case PermissionStatusEntity.limited:
+      case PermissionStatusEntity.permanentlyDenied:
+      case PermissionStatusEntity.provisional:
         return _buildPermissionBlockedView(
           mainIcon: Icons.lock_outline,
           title: localizations.locationAccessBlocked,

@@ -6,8 +6,10 @@ import 'package:location/location.dart';
 
 @lazySingleton
 class LocationService {
-  final _location = Location();
-  final _geocoding = Geocoding();
+  final Location _location;
+  final Geocoding _geocoding;
+
+  LocationService(this._location, this._geocoding);
 
   Future<bool> requestLocationService() async {
     return await _location.requestService();
