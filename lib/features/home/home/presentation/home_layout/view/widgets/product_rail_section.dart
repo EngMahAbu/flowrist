@@ -12,10 +12,7 @@ import 'package:go_router/go_router.dart';
 class ProductRailSection extends StatelessWidget {
   final ProductRailPayloadEntity payload;
 
-  const ProductRailSection({
-    super.key,
-    required this.payload,
-  });
+  const ProductRailSection({super.key, required this.payload});
 
   @override
   Widget build(BuildContext context) {
@@ -50,13 +47,7 @@ class ProductRailSection extends StatelessWidget {
                 child: InkWell(
                   borderRadius: BorderRadius.circular(8),
                   onTap: () {
-                    debugPrint(
-                      'Product tapped: ${item.id}',
-                    );
-
-                    context.push(
-                      AppRoutes.productDetailsPath(item.id),
-                    );
+                    context.push(AppRoutes.productDetailsPath(item.id));
                   },
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,11 +62,7 @@ class ProductRailSection extends StatelessWidget {
                             placeholder: (context, url) {
                               return const ProductCardShimmer();
                             },
-                            errorWidget: (
-                              context,
-                              url,
-                              error,
-                            ) {
+                            errorWidget: (context, url, error) {
                               return Container(
                                 width: double.infinity,
                                 height: double.infinity,
@@ -95,8 +82,7 @@ class ProductRailSection extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.all(8),
                         child: Column(
-                          crossAxisAlignment:
-                              CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               item.name,

@@ -28,7 +28,7 @@ class AddressItem extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected ? AppColors.purpleBase : Colors.grey.shade300,
+            color: isSelected ? AppColors.purpleBase : AppColors.white50,
             width: isSelected ? 1.5 : 1,
           ),
         ),
@@ -71,7 +71,7 @@ class AddressItem extends StatelessWidget {
                     '${address.area} • ${address.addressLine}',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
+                    style: TextStyle(fontSize: 13, color: AppColors.white70),
                   ),
                 ],
               ),
