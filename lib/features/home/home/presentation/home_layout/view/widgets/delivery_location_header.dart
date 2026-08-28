@@ -9,8 +9,27 @@ import 'package:flowrist/features/home/shared/home_address/presentation/widgets/
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class DeliveryLocationHeader extends StatelessWidget {
+class DeliveryLocationHeader extends StatefulWidget {
   const DeliveryLocationHeader({super.key});
+
+  @override
+  State<DeliveryLocationHeader> createState() => _DeliveryLocationHeaderState();
+}
+
+class _DeliveryLocationHeaderState extends State<DeliveryLocationHeader> {
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initializeAddress();
+    });
+    super.initState();
+  }
+
+  Future<void> _initializeAddress() async {
+    final addressCubit = context.read<HomeAddressCubit>();
+
+    await addressCubit.initializeAddress();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +50,9 @@ class DeliveryLocationHeader extends StatelessWidget {
             Transform.rotate(
               angle: 3.14 / 2,
               child: IconButton(
-                onPressed: state.addressesState.isLoading
+                onPressed:
+                    state.addressesState.isLoading ||
+                        state.addressesState.errorMessage != null
                     ? null
                     : () {
                         _showAddressBottomSheet(context, state);

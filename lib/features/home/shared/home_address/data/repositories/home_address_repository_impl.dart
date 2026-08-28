@@ -5,8 +5,8 @@ import 'package:flowrist/features/home/shared/home_address/domain/entities/addre
 import 'package:flowrist/features/home/shared/home_address/domain/repositories/home_address_repository.dart';
 import 'package:injectable/injectable.dart';
 
-@LazySingleton(as: AllAddressRepository)
-class AddressRepositoryImpl implements AllAddressRepository {
+@LazySingleton(as: HomeAddressRepository)
+class AddressRepositoryImpl implements HomeAddressRepository {
   final AddressRemoteDataSource _remoteDataSource;
 
   AddressRepositoryImpl(this._remoteDataSource);

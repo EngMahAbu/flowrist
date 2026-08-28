@@ -5,7 +5,7 @@ import 'package:injectable/injectable.dart';
 
 @LazySingleton()
 class GetAllUserAddressesUseCase {
-  final AllAddressRepository _repository;
+  final HomeAddressRepository _repository;
 
   GetAllUserAddressesUseCase(this._repository);
 

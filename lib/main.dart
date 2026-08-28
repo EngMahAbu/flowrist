@@ -17,12 +17,7 @@ void main() {
 
   Bloc.observer = FlowristBlocObserver();
 
-  runApp(
-    BlocProvider(
-      create: (_) => getIt<HomeAddressCubit>(),
-      child: const FlowristApp(),
-    ),
-  );
+  runApp(const FlowristApp());
 }
 
 class FlowristApp extends StatelessWidget {

@@ -1,5 +1,6 @@
 import 'package:flowrist/config/di/di.dart';
 import 'package:flowrist/config/session/session_service.dart';
+import 'package:flowrist/core/constants/app_dimensions.dart';
 import 'package:flowrist/core/constants/app_router.dart';
 import 'package:flowrist/gallery_view.dart';
 import 'package:flutter/material.dart';
@@ -13,51 +14,56 @@ class SplashView extends StatefulWidget {
 }
 
 class _SplashViewState extends State<SplashView> {
-  static const Duration _splashDuration =
-      Duration(seconds: 2);
+  static const _splashDuration = Duration(seconds: 5);
 
   @override
   void initState() {
     super.initState();
-
-    _startSplash();
+    _checkSession();
   }
 
-  Future<void> _startSplash() async {
-    // =========================================================
-    // 1. SHOW SPLASH
-    // =========================================================
-
+  Future<void> _checkSession() async {
     await Future.delayed(_splashDuration);
 
     if (!mounted) return;
 
-    // =========================================================
-    // 2. REMOVE SPLASH FIRST
-    // =========================================================
-
     final sessionService = getIt<SessionService>();
 
-    final isRemembered =
-        await sessionService.isRemembered();
+    try {
+      final isRemembered = await sessionService.isRemembered();
 
-    if (!mounted) return;
+      if (!mounted) return;
 
-    // =========================================================
-    // 3. GO TO NEXT SCREEN
-    // =========================================================
+      if (isRemembered) {
+        context.go(AppRoutes.homeTab);
+      } else {
+        context.go(AppRoutes.login);
+      }
+    } catch (error) {
+      debugPrint('Splash session check failed: $error');
 
-    if (isRemembered) {
-      context.go(AppRoutes.homeTab);
-    } else {
+      if (!mounted) return;
+
       context.go(AppRoutes.login);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: GalleryView(),
+    return Scaffold(
+      appBar: AppBar(
+        leading: Padding(
+          padding: const EdgeInsetsDirectional.only(
+            start: AppDimensions.defaultScreenPadding,
+          ),
+          child: IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.arrow_back_ios_new),
+          ),
+        ),
+        title: const Text('Gallery Screen'),
+      ),
+      body: const GalleryView(),
     );
   }
 }
