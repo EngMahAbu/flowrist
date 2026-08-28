@@ -1,8 +1,10 @@
 import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flowrist/core/constants/app_colors.dart';
+import 'package:flowrist/core/constants/app_router.dart';
 import 'package:flowrist/core/constants/app_styles.dart';
 import 'package:flowrist/core/constants/flowery_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class DeliveryLocationHeader extends StatelessWidget {
   const DeliveryLocationHeader({super.key});
@@ -22,7 +24,10 @@ class DeliveryLocationHeader extends StatelessWidget {
         Transform.rotate(
           angle: 3.14 / 2,
           child: IconButton(
-            onPressed: () {},
+            onPressed: () {
+              // TODO: dummy navigation to the add address screen will be removed later
+              context.push(AppRoutes.addAddress);
+            },
             icon: Icon(
               Icons.arrow_forward_ios,
               size: 20,

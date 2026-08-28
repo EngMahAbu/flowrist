@@ -1,4 +1,5 @@
 import 'package:flowrist/config/di/di.dart';
+import 'package:flowrist/features/addresses/presentation/view/add_address_view.dart';
 import 'package:flowrist/features/auth/presentation/login/cubit/login_cubit.dart';
 import 'package:flowrist/features/auth/presentation/login/view/login_view.dart';
 import 'package:flowrist/features/auth/presentation/signup/view/signup_view.dart';
@@ -17,6 +18,8 @@ import 'package:flowrist/features/splash/presentation/view/splash_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../features/addresses/presentation/view_model/add_address_view_model.dart';
 import '../../features/home/shared/product_details/presentation/view/products_details_screen.dart';
 
 abstract final class AppRoutes {
@@ -39,6 +42,7 @@ abstract final class AppRoutes {
 
   static const bestSeller = '/best-seller';
   static const occasions = '/occasions';
+  static const addAddress = '/add-address';
 }
 
 abstract final class AppRouter {
@@ -205,6 +209,20 @@ abstract final class AppRouter {
             ],
           ),
         ],
+      ),
+
+      // --------------------------------------------------
+      // Add Address Screen
+      // --------------------------------------------------
+      GoRoute(
+        path: AppRoutes.addAddress,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          return BlocProvider<AddAddressViewModel>(
+            create: (context) => getIt<AddAddressViewModel>(),
+            child: const AddAddressView(),
+          );
+        },
       ),
     ],
   );
