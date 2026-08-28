@@ -8,6 +8,7 @@ import 'package:flowrist/features/home/categories/presentation/cubit/categories_
 import 'package:flowrist/features/home/categories/presentation/view/categories_tab_view.dart';
 import 'package:flowrist/features/home/home/presentation/best_seller/cubit/best_seller_cubit.dart';
 import 'package:flowrist/features/home/home/presentation/best_seller/view/best_seller_view.dart';
+import 'package:flowrist/features/home/shared/home_address/presentation/cubit/home_address_cubit/address_cubit.dart';
 import 'package:flowrist/features/home/home/presentation/home_layout/view/home_tab_view.dart';
 import 'package:flowrist/features/home/home/presentation/occasion/cubit/occasion_cubit.dart';
 import 'package:flowrist/features/home/home/presentation/occasion/view/occasion_view.dart';
@@ -17,6 +18,7 @@ import 'package:flowrist/features/splash/presentation/view/splash_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
 import '../../features/home/shared/product_details/presentation/view/products_details_screen.dart';
 
 abstract final class AppRoutes {
@@ -29,13 +31,14 @@ abstract final class AppRoutes {
   static const categoriesTab = '/categories-tab';
   static const cartTab = '/cart-tab';
   static const profileTab = '/profile-tab';
+
   static const productDetails = '/product/:productId';
 
   static String productDetailsPath(String productId) {
     return '/product/$productId';
   }
 
-  static const String forgetPassword = '/forgot-password';
+  static const forgetPassword = '/forgot-password';
 
   static const bestSeller = '/best-seller';
   static const occasions = '/occasions';
@@ -47,7 +50,12 @@ abstract final class AppRouter {
   static final GoRouter router = GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: AppRoutes.splash,
+
     routes: [
+      // ==================================================
+      // PRODUCT DETAILS
+      // ==================================================
+
       GoRoute(
         path: AppRoutes.productDetails,
         parentNavigatorKey: _rootNavigatorKey,
@@ -56,16 +64,22 @@ abstract final class AppRouter {
 
           if (productId == null || productId.isEmpty) {
             return const Scaffold(
-              body: Center(child: Text('Product ID is required')),
+              body: Center(
+                child: Text('Product ID is required'),
+              ),
             );
           }
 
-          return ProductDetailsScreen(productId: productId);
+          return ProductDetailsScreen(
+            productId: productId,
+          );
         },
       ),
-      // --------------------------------------------------
-      // Splash
-      // --------------------------------------------------
+
+      // ==================================================
+      // SPLASH
+      // ==================================================
+
       GoRoute(
         path: AppRoutes.splash,
         parentNavigatorKey: _rootNavigatorKey,
@@ -74,9 +88,10 @@ abstract final class AppRouter {
         },
       ),
 
-      // --------------------------------------------------
-      // Login
-      // --------------------------------------------------
+      // ==================================================
+      // LOGIN
+      // ==================================================
+
       GoRoute(
         path: AppRoutes.login,
         parentNavigatorKey: _rootNavigatorKey,
@@ -88,9 +103,10 @@ abstract final class AppRouter {
         },
       ),
 
-      // --------------------------------------------------
-      // Sign Up
-      // --------------------------------------------------
+      // ==================================================
+      // SIGN UP
+      // ==================================================
+
       GoRoute(
         path: AppRoutes.signUp,
         parentNavigatorKey: _rootNavigatorKey,
@@ -99,9 +115,10 @@ abstract final class AppRouter {
         },
       ),
 
-      // --------------------------------------------------
-      // Best Seller
-      // --------------------------------------------------
+      // ==================================================
+      // BEST SELLER
+      // ==================================================
+
       GoRoute(
         path: AppRoutes.bestSeller,
         parentNavigatorKey: _rootNavigatorKey,
@@ -113,9 +130,10 @@ abstract final class AppRouter {
         },
       ),
 
-      // --------------------------------------------------
-      // Occasions
-      // --------------------------------------------------
+      // ==================================================
+      // OCCASIONS
+      // ==================================================
+
       GoRoute(
         path: AppRoutes.occasions,
         parentNavigatorKey: _rootNavigatorKey,
@@ -139,19 +157,24 @@ abstract final class AppRouter {
       // ==================================================
       // MAIN APP SHELL
       // ==================================================
+
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return BlocProvider(
             create: (_) =>
-                getIt<CategoriesCubit>()..doEvent(GetCategoriesEvent()),
-            child: HomeNavigationView(tabViewShell: navigationShell),
+                getIt<CategoriesCubit>()
+                  ..doEvent(GetCategoriesEvent()),
+            child: HomeNavigationView(
+              tabViewShell: navigationShell,
+            ),
           );
         },
 
         branches: [
-          // ------------------------------------------------
+          // ==================================================
           // HOME
-          // ------------------------------------------------
+          // ==================================================
+
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -163,9 +186,10 @@ abstract final class AppRouter {
             ],
           ),
 
-          // ------------------------------------------------
+          // ==================================================
           // CATEGORIES
-          // ------------------------------------------------
+          // ==================================================
+
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -177,9 +201,10 @@ abstract final class AppRouter {
             ],
           ),
 
-          // ------------------------------------------------
+          // ==================================================
           // CART
-          // ------------------------------------------------
+          // ==================================================
+
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -191,9 +216,10 @@ abstract final class AppRouter {
             ],
           ),
 
-          // ------------------------------------------------
+          // ==================================================
           // PROFILE
-          // ------------------------------------------------
+          // ==================================================
+
           StatefulShellBranch(
             routes: [
               GoRoute(

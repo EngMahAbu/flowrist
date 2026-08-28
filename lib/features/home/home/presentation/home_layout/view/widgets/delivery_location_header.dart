@@ -2,7 +2,12 @@ import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flowrist/core/constants/app_colors.dart';
 import 'package:flowrist/core/constants/app_styles.dart';
 import 'package:flowrist/core/constants/flowery_icons.dart';
+import 'package:flowrist/features/home/shared/home_address/domain/entities/address_entities/address_entity.dart';
+import 'package:flowrist/features/home/shared/home_address/presentation/cubit/home_address_cubit/address_cubit.dart';
+import 'package:flowrist/features/home/shared/home_address/presentation/cubit/home_address_cubit/address_state.dart';
+import 'package:flowrist/features/home/shared/home_address/presentation/widgets/address_bottom_sheet/address_bottom_sheet_content.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DeliveryLocationHeader extends StatelessWidget {
   const DeliveryLocationHeader({super.key});
@@ -10,27 +15,75 @@ class DeliveryLocationHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
-    return Row(
-      children: [
-        Icon(FloweryIcons.location, size: 20),
-        SizedBox(width: 2),
-        Text(
-          '${localizations.deliverTo} 2XVP+XC - Sheikh Zayed ',
-          style: AppStyles.medium18Inter.copyWith(fontSize: 14),
-        ),
 
-        Transform.rotate(
-          angle: 3.14 / 2,
-          child: IconButton(
-            onPressed: () {},
-            icon: Icon(
-              Icons.arrow_forward_ios,
-              size: 20,
-              color: AppColors.purpleBase,
+    return BlocBuilder<AddressCubit, AddressState>(
+      builder: (context, state) {
+        final selectedAddress = state.selectedAddress;
+
+        return Row(
+          children: [
+            const Icon(FloweryIcons.location, size: 20),
+
+            const SizedBox(width: 2),
+
+            Expanded(child: _buildLocationText(selectedAddress, localizations)),
+
+            Transform.rotate(
+              angle: 3.14 / 2,
+              child: IconButton(
+                onPressed: state.addressesState.isLoading
+                    ? null
+                    : () {
+                        _showAddressBottomSheet(context, state);
+                      },
+                icon: Icon(
+                  Icons.arrow_forward_ios,
+                  size: 20,
+                  color: AppColors.purpleBase,
+                ),
+              ),
             ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildLocationText(
+    AddressEntity? address,
+    AppLocalizations localizations,
+  ) {
+    if (address == null) {
+      return Text(
+        localizations.deliverTo,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: AppStyles.medium18Inter.copyWith(fontSize: 14),
+      );
+    }
+
+    return Text(
+      '${localizations.deliverTo} '
+      '${address.area}-${address.addressLine}',
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      style: AppStyles.medium18Inter.copyWith(fontSize: 14),
+    );
+  }
+
+  void _showAddressBottomSheet(BuildContext context, AddressState state) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) {
+        return BlocProvider.value(
+          value: context.read<AddressCubit>(),
+          child: AddressBottomSheetContent(
+            addresses: state.addressesState.data ?? [],
+            selectedAddressId: state.selectedAddress?.id,
           ),
-        ),
-      ],
+        );
+      },
     );
   }
 }
