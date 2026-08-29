@@ -12,4 +12,5 @@ abstract final class AppConstants {
 
   static const String mapFallbackUrl =
       'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+  static const String arabicLocaleCode = 'ar';
 }

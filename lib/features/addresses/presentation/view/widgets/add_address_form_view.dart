@@ -1,12 +1,16 @@
 import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flowrist/core/constants/app_colors.dart';
+import 'package:flowrist/core/constants/app_constants.dart';
 import 'package:flowrist/core/constants/app_styles.dart';
 import 'package:flowrist/core/ui/widgets/app_button.dart';
+import 'package:flowrist/core/ui/widgets/app_dropdown.dart';
 import 'package:flowrist/core/ui/widgets/app_text_field.dart';
 import 'package:flowrist/features/addresses/presentation/view/widgets/address_map_widget.dart';
 import 'package:flowrist/features/addresses/presentation/view_model/add_address_event.dart';
 import 'package:flowrist/features/addresses/presentation/view_model/add_address_state.dart';
 import 'package:flowrist/features/addresses/presentation/view_model/add_address_view_model.dart';
+import 'package:flowrist/shared/domain/entities/city_entity.dart';
+import 'package:flowrist/shared/domain/entities/governorate_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -36,7 +40,7 @@ class _AddAddressFormViewState extends State<AddAddressFormView> {
 
     return BlocListener<AddAddressViewModel, AddAddressState>(
       listenWhen: (prev, curr) =>
-      curr.userLocation != null &&
+          curr.userLocation != null &&
           !curr.userLocation!.isLoading &&
           prev.userLocation?.data != curr.userLocation?.data,
       listener: (context, state) {
@@ -44,31 +48,34 @@ class _AddAddressFormViewState extends State<AddAddressFormView> {
       },
       child: BlocBuilder<AddAddressViewModel, AddAddressState>(
         buildWhen: (prev, curr) =>
-        prev.selectedLocation != curr.selectedLocation ||
+            prev.selectedLocation != curr.selectedLocation ||
             prev.isMapConfigured != curr.isMapConfigured ||
             prev.userLocation?.errorMessage != curr.userLocation?.errorMessage,
         builder: (context, state) {
           return SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildMapView(context, localizations, state),
-              if (!state.isMapConfigured) _buildMapWarningView(localizations),
-              if (state.userLocation != null &&
-                  state.userLocation!.errorMessage != null)
-                ..._buildAddressErrorView(
-                  context,
-                  localizations,
-                  state.userLocation!.errorMessage!,
-                ),
-              const SizedBox(height: 32),
-              ..._buildAddressForm(localizations: localizations),
-              const SizedBox(height: 24),
-            ],
-          ),
-        );
-      },
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24.0,
+              vertical: 16.0,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildMapView(context, localizations, state),
+                if (!state.isMapConfigured) _buildMapWarningView(localizations),
+                if (state.userLocation != null &&
+                    state.userLocation!.errorMessage != null)
+                  ..._buildAddressErrorView(
+                    context,
+                    localizations,
+                    state.userLocation!.errorMessage!,
+                  ),
+                const SizedBox(height: 32),
+                ..._buildAddressForm(localizations: localizations),
+                const SizedBox(height: 24),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
@@ -122,7 +129,7 @@ class _AddAddressFormViewState extends State<AddAddressFormView> {
       children: [
         AddressMapWidget(
           mapTilerApiKey: context.read<AddAddressViewModel>().mapTilerApiKey,
-          selectedLocation: state.selectedLocation!,
+          selectedLocation: state.selectedLocation,
           onLocationSelected: (CoordinatesEntity location) {
             context.read<AddAddressViewModel>().doEvent(
               SelectMapLocation(location),
@@ -301,42 +308,11 @@ class _AddAddressFormViewState extends State<AddAddressFormView> {
     );
   }
 
-  Widget _buildDropdown({
-    required String label,
-    required String value,
-    required void Function(String?) onChanged,
-  }) {
-    return InputDecorator(
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle: AppStyles.regular12Inter.copyWith(color: AppColors.grey),
-        border: const OutlineInputBorder(
-          borderSide: BorderSide(color: AppColors.black, width: 1),
-        ),
-        enabledBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: AppColors.black, width: 1),
-        ),
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: value,
-          isDense: true,
-          icon: const Icon(Icons.keyboard_arrow_down, color: AppColors.black),
-          style: AppStyles.regular14Inter.copyWith(color: AppColors.black),
-          onChanged: onChanged,
-          items: [DropdownMenuItem(value: value, child: Text(value))],
-        ),
-      ),
-    );
-  }
-
   List<Widget> _buildAddressForm({required AppLocalizations localizations}) {
     return [
       BlocBuilder<AddAddressViewModel, AddAddressState>(
         buildWhen: (prev, curr) =>
-        prev.userLocation?.isLoading != curr.userLocation?.isLoading ||
+            prev.userLocation?.isLoading != curr.userLocation?.isLoading ||
             prev.userLocation?.data != curr.userLocation?.data,
         builder: ((context, state) {
           if (state.userLocation == null) return const SizedBox.shrink();
@@ -388,18 +364,60 @@ class _AddAddressFormViewState extends State<AddAddressFormView> {
       Row(
         children: [
           Expanded(
-            child: _buildDropdown(
-              label: localizations.city,
-              value: localizations.cairo,
-              onChanged: (val) {},
+            child: BlocBuilder<AddAddressViewModel, AddAddressState>(
+              buildWhen: (prev, curr) =>
+                  prev.governoratesState != curr.governoratesState ||
+                  prev.selectedGovernorate != curr.selectedGovernorate,
+              builder: (context, state) {
+                return AppDropdown<GovernorateEntity>(
+                  label: localizations.city,
+                  hint: localizations.city,
+                  value: state.selectedGovernorate,
+                  items: state.governoratesState.data ?? [],
+                  itemLabelBuilder: (gov) =>
+                      localizations.localeName == AppConstants.arabicLocaleCode
+                      ? gov.nameAr ?? ''
+                      : gov.nameEn ?? '',
+                  isLoading: state.governoratesState.isLoading,
+                  error: state.governoratesState.errorMessage,
+                  onChanged: (gov) {
+                    if (gov != null) {
+                      context.read<AddAddressViewModel>().doEvent(
+                        SelectGovernorateEvent(gov),
+                      );
+                    }
+                  },
+                );
+              },
             ),
           ),
           const SizedBox(width: 16),
           Expanded(
-            child: _buildDropdown(
-              label: localizations.area,
-              value: localizations.october,
-              onChanged: (val) {},
+            child: BlocBuilder<AddAddressViewModel, AddAddressState>(
+              buildWhen: (prev, curr) =>
+                  prev.citiesState != curr.citiesState ||
+                  prev.selectedCity != curr.selectedCity,
+              builder: (context, state) {
+                return AppDropdown<CityEntity>(
+                  label: localizations.area,
+                  hint: localizations.area,
+                  value: state.selectedCity,
+                  items: state.citiesState.data ?? [],
+                  itemLabelBuilder: (city) =>
+                      localizations.localeName == AppConstants.arabicLocaleCode
+                      ? city.nameAr ?? ''
+                      : city.nameEn ?? '',
+                  isLoading: state.citiesState.isLoading,
+                  error: state.citiesState.errorMessage,
+                  onChanged: (city) {
+                    if (city != null) {
+                      context.read<AddAddressViewModel>().doEvent(
+                        SelectCityEvent(city),
+                      );
+                    }
+                  },
+                );
+              },
             ),
           ),
         ],
