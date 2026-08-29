@@ -36,8 +36,7 @@ class EmptyAddressView extends StatelessWidget {
           const SizedBox(height: 12),
 
           Text(
-            'You have no saved address yet.\n'
-            'Add one to complete your gifting experience.',
+            '${localizations.youHaveNosaved}\n${localizations.addOneTocomplete}',
             textAlign: TextAlign.center,
             style: TextStyle(color: AppColors.white70),
           ),

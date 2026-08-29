@@ -291,4 +291,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noAddressessaved => 'No addresses saved';
+
+  @override
+  String get youHaveNosaved => 'You have no saved address yet.';
+
+  @override
+  String get addOneTocomplete => 'Add one to complete your gifting experience.';
 }

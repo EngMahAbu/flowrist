@@ -633,6 +633,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No addresses saved'**
   String get noAddressessaved;
+
+  /// No description provided for @youHaveNosaved.
+  ///
+  /// In en, this message translates to:
+  /// **'You have no saved address yet.'**
+  String get youHaveNosaved;
+
+  /// No description provided for @addOneTocomplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Add one to complete your gifting experience.'**
+  String get addOneTocomplete;
 }
 
 class _AppLocalizationsDelegate
