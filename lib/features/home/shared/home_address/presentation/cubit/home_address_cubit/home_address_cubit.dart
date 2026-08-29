@@ -1,0 +1,444 @@
+import 'package:flowrist/config/base_response/base_response.dart';
+import 'package:flowrist/config/base_state/base_state.dart';
+import 'package:flowrist/config/location_services/location_services.dart';
+import 'package:flowrist/features/home/shared/home_address/domain/entities/address_entities/address_entity.dart';
+import 'package:flowrist/features/home/shared/home_address/domain/entities/address_entities/default_address_entity.dart';
+import 'package:flowrist/features/home/shared/home_address/domain/use_cases/get_all_user_addresses_use_case.dart';
+import 'package:flowrist/features/home/shared/home_address/domain/use_cases/set_default_address_use_case.dart';
+import 'package:flowrist/features/home/shared/home_address/presentation/cubit/home_address_cubit/home_address_event.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:injectable/injectable.dart';
+import 'home_address_state.dart';
+
+@injectable
+class HomeAddressCubit extends Cubit<HomeAddressState> {
+  final GetAllUserAddressesUseCase _getAllUserAddressesUseCase;
+  final SetDefaultAddressUseCase _setDefaultAddressUseCase;
+  final LocationService _locationService;
+
+  HomeAddressCubit(
+    this._getAllUserAddressesUseCase,
+    this._locationService,
+    this._setDefaultAddressUseCase,
+  ) : super(
+        HomeAddressState(
+          addressesState: BaseState.initial(),
+          setDefaultAddressState: BaseState.initial(),
+        ),
+      );
+
+  Future<void> doEvent(HomeAddressEvent event) async {
+    switch (event) {
+      case InitializeAddress():
+        await initializeAddress();
+      case SetDefaultAddress():
+        await setDefaultAddress(event.addressId);
+    }
+  }
+
+  // ============================================================
+  // INITIALIZE ADDRESS
+  // Called from Splash
+  // ============================================================
+
+  Future<void> initializeAddress() async {
+    emit(
+      state.copyWith(
+        addressesState: state.addressesState.copyWith(
+          isLoading: true,
+          errorMessage: null,
+        ),
+      ),
+    );
+
+    try {
+      // ========================================================
+      // 1. GET USER LOCATION
+      // ========================================================
+
+      Position? position;
+
+      try {
+        position = await _locationService.getCurrentPosition();
+      } catch (e) {
+        debugPrint('LOCATION NOT AVAILABLE: $e');
+      }
+
+      // ========================================================
+      // 2. GET ADDRESSES FROM API
+      // ========================================================
+
+      final response = await _getAllUserAddressesUseCase();
+
+      switch (response) {
+        case SuccessResponse<List<AddressEntity>>():
+          final addresses = response.data ?? [];
+
+          // ====================================================
+          // NO ADDRESSES
+          // ====================================================
+
+          if (addresses.isEmpty) {
+            emit(
+              state.copyWith(
+                addressesState: state.addressesState.copyWith(
+                  data: const [],
+                  isLoading: false,
+                  errorMessage: null,
+                ),
+                clearSelectedAddress: true,
+              ),
+            );
+
+            return;
+          }
+
+          // ====================================================
+          // 3. FIND NEAREST ADDRESS
+          // ====================================================
+
+          AddressEntity? nearestAddress;
+
+          if (position != null) {
+            nearestAddress = _findNearestAddress(addresses, position);
+          }
+
+          // ====================================================
+          // 4. LOCATION UNAVAILABLE
+          // USE EXISTING DEFAULT
+          // ====================================================
+
+          nearestAddress ??= _findDefaultAddress(addresses);
+
+          // ====================================================
+          // 5. NO DEFAULT
+          // USE FIRST ADDRESS
+          // ====================================================
+
+          nearestAddress ??= addresses.first;
+
+          // ====================================================
+          // 6. IF GPS WAS AVAILABLE
+          // MAKE NEAREST ADDRESS DEFAULT
+          // ====================================================
+
+          if (position != null) {
+            final currentDefault = _findDefaultAddress(addresses);
+
+            // Only call PATCH if the nearest address
+            // isn't already the default.
+            if (currentDefault?.id != nearestAddress.id) {
+               
+
+              await _makeAddressDefault(nearestAddress, addresses);
+
+              return;
+            }
+          }
+
+          // ====================================================
+          // 7. SAVE ADDRESS IN STATE
+          // ====================================================
+
+          emit(
+            state.copyWith(
+              addressesState: state.addressesState.copyWith(
+                data: addresses,
+                isLoading: false,
+                errorMessage: null,
+              ),
+              selectedAddress: nearestAddress,
+            ),
+          );
+
+        case ErrorResponse<List<AddressEntity>>():
+       
+
+          emit(
+            state.copyWith(
+              addressesState: state.addressesState.copyWith(
+                data: const [],
+                isLoading: false,
+                errorMessage: response.errorMessage,
+              ),
+              clearSelectedAddress: true,
+            ),
+          );
+      }
+    } catch (e, stackTrace) {
+     
+
+      debugPrintStack(stackTrace: stackTrace);
+
+      emit(
+        state.copyWith(
+          addressesState: state.addressesState.copyWith(
+            data: const [],
+            isLoading: false,
+            errorMessage: e.toString(),
+          ),
+          clearSelectedAddress: true,
+        ),
+      );
+    }
+  }
+
+  // ============================================================
+  // MAKE NEAREST ADDRESS DEFAULT
+  // ============================================================
+
+  Future<void> _makeAddressDefault(
+    AddressEntity nearestAddress,
+    List<AddressEntity> addresses,
+  ) async {
+    emit(
+      state.copyWith(
+        addressesState: state.addressesState.copyWith(
+          data: addresses,
+          isLoading: true,
+          errorMessage: null,
+        ),
+        selectedAddress: nearestAddress,
+      ),
+    );
+
+    try {
+      final response = await _setDefaultAddressUseCase(nearestAddress.id);
+
+      switch (response) {
+        case SuccessResponse<DefaultAddressEntity>():
+          final defaultAddress = response.data;
+
+          if (defaultAddress == null) {
+            // Still use the nearest address locally.
+            emit(
+              state.copyWith(
+                addressesState: state.addressesState.copyWith(
+                  data: addresses,
+                  isLoading: false,
+                  errorMessage: null,
+                ),
+                selectedAddress: nearestAddress,
+              ),
+            );
+
+            return;
+          }
+
+          // Refresh addresses so isDefault values
+          // come from the backend.
+          await _refreshAddresses(defaultAddress);
+
+        case ErrorResponse<DefaultAddressEntity>():
+
+          // PATCH failed.
+          // Still show nearest address locally.
+          emit(
+            state.copyWith(
+              addressesState: state.addressesState.copyWith(
+                data: addresses,
+                isLoading: false,
+                errorMessage: null,
+              ),
+              selectedAddress: nearestAddress,
+              setDefaultAddressState: state.setDefaultAddressState.copyWith(
+                isLoading: false,
+                errorMessage: response.errorMessage,
+              ),
+            ),
+          );
+      }
+    } catch (e) {
+      // Don't prevent the user from entering Home
+      // if PATCH fails.
+      emit(
+        state.copyWith(
+          addressesState: state.addressesState.copyWith(
+            data: addresses,
+            isLoading: false,
+            errorMessage: null,
+          ),
+          selectedAddress: nearestAddress,
+          setDefaultAddressState: state.setDefaultAddressState.copyWith(
+            isLoading: false,
+            errorMessage: e.toString(),
+          ),
+        ),
+      );
+    }
+  }
+
+  // ============================================================
+  // FIND NEAREST ADDRESS
+  // ============================================================
+
+  AddressEntity? _findNearestAddress(
+    List<AddressEntity> addresses,
+    Position position,
+  ) {
+    if (addresses.isEmpty) {
+      return null;
+    }
+
+    AddressEntity? nearestAddress;
+
+    double shortestDistance = double.infinity;
+
+    for (final address in addresses) {
+      final distance = Geolocator.distanceBetween(
+        position.latitude,
+        position.longitude,
+        address.lat,
+        address.lng,
+      );
+
+     
+
+      if (distance < shortestDistance) {
+        shortestDistance = distance;
+        nearestAddress = address;
+      }
+    }
+
+    return nearestAddress;
+  }
+
+  // ============================================================
+  // FIND DEFAULT ADDRESS
+  // ============================================================
+
+  AddressEntity? _findDefaultAddress(List<AddressEntity> addresses) {
+    for (final address in addresses) {
+      if (address.isDefault) {
+        return address;
+      }
+    }
+
+    return null;
+  }
+
+  // ============================================================
+  // MANUAL SELECT
+  // ============================================================
+
+  void selectAddress(AddressEntity address) {
+    emit(state.copyWith(selectedAddress: address));
+  }
+
+  // ============================================================
+  // MANUAL SET DEFAULT
+  // ============================================================
+
+  Future<void> setDefaultAddress(String addressId) async {
+    emit(
+      state.copyWith(
+        setDefaultAddressState: state.setDefaultAddressState.copyWith(
+          isLoading: true,
+          errorMessage: null,
+        ),
+      ),
+    );
+
+    try {
+      final response = await _setDefaultAddressUseCase(addressId);
+
+      switch (response) {
+        case SuccessResponse<DefaultAddressEntity>():
+          final defaultAddress = response.data;
+
+          if (defaultAddress == null) {
+            emit(
+              state.copyWith(
+                setDefaultAddressState: state.setDefaultAddressState.copyWith(
+                  isLoading: false,
+                  errorMessage: 'Default address response is empty.',
+                ),
+              ),
+            );
+
+            return;
+          }
+
+          await _refreshAddresses(defaultAddress);
+
+        case ErrorResponse<DefaultAddressEntity>():
+          emit(
+            state.copyWith(
+              setDefaultAddressState: state.setDefaultAddressState.copyWith(
+                isLoading: false,
+                errorMessage: response.errorMessage,
+              ),
+            ),
+          );
+      }
+    } catch (e) {
+      emit(
+        state.copyWith(
+          setDefaultAddressState: state.setDefaultAddressState.copyWith(
+            isLoading: false,
+            errorMessage: e.toString(),
+          ),
+        ),
+      );
+    }
+  }
+
+  // ============================================================
+  // REFRESH AFTER PATCH
+  // ============================================================
+
+  Future<void> _refreshAddresses(DefaultAddressEntity defaultAddress) async {
+    final response = await _getAllUserAddressesUseCase();
+
+    switch (response) {
+      case SuccessResponse<List<AddressEntity>>():
+        final addresses = response.data ?? [];
+
+        AddressEntity? selectedAddress;
+
+        for (final address in addresses) {
+          if (address.id == defaultAddress.addressId) {
+            selectedAddress = address;
+            break;
+          }
+        }
+
+        selectedAddress ??= _findDefaultAddress(addresses);
+
+        selectedAddress ??= addresses.isNotEmpty ? addresses.first : null;
+
+        emit(
+          state.copyWith(
+            addressesState: state.addressesState.copyWith(
+              data: addresses,
+              isLoading: false,
+              errorMessage: null,
+            ),
+            selectedAddress: selectedAddress,
+            setDefaultAddressState: state.setDefaultAddressState.copyWith(
+              data: defaultAddress,
+              isLoading: false,
+              errorMessage: null,
+            ),
+          ),
+        );
+
+      case ErrorResponse<List<AddressEntity>>():
+        emit(
+          state.copyWith(
+            addressesState: state.addressesState.copyWith(
+              isLoading: false,
+              errorMessage: null,
+            ),
+            setDefaultAddressState: state.setDefaultAddressState.copyWith(
+              data: defaultAddress,
+              isLoading: false,
+              errorMessage: response.errorMessage,
+            ),
+          ),
+        );
+    }
+  }
+}
