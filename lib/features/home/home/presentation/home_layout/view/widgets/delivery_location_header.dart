@@ -2,7 +2,7 @@ import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flowrist/core/constants/app_colors.dart';
 import 'package:flowrist/core/constants/app_styles.dart';
 import 'package:flowrist/core/constants/flowery_icons.dart';
-import 'package:flowrist/features/home/shared/home_address/presentation/widgets/address_bottom_sheet/address_bottom_sheet_content.dart';
+import 'package:flowrist/shared/addresses/presentation/widgets/address_bottom_sheet/address_bottom_sheet_content.dart';
 import 'package:flowrist/shared/addresses/domain/entities/address_entity.dart';
 import 'package:flowrist/shared/addresses/presentation/view_model/addresses_event.dart';
 import 'package:flowrist/shared/addresses/presentation/view_model/addresses_view_model.dart';

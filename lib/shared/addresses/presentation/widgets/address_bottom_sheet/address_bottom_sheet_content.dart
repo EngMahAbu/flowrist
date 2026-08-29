@@ -1,14 +1,19 @@
 import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flowrist/core/constants/app_colors.dart';
-import 'package:flowrist/features/home/shared/home_address/presentation/widgets/address_bottom_sheet/address_item.dart';
-import 'package:flowrist/features/home/shared/home_address/presentation/widgets/address_bottom_sheet/empty_address_view.dart';
+import 'package:flowrist/core/constants/app_router.dart';
+import 'package:flowrist/features/addresses/presentation/view/add_address_view.dart';
+import 'package:flowrist/features/addresses/presentation/view_model/add_address_event.dart';
+import 'package:flowrist/features/addresses/presentation/view_model/add_address_view_model.dart';
+import 'package:flowrist/shared/addresses/presentation/widgets/address_bottom_sheet/address_item.dart';
+import 'package:flowrist/shared/addresses/presentation/widgets/address_bottom_sheet/empty_address_view.dart';
 import 'package:flowrist/shared/addresses/domain/entities/address_entity.dart';
 import 'package:flowrist/shared/addresses/presentation/view_model/addresses_event.dart';
 import 'package:flowrist/shared/addresses/presentation/view_model/addresses_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
-import '../../../../../../../shared/addresses/presentation/view_model/addresses_state.dart';
+import '../../view_model/addresses_state.dart';
 
 class AddressBottomSheetContent extends StatefulWidget {
   final List<AddressEntity> addresses;
@@ -25,8 +30,7 @@ class AddressBottomSheetContent extends StatefulWidget {
       _AddressBottomSheetContentState();
 }
 
-class _AddressBottomSheetContentState
-    extends State<AddressBottomSheetContent> {
+class _AddressBottomSheetContentState extends State<AddressBottomSheetContent> {
   late String? _selectedAddressId;
 
   @override
@@ -62,9 +66,7 @@ class _AddressBottomSheetContentState
       return;
     }
 
-    context.read<AddressesViewModel>().doEvent(
-          SetDefaultAddress(address.id),
-        );
+    context.read<AddressesViewModel>().doEvent(SetDefaultAddress(address.id));
   }
 
   @override
@@ -93,9 +95,7 @@ class _AddressBottomSheetContentState
 
               const SizedBox(height: 16),
 
-              Expanded(
-                child: _buildAddressList(),
-              ),
+              Expanded(child: _buildAddressList()),
 
               const SizedBox(height: 16),
 
@@ -162,11 +162,9 @@ class _AddressBottomSheetContentState
         }
 
         if (defaultState.errorMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(defaultState.errorMessage!),
-            ),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(defaultState.errorMessage!)));
 
           return;
         }
@@ -176,13 +174,9 @@ class _AddressBottomSheetContentState
         }
       },
       builder: (context, state) {
-        final isLoading =
-            state.setDefaultAddressState.isLoading;
+        final isLoading = state.setDefaultAddressState.isLoading;
 
-        return _buildAddressActions(
-          context: context,
-          isLoading: isLoading,
-        );
+        return _buildAddressActions(context: context, isLoading: isLoading);
       },
     );
   }
@@ -203,20 +197,13 @@ class _AddressBottomSheetContentState
                 ? const SizedBox(
                     width: 20,
                     height: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                    ),
+                    child: CircularProgressIndicator(strokeWidth: 2),
                   )
-                : Text(
-                    AppLocalizations.of(context)!.setAsDefault,
-                  ),
+                : Text(AppLocalizations.of(context)!.setAsDefault),
           ),
         ),
         const SizedBox(width: 12),
-        Expanded(
-          flex: 1,
-          child: _buildAddIconButton(),
-        ),
+        Expanded(flex: 1, child: _buildAddIconButton()),
       ],
     );
   }
@@ -226,17 +213,12 @@ class _AddressBottomSheetContentState
       style: OutlinedButton.styleFrom(
         padding: EdgeInsets.zero,
         minimumSize: const Size(0, 48),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
       onPressed: () {
-        // TODO: Add new address
+        context.go(AppRoutes.addAddress);
       },
-      child: const Icon(
-        Icons.add,
-        size: 25,
-      ),
+      child: const Icon(Icons.add, size: 25),
     );
   }
 
@@ -249,13 +231,8 @@ class _AddressBottomSheetContentState
         onPressed: () {
           // TODO: Add new address
         },
-        icon: const Icon(
-          Icons.add,
-          size: 25,
-        ),
-        label: Text(
-          localizations.addNewaddress,
-        ),
+        icon: const Icon(Icons.add, size: 25),
+        label: Text(localizations.addNewaddress),
       ),
     );
   }
