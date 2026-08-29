@@ -2,6 +2,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flowrist/config/base_state/base_state.dart';
 import 'package:flowrist/features/addresses/domain/entities/coordinates_entity.dart';
 import 'package:flowrist/features/addresses/domain/entities/permission_status_entity.dart';
+import 'package:flowrist/shared/domain/entities/city_entity.dart';
+import 'package:flowrist/shared/domain/entities/governorate_entity.dart';
 
 class AddAddressState extends Equatable {
   final BaseState<PermissionStatusEntity> locationPermission;
@@ -10,6 +12,10 @@ class AddAddressState extends Equatable {
   final BaseState<String>? userLocation;
   final CoordinatesEntity? selectedLocation;
   final bool isMapConfigured;
+  final BaseState<List<GovernorateEntity>> governoratesState;
+  final BaseState<List<CityEntity>> citiesState;
+  final GovernorateEntity? selectedGovernorate;
+  final CityEntity? selectedCity;
 
   const AddAddressState({
     required this.locationPermission,
@@ -18,6 +24,10 @@ class AddAddressState extends Equatable {
     required this.userLocation,
     this.selectedLocation,
     this.isMapConfigured = true,
+    required this.governoratesState,
+    required this.citiesState,
+    this.selectedGovernorate,
+    this.selectedCity,
   });
 
   AddAddressState.initial()
@@ -26,7 +36,11 @@ class AddAddressState extends Equatable {
       couldOpenAppSettings = null,
       userLocation = BaseState.initial(),
       selectedLocation = null,
-      isMapConfigured = true;
+      isMapConfigured = true,
+      governoratesState = BaseState.initial(),
+      citiesState = BaseState.initial(),
+      selectedGovernorate = null,
+      selectedCity = null;
 
   AddAddressState copyWith({
     BaseState<PermissionStatusEntity>? locationPermission,
@@ -35,6 +49,10 @@ class AddAddressState extends Equatable {
     BaseState<String>? userLocation,
     CoordinatesEntity? selectedLocation,
     bool? isMapConfigured,
+    BaseState<List<GovernorateEntity>>? governoratesState,
+    BaseState<List<CityEntity>>? citiesState,
+    GovernorateEntity? selectedGovernorate,
+    CityEntity? selectedCity,
   }) {
     return AddAddressState(
       locationPermission: locationPermission ?? this.locationPermission,
@@ -43,6 +61,10 @@ class AddAddressState extends Equatable {
       userLocation: userLocation ?? this.userLocation,
       selectedLocation: selectedLocation ?? this.selectedLocation,
       isMapConfigured: isMapConfigured ?? this.isMapConfigured,
+      governoratesState: governoratesState ?? this.governoratesState,
+      citiesState: citiesState ?? this.citiesState,
+      selectedGovernorate: selectedGovernorate ?? this.selectedGovernorate,
+      selectedCity: selectedCity ?? this.selectedCity,
     );
   }
 
@@ -54,5 +76,9 @@ class AddAddressState extends Equatable {
     userLocation,
     selectedLocation,
     isMapConfigured,
+    governoratesState,
+    citiesState,
+    selectedGovernorate,
+    selectedCity,
   ];
 }

@@ -9,6 +9,8 @@ import 'package:flowrist/features/addresses/domain/use_cases/check_location_perm
 import 'package:flowrist/features/addresses/domain/use_cases/check_location_service_use_case.dart';
 import 'package:flowrist/features/addresses/domain/use_cases/fetch_user_current_location_use_case.dart';
 import 'package:flowrist/features/addresses/domain/use_cases/get_address_from_location_use_case.dart';
+import 'package:flowrist/features/addresses/domain/use_cases/get_cities_use_case.dart';
+import 'package:flowrist/features/addresses/domain/use_cases/get_governorates_use_case.dart';
 import 'package:flowrist/features/addresses/domain/use_cases/open_app_settings_use_case.dart';
 import 'package:flowrist/features/addresses/domain/use_cases/request_location_permission_use_case.dart';
 import 'package:flowrist/features/addresses/domain/use_cases/request_location_service_use_case.dart';
@@ -17,6 +19,9 @@ import 'package:flowrist/features/addresses/presentation/view_model/add_address_
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+
+import '../../../../shared/domain/entities/city_entity.dart';
+import '../../../../shared/domain/entities/governorate_entity.dart';
 
 @injectable
 class AddAddressViewModel extends Cubit<AddAddressState> {
@@ -27,6 +32,8 @@ class AddAddressViewModel extends Cubit<AddAddressState> {
   final OpenAppSettingsUseCase _openAppSettingsUseCase;
   final FetchUserCurrentLocationUseCase _fetchUserCurrentLocationUseCase;
   final GetAddressFromLocationUseCase _getAddressFromLocationUseCase;
+  final GetGovernoratesUseCase _getGovernoratesUseCase;
+  final GetCitiesUseCase _getCitiesUseCase;
   final AppConfig _appConfig;
 
   AddAddressViewModel(
@@ -37,6 +44,8 @@ class AddAddressViewModel extends Cubit<AddAddressState> {
     this._openAppSettingsUseCase,
     this._fetchUserCurrentLocationUseCase,
     this._getAddressFromLocationUseCase,
+    this._getGovernoratesUseCase,
+    this._getCitiesUseCase,
     this._appConfig,
   ) : super(AddAddressState.initial()) {
     _checkMapConfig();
@@ -70,7 +79,59 @@ class AddAddressViewModel extends Cubit<AddAddressState> {
         _fetchUserLocation();
       case SelectMapLocation():
         _selectMapLocation(event.location);
+      case GetGovernoratesEvent():
+        _loadGovernorates();
+      case GetCitiesEvent():
+        _loadCities(event.governorateId);
+      case SelectGovernorateEvent():
+        _selectGovernorate(event.governorate);
+      case SelectCityEvent():
+        _selectCity(event.city);
     }
+  }
+
+  void _loadGovernorates() async {
+    emit(state.copyWith(governoratesState: BaseState.loading()));
+    final response = await _getGovernoratesUseCase();
+    if (response is SuccessResponse<List<GovernorateEntity>>) {
+      emit(
+        state.copyWith(
+          governoratesState: BaseState.success(response.data ?? []),
+        ),
+      );
+    } else if (response is ErrorResponse<List<GovernorateEntity>>) {
+      emit(
+        state.copyWith(
+          governoratesState: BaseState.error(response.errorMessage),
+        ),
+      );
+    }
+  }
+
+  void _loadCities(int governorateId) async {
+    emit(state.copyWith(citiesState: BaseState.loading()));
+    final response = await _getCitiesUseCase(governorateId);
+    if (response is SuccessResponse<List<CityEntity>>) {
+      emit(state.copyWith(citiesState: BaseState.success(response.data ?? [])));
+    } else if (response is ErrorResponse<List<CityEntity>>) {
+      emit(state.copyWith(citiesState: BaseState.error(response.errorMessage)));
+    }
+  }
+
+  void _selectGovernorate(GovernorateEntity governorate) {
+    emit(
+      state.copyWith(
+        selectedGovernorate: governorate,
+        selectedCity: null,
+        citiesState: BaseState.initial(),
+      ),
+    );
+    if (governorate.id == null) return;
+    _loadCities(governorate.id!);
+  }
+
+  void _selectCity(CityEntity city) {
+    emit(state.copyWith(selectedCity: city));
   }
 
   void _checkLocationPermission() async {
@@ -147,9 +208,7 @@ class AddAddressViewModel extends Cubit<AddAddressState> {
         }
       } else if (response is ErrorResponse<String?>) {
         emit(
-          state.copyWith(
-            userLocation: BaseState.error(response.errorMessage),
-          ),
+          state.copyWith(userLocation: BaseState.error(response.errorMessage)),
         );
       }
     } catch (e) {
@@ -184,9 +243,7 @@ class AddAddressViewModel extends Cubit<AddAddressState> {
         }
       } else if (response is ErrorResponse<(CoordinatesEntity, String?)>) {
         emit(
-          state.copyWith(
-            userLocation: BaseState.error(response.errorMessage),
-          ),
+          state.copyWith(userLocation: BaseState.error(response.errorMessage)),
         );
       }
     } catch (e) {
