@@ -41,12 +41,12 @@ class FlowristApp extends StatelessWidget {
       builder: (context, child) {
         return BlocListener<CartCubit, CartState>(
           listenWhen: (prev, curr) =>
-              curr.errorMessage != null &&
-              prev.errorMessage != curr.errorMessage,
+              curr.cart.errorMessage != null &&
+              prev.cart.errorMessage != curr.cart.errorMessage,
           listener: (context, state) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.errorMessage!),
+                content: Text(state.cart.errorMessage!),
                 backgroundColor: AppColors.red,
                 behavior: SnackBarBehavior.floating,
               ),

@@ -11,7 +11,11 @@ void main() {
     unitPrice: 50,
     priceAtAdd: 50,
     quantity: 2,
+    lineSubtotal: 100,
     availableStock: 10,
+    isAvailable: true,
+    priceChanged: false,
+    stockChanged: false,
   );
 
   const tItem2 = CartItemEntity(
@@ -22,7 +26,11 @@ void main() {
     unitPrice: 30,
     priceAtAdd: 30,
     quantity: 3,
+    lineSubtotal: 90,
     availableStock: 5,
+    isAvailable: true,
+    priceChanged: false,
+    stockChanged: false,
   );
 
   group('CartItemEntity Tests', () {
@@ -36,6 +44,11 @@ void main() {
         expect(updatedItem.productId, equals(tItem1.productId));
         expect(updatedItem.unitPrice, equals(tItem1.unitPrice));
         expect(updatedItem.productName, equals(tItem1.productName));
+        expect(updatedItem.lineSubtotal, equals(tItem1.lineSubtotal));
+        expect(updatedItem.availableStock, equals(tItem1.availableStock));
+        expect(updatedItem.isAvailable, equals(tItem1.isAvailable));
+        expect(updatedItem.priceChanged, equals(tItem1.priceChanged));
+        expect(updatedItem.stockChanged, equals(tItem1.stockChanged));
       },
     );
 
@@ -48,7 +61,11 @@ void main() {
         unitPrice: 50,
         priceAtAdd: 50,
         quantity: 2,
+        lineSubtotal: 100,
         availableStock: 10,
+        isAvailable: true,
+        priceChanged: false,
+        stockChanged: false,
       );
 
       const itemWithDifferentPrice = CartItemEntity(
@@ -59,7 +76,11 @@ void main() {
         unitPrice: 999,
         priceAtAdd: 999,
         quantity: 2,
+        lineSubtotal: 1998,
         availableStock: 10,
+        isAvailable: true,
+        priceChanged: true,
+        stockChanged: false,
       );
 
       expect(tItem1, equals(identicalItem));
@@ -68,39 +89,87 @@ void main() {
   });
 
   group('CartEntity Tests', () {
-    test('totalQuantity getter should return 0 when items list is empty', () {
-      const emptyCart = CartEntity(cartId: 'cart_empty', items: [], total: 0);
+    test('should store totalQuantity correctly', () {
+      const emptyCart = CartEntity(
+        cartId: 'cart_empty',
+        items: [],
+        totalQuantity: 0,
+        lineCount: 0,
+        subtotal: 0,
+        deliveryFee: 50,
+        total: 50,
+        hasChanges: false,
+      );
 
       expect(emptyCart.totalQuantity, equals(0));
     });
 
-    test(
-      'totalQuantity getter should calculate sum of all item quantities correctly',
-      () {
-        final cart = CartEntity(
-          cartId: 'cart_123',
-          items: const [tItem1, tItem2],
-          total: 190,
-        );
+    test('should store totalQuantity correctly for multiple items', () {
+      const cart = CartEntity(
+        cartId: 'cart_123',
+        items: [tItem1, tItem2],
+        totalQuantity: 5,
+        lineCount: 2,
+        subtotal: 190,
+        deliveryFee: 50,
+        total: 240,
+        hasChanges: false,
+      );
 
-        // 2 + 3 = 5
-        expect(cart.totalQuantity, equals(5));
-      },
-    );
+      // 2 + 3 = 5
+      expect(cart.totalQuantity, equals(5));
+    });
 
     test('CartEntity instances with same properties should be equal', () {
-      final cartA = CartEntity(
+      const cartA = CartEntity(
         cartId: 'cart_123',
-        items: const [tItem1],
-        total: 100,
+        items: [tItem1],
+        totalQuantity: 2,
+        lineCount: 1,
+        subtotal: 100,
+        deliveryFee: 50,
+        total: 150,
+        hasChanges: false,
       );
-      final cartB = CartEntity(
+
+      const cartB = CartEntity(
         cartId: 'cart_123',
-        items: const [tItem1],
-        total: 100,
+        items: [tItem1],
+        totalQuantity: 2,
+        lineCount: 1,
+        subtotal: 100,
+        deliveryFee: 50,
+        total: 150,
+        hasChanges: false,
       );
 
       expect(cartA, equals(cartB));
+    });
+
+    test('CartEntity should not be equal when one property is different', () {
+      const cartA = CartEntity(
+        cartId: 'cart_123',
+        items: [tItem1],
+        totalQuantity: 2,
+        lineCount: 1,
+        subtotal: 100,
+        deliveryFee: 50,
+        total: 150,
+        hasChanges: false,
+      );
+
+      const cartB = CartEntity(
+        cartId: 'cart_123',
+        items: [tItem1],
+        totalQuantity: 2,
+        lineCount: 1,
+        subtotal: 100,
+        deliveryFee: 50,
+        total: 200,
+        hasChanges: false,
+      );
+
+      expect(cartA, isNot(equals(cartB)));
     });
   });
 }

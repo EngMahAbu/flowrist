@@ -22,8 +22,12 @@ abstract final class CartMapper {
             productImage: item.productImage ?? '',
             unitPrice: item.unitPrice ?? 0,
             priceAtAdd: item.priceAtAdd ?? 0,
-            quantity: item.quantity ?? 1,
+            quantity: item.quantity ?? 0,
+            lineSubtotal: item.lineSubtotal ?? 0,
             availableStock: item.availableStock ?? 0,
+            isAvailable: item.isAvailable ?? false,
+            priceChanged: item.priceChanged ?? false,
+            stockChanged: item.stockChanged ?? false,
           ),
         )
         .toList();
@@ -31,7 +35,12 @@ abstract final class CartMapper {
     return CartEntity(
       cartId: data?.cartId ?? '',
       items: items,
+      totalQuantity: data?.totalQuantity ?? 0,
+      lineCount: data?.lineCount ?? 0,
+      subtotal: data?.subtotal ?? 0,
+      deliveryFee: data?.deliveryFee ?? 0,
       total: data?.total ?? 0,
+      hasChanges: data?.hasChanges ?? false,
     );
   }
 }

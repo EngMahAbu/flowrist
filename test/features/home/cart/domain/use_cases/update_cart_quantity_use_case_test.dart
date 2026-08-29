@@ -15,11 +15,25 @@ void main() {
   late MockCartRepository mockRepository;
   late UpdateCartQuantityUseCase useCase;
 
-  const tRequest = UpdateCartItemRequestDto(quantity: 4);
-  const tCart = CartEntity(cartId: 'cart_123', items: [], total: 200);
+  const tRequest = UpdateCartItemRequestDto(
+    quantity: 4,
+  );
+
+  const tCart = CartEntity(
+    cartId: 'cart_123',
+    items: [],
+    totalQuantity: 4,
+    lineCount: 0,
+    subtotal: 150,
+    deliveryFee: 50,
+    total: 200,
+    hasChanges: false,
+  );
 
   setUpAll(() {
-    provideDummy<BaseResponse<CartEntity>>(SuccessResponse<CartEntity>(tCart));
+    provideDummy<BaseResponse<CartEntity>>(
+      SuccessResponse<CartEntity>(tCart),
+    );
   });
 
   setUp(() {
@@ -31,24 +45,41 @@ void main() {
     test(
       'should forward itemId and request to repository and return updated CartEntity',
       () async {
+        // Arrange
         when(
           mockRepository.updateCartItemQuantity(
             itemId: 'item_1',
             request: tRequest,
           ),
-        ).thenAnswer((_) async => SuccessResponse<CartEntity>(tCart));
+        ).thenAnswer(
+          (_) async => SuccessResponse<CartEntity>(tCart),
+        );
 
-        final result = await useCase(itemId: 'item_1', request: tRequest);
+        // Act
+        final result = await useCase(
+          itemId: 'item_1',
+          request: tRequest,
+        );
 
+        // Assert
         expect(result, isA<SuccessResponse<CartEntity>>());
+
         final data = (result as SuccessResponse<CartEntity>).data;
-        expect(data?.total, equals(200));
+
+        expect(data, isNotNull);
+        expect(data!.cartId, equals('cart_123'));
+        expect(data.totalQuantity, equals(4));
+        expect(data.subtotal, equals(150));
+        expect(data.deliveryFee, equals(50));
+        expect(data.total, equals(200));
+
         verify(
           mockRepository.updateCartItemQuantity(
             itemId: 'item_1',
             request: tRequest,
           ),
         ).called(1);
+
         verifyNoMoreInteractions(mockRepository);
       },
     );

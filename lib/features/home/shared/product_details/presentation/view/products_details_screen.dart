@@ -134,9 +134,6 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
     return Scaffold(
       backgroundColor: Colors.white,
 
-      // ==========================================
-      // ADD TO CART / QUANTITY CONTROLLER
-      // ==========================================
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -189,7 +186,7 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
                             }
 
                             if (!context.mounted) return;
-                            context.read<CartCubit>().doIntent(event);
+                            context.read<CartCubit>().doEvent(event);
                           },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFCE1567),
@@ -242,10 +239,10 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
                       IconButton(
                         icon: const Icon(Icons.remove, color: Colors.white),
                         onPressed: () {
-                          context.read<CartCubit>().doIntent(
+                          context.read<CartCubit>().doEvent(
                             ChangeCartQuantityEvent(
-                              productId: product.id,
-                              delta: -1,
+                              itemId: product.id,
+                              quantity: -1,
                             ),
                           );
                         },
@@ -276,10 +273,10 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
                             );
                             return;
                           }
-                          context.read<CartCubit>().doIntent(
+                          context.read<CartCubit>().doEvent(
                             ChangeCartQuantityEvent(
-                              productId: product.id,
-                              delta: 1,
+                              itemId: product.id,
+                              quantity: 1,
                             ),
                           );
                         },
@@ -293,9 +290,6 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
         ),
       ),
 
-      // ==========================================
-      // BODY
-      // ==========================================
       body: CustomScrollView(
         slivers: [
           SliverAppBar(

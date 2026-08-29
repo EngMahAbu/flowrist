@@ -13,208 +13,337 @@ import 'package:flowrist/features/home/cart/presentation/cubit/cart_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-@lazySingleton
+@injectable
 class CartCubit extends Cubit<CartState> {
   final GetCartUseCase _getCartUseCase;
   final AddToCartUseCase _addToCartUseCase;
   final UpdateCartQuantityUseCase _updateCartQuantityUseCase;
   final RemoveCartItemUseCase _removeCartItemUseCase;
 
-  final Map<String, Timer> _debounceTimers = {};
+  final Map<String, Timer> _quantityTimers = {};
 
   CartCubit(
     this._getCartUseCase,
     this._addToCartUseCase,
     this._updateCartQuantityUseCase,
     this._removeCartItemUseCase,
-  ) : super(const CartState());
+  ) : super(CartState.initial());
 
-  void doIntent(CartEvent event) {
+  Future<void> doEvent(CartEvent event) async {
     switch (event) {
       case GetCartEvent():
-        _handleGetCart();
+        await _getCart();
+
       case AddToCartEvent():
-        _handleAddToCart(event);
+        await _addToCart(event.productId);
+
       case ChangeCartQuantityEvent():
-        _handleChangeQuantity(event);
+        _changeQuantity(
+          itemId: event.itemId,
+          quantity: event.quantity,
+        );
+
       case RemoveCartItemEvent():
-        _handleRemoveItem(event);
+        await _removeCartItem(event.itemId);
     }
   }
 
-  Future<void> _handleGetCart() async {
-    emit(state.copyWith(isLoading: true, errorMessage: () => null));
+
+  Future<void> _getCart() async {
+    emit(
+      state.copyWith(
+        cart: state.cart.copyWith(
+          isLoading: true,
+          errorMessage: null,
+        ),
+      ),
+    );
 
     final result = await _getCartUseCase();
 
     switch (result) {
-      case SuccessResponse(:final data):
+      case SuccessResponse<CartEntity>():
         emit(
           state.copyWith(
-            isLoading: false,
-            cart: data,
-            errorMessage: () => null,
+            cart: state.cart.copyWith(
+              isLoading: false,
+              errorMessage: null,
+              data: result.data,
+            ),
           ),
         );
-      case ErrorResponse(:final errorMessage):
+
+      case ErrorResponse<CartEntity>():
         emit(
-          state.copyWith(isLoading: false, errorMessage: () => errorMessage),
+          state.copyWith(
+            cart: state.cart.copyWith(
+              isLoading: false,
+              errorMessage: result.errorMessage,
+            ),
+          ),
         );
     }
   }
 
-  Future<void> _handleAddToCart(AddToCartEvent event) async {
+  Future<void> _addToCart(String productId) async {
     emit(
       state.copyWith(
-        loadingProductId: () => event.productId,
-        errorMessage: () => null,
+        addingProductId: () => productId,
+        cart: state.cart.copyWith(
+          errorMessage: null,
+        ),
       ),
     );
 
     final result = await _addToCartUseCase(
-      AddToCartRequestDto(productId: event.productId, quantity: 1),
+      AddToCartRequestDto(
+        productId: productId,
+        quantity: 1,
+      ),
     );
 
     switch (result) {
-      case SuccessResponse():
-        final syncResult = await _getCartUseCase();
-        switch (syncResult) {
-          case SuccessResponse(:final data):
+      case SuccessResponse<void>():
+        final cartResult = await _getCartUseCase();
+
+        switch (cartResult) {
+          case SuccessResponse<CartEntity>():
             emit(
               state.copyWith(
-                loadingProductId: () => null,
-                cart: data,
-                errorMessage: () => null,
+                addingProductId: () => null,
+                cart: state.cart.copyWith(
+                  isLoading: false,
+                  errorMessage: null,
+                  data: cartResult.data,
+                ),
               ),
             );
-          case ErrorResponse(:final errorMessage):
+
+          case ErrorResponse<CartEntity>():
             emit(
               state.copyWith(
-                loadingProductId: () => null,
-                errorMessage: () => errorMessage,
+                addingProductId: () => null,
+                cart: state.cart.copyWith(
+                  isLoading: false,
+                  errorMessage: cartResult.errorMessage,
+                ),
               ),
             );
         }
-      case ErrorResponse(:final errorMessage):
+
+      case ErrorResponse<void>():
         emit(
           state.copyWith(
-            loadingProductId: () => null,
-            errorMessage: () => errorMessage,
+            addingProductId: () => null,
+            cart: state.cart.copyWith(
+              isLoading: false,
+              errorMessage: result.errorMessage,
+            ),
           ),
         );
     }
   }
 
-  void _handleChangeQuantity(ChangeCartQuantityEvent event) {
-    final currentItem = state.getItemByProductId(event.productId);
-    if (currentItem == null) return;
+  void _changeQuantity({
+    required String itemId,
+    required int quantity,
+  }) {
+    final cart = state.cart.data;
 
-    final newQuantity = currentItem.quantity + event.delta;
-    final currentItems = List<CartItemEntity>.from(state.items);
+    if (cart == null) return;
 
-    List<CartItemEntity> updatedItems;
-    if (newQuantity <= 0) {
-      updatedItems = currentItems
-          .where((item) => item.productId != event.productId)
-          .toList();
-    } else {
-      updatedItems = currentItems.map((item) {
-        return item.productId == event.productId
-            ? item.copyWith(quantity: newQuantity)
-            : item;
-      }).toList();
+    final itemIndex = cart.items.indexWhere(
+      (item) => item.itemId == itemId,
+    );
+
+    if (itemIndex == -1) return;
+
+    final currentItem = cart.items[itemIndex];
+
+    if (quantity <= 0) {
+      _removeCartItem(itemId);
+      return;
     }
 
-    final optimisticTotal = updatedItems.fold<num>(
-      0,
-      (sum, item) => sum + (item.unitPrice * item.quantity),
+    if (quantity > currentItem.availableStock) {
+      return;
+    }
+
+    final updatedItems = List<CartItemEntity>.from(cart.items);
+
+    updatedItems[itemIndex] = currentItem.copyWith(
+      quantity: quantity,
+    );
+
+    final updatedCart = _calculateCart(
+      cart: cart,
+      items: updatedItems,
     );
 
     emit(
       state.copyWith(
-        cart: CartEntity(
-          cartId: state.cart?.cartId ?? '',
-          items: updatedItems,
-          total: optimisticTotal,
+        cart: state.cart.copyWith(
+          data: updatedCart,
+          errorMessage: null,
         ),
-        errorMessage: () => null,
+        loadingItemId: () => itemId,
       ),
     );
 
-    _debounceTimers[event.productId]?.cancel();
+    _quantityTimers[itemId]?.cancel();
 
-    _debounceTimers[event.productId] = Timer(
+    _quantityTimers[itemId] = Timer(
       const Duration(milliseconds: 400),
       () async {
-        emit(state.copyWith(loadingProductId: () => event.productId));
-
-        if (newQuantity <= 0) {
-          final result = await _removeCartItemUseCase(currentItem.itemId);
-          _handleApiResult(result);
-        } else {
-          final result = await _updateCartQuantityUseCase(
-            itemId: currentItem.itemId,
-            request: UpdateCartItemRequestDto(quantity: newQuantity),
-          );
-          _handleApiResult(result);
-        }
+        await _updateQuantityOnServer(
+          itemId: itemId,
+          quantity: quantity,
+        );
       },
     );
   }
 
-  Future<void> _handleRemoveItem(RemoveCartItemEvent event) async {
-    final item = state.items.firstWhere(
-      (e) => e.itemId == event.itemId,
-      orElse: () => const CartItemEntity(
-        itemId: '',
-        productId: '',
-        productName: '',
-        productImage: '',
-        unitPrice: 0,
-        priceAtAdd: 0,
-        quantity: 0,
-        availableStock: 0,
+  Future<void> _updateQuantityOnServer({
+    required String itemId,
+    required int quantity,
+  }) async {
+    final result = await _updateCartQuantityUseCase(
+      itemId: itemId,
+      request: UpdateCartItemRequestDto(
+        quantity: quantity,
       ),
     );
+
+    switch (result) {
+      case SuccessResponse<CartEntity>():
+        emit(
+          state.copyWith(
+            loadingItemId: () => null,
+            cart: state.cart.copyWith(
+              isLoading: false,
+              errorMessage: null,
+              data: result.data,
+            ),
+          ),
+        );
+
+      case ErrorResponse<CartEntity>():
+
+        await _getCartAfterQuantityError(
+          result.errorMessage,
+        );
+    }
+  }
+
+  Future<void> _removeCartItem(String itemId) async {
+    _quantityTimers[itemId]?.cancel();
+    _quantityTimers.remove(itemId);
 
     emit(
       state.copyWith(
-        loadingProductId: () =>
-            item.productId.isNotEmpty ? item.productId : null,
-        errorMessage: () => null,
+        loadingItemId: () => itemId,
+        cart: state.cart.copyWith(
+          errorMessage: null,
+        ),
       ),
     );
 
-    final result = await _removeCartItemUseCase(event.itemId);
-    _handleApiResult(result);
-  }
+    final result = await _removeCartItemUseCase(itemId);
 
-  void _handleApiResult(BaseResponse<CartEntity> result) {
     switch (result) {
-      case SuccessResponse(:final data):
+      case SuccessResponse<CartEntity>():
         emit(
           state.copyWith(
-            loadingProductId: () => null,
-            cart: data,
-            errorMessage: () => null,
+            loadingItemId: () => null,
+            cart: state.cart.copyWith(
+              isLoading: false,
+              errorMessage: null,
+              data: result.data,
+            ),
           ),
         );
-      case ErrorResponse(:final errorMessage):
+
+      case ErrorResponse<CartEntity>():
         emit(
           state.copyWith(
-            loadingProductId: () => null,
-            errorMessage: () => errorMessage,
+            loadingItemId: () => null,
+            cart: state.cart.copyWith(
+              isLoading: false,
+              errorMessage: result.errorMessage,
+            ),
           ),
         );
     }
+  }
+
+  Future<void> _getCartAfterQuantityError(
+    String errorMessage,
+  ) async {
+    final result = await _getCartUseCase();
+
+    switch (result) {
+      case SuccessResponse<CartEntity>():
+        emit(
+          state.copyWith(
+            loadingItemId: () => null,
+            cart: state.cart.copyWith(
+              isLoading: false,
+              errorMessage: errorMessage,
+              data: result.data,
+            ),
+          ),
+        );
+
+      case ErrorResponse<CartEntity>():
+        emit(
+          state.copyWith(
+            loadingItemId: () => null,
+            cart: state.cart.copyWith(
+              isLoading: false,
+              errorMessage: errorMessage,
+            ),
+          ),
+        );
+    }
+  }
+
+  CartEntity _calculateCart({
+    required CartEntity cart,
+    required List<CartItemEntity> items,
+  }) {
+    final totalQuantity = items.fold<int>(
+      0,
+      (sum, item) => sum + item.quantity,
+    );
+
+    final subtotal = items.fold<num>(
+      0,
+      (sum, item) => sum + (item.unitPrice * item.quantity),
+    );
+
+    final deliveryFee = cart.deliveryFee ?? 0;
+
+    final total = subtotal + deliveryFee;
+
+    return CartEntity(
+      cartId: cart.cartId,
+      items: items,
+      totalQuantity: totalQuantity,
+      lineCount: items.length,
+      subtotal: subtotal,
+      deliveryFee: cart.deliveryFee,
+      total: total,
+      hasChanges: cart.hasChanges,
+    );
   }
 
   @override
   Future<void> close() {
-    for (final timer in _debounceTimers.values) {
+    for (final timer in _quantityTimers.values) {
       timer.cancel();
     }
-    _debounceTimers.clear();
+    _quantityTimers.clear();
+
     return super.close();
   }
 }

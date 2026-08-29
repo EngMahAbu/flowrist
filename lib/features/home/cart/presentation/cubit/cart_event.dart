@@ -1,22 +1,29 @@
-sealed class CartEvent {}
+abstract class CartEvent {}
 
-class GetCartEvent extends CartEvent {}
+class GetCartEvent extends CartEvent{}
 
 class AddToCartEvent extends CartEvent {
   final String productId;
 
-  AddToCartEvent({required this.productId});
+  AddToCartEvent({
+    required this.productId,
+  });
 }
 
 class ChangeCartQuantityEvent extends CartEvent {
-  final String productId;
-  final int delta;
+  final String itemId;
+  final int quantity;
 
-  ChangeCartQuantityEvent({required this.productId, required this.delta});
+  ChangeCartQuantityEvent({
+    required this.itemId,
+    required this.quantity,
+  });
 }
 
 class RemoveCartItemEvent extends CartEvent {
   final String itemId;
 
-  RemoveCartItemEvent({required this.itemId});
+  RemoveCartItemEvent({
+    required this.itemId,
+  });
 }

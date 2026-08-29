@@ -33,6 +33,11 @@ abstract final class AppStyles {
     fontSize: 13,
     color: AppColors.blackBase,
   );
+  static final TextStyle regular13Grey = GoogleFonts.inter(
+    fontWeight: FontWeight.w400,
+    fontSize: 13,
+    color: AppColors.grey,
+  );
   
   static final TextStyle regular13W500 = GoogleFonts.inter(
     fontWeight: FontWeight.w500,
@@ -74,6 +79,11 @@ abstract final class AppStyles {
     fontSize: 16,
     color: AppColors.whiteBase,
   );
+  static final TextStyle medium16InterBlack = GoogleFonts.inter(
+    fontWeight: FontWeight.w500,
+    fontSize: 16,
+    color: AppColors.blackBase,
+  );
   static final TextStyle medium16InterUnderline = GoogleFonts.inter(
     fontWeight: FontWeight.w500,
     fontSize: 16,
@@ -104,5 +114,10 @@ abstract final class AppStyles {
     fontSize: 12,
     color: AppColors.blackBase,
     decoration: TextDecoration.underline,
+  );
+  static final TextStyle semiBold14 = GoogleFonts.inter(
+    fontWeight: FontWeight.w600,
+    fontSize: 14,
+    color: AppColors.blackBase,
   );
 }
