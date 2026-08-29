@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flowrist/core/constants/endpoints.dart';
+import 'package:flowrist/features/addresses/data/models/add_address_request_model.dart';
 import 'package:flowrist/features/addresses/data/models/get_cities_response_model.dart';
 import 'package:flowrist/features/addresses/data/models/get_governorates_response_model.dart';
 import 'package:injectable/injectable.dart';
@@ -20,4 +21,7 @@ abstract class AddAddressApiClient {
   Future<GetCitiesResponseModel> getCities(
     @Path("governorateId") int governorateId,
   );
+
+  @POST(Endpoints.saveAddress)
+  Future<void> saveAddress(@Body() AddAddressRequestModel request);
 }

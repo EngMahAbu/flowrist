@@ -6,6 +6,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../domain/repositories/add_address_repository.dart';
 import '../data_sources/contract/remote/add_address_remote_data_source.dart';
+import '../models/add_address_request_model.dart';
 
 @Injectable(as: AddAddressRepository)
 class AddAddressRepositoryImpl implements AddAddressRepository {
@@ -32,6 +33,16 @@ class AddAddressRepositoryImpl implements AddAddressRepository {
       return SuccessResponse(entities);
     } on Exception catch (e) {
       return ApiErrorHandler.handleException<List<CityEntity>>(e);
+    }
+  }
+
+  @override
+  Future<BaseResponse<void>> saveAddress(AddAddressRequestModel request) async {
+    try {
+      await _remoteDataSource.saveAddress(request);
+      return SuccessResponse(null);
+    } on Exception catch (e) {
+      return ApiErrorHandler.handleException<void>(e);
     }
   }
 }

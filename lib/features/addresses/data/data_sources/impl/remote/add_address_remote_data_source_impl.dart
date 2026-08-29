@@ -1,3 +1,4 @@
+import 'package:flowrist/features/addresses/data/models/add_address_request_model.dart';
 import 'package:flowrist/features/addresses/data/models/get_cities_response_model.dart';
 import 'package:flowrist/features/addresses/data/models/get_governorates_response_model.dart';
 import 'package:injectable/injectable.dart';
@@ -19,5 +20,10 @@ class AddAddressRemoteDataSourceImpl implements AddAddressRemoteDataSource {
   @override
   Future<GetCitiesResponseModel> getCities(int governorateId) {
     return _apiClient.getCities(governorateId);
+  }
+
+  @override
+  Future<void> saveAddress(AddAddressRequestModel request) {
+    return _apiClient.saveAddress(request);
   }
 }

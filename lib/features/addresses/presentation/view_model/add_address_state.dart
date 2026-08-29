@@ -16,6 +16,7 @@ class AddAddressState extends Equatable {
   final BaseState<List<CityEntity>> citiesState;
   final GovernorateEntity? selectedGovernorate;
   final CityEntity? selectedCity;
+  final BaseState<bool> saveAddressState;
 
   const AddAddressState({
     required this.locationPermission,
@@ -28,6 +29,7 @@ class AddAddressState extends Equatable {
     required this.citiesState,
     this.selectedGovernorate,
     this.selectedCity,
+    required this.saveAddressState,
   });
 
   AddAddressState.initial()
@@ -40,7 +42,8 @@ class AddAddressState extends Equatable {
       governoratesState = BaseState.initial(),
       citiesState = BaseState.initial(),
       selectedGovernorate = null,
-      selectedCity = null;
+      selectedCity = null,
+      saveAddressState = BaseState.initial();
 
   AddAddressState copyWith({
     BaseState<PermissionStatusEntity>? locationPermission,
@@ -53,6 +56,7 @@ class AddAddressState extends Equatable {
     BaseState<List<CityEntity>>? citiesState,
     GovernorateEntity? selectedGovernorate,
     CityEntity? selectedCity,
+    BaseState<bool>? saveAddressState,
   }) {
     return AddAddressState(
       locationPermission: locationPermission ?? this.locationPermission,
@@ -65,6 +69,7 @@ class AddAddressState extends Equatable {
       citiesState: citiesState ?? this.citiesState,
       selectedGovernorate: selectedGovernorate ?? this.selectedGovernorate,
       selectedCity: selectedCity ?? this.selectedCity,
+      saveAddressState: saveAddressState ?? this.saveAddressState,
     );
   }
 
@@ -80,5 +85,6 @@ class AddAddressState extends Equatable {
     citiesState,
     selectedGovernorate,
     selectedCity,
+    saveAddressState,
   ];
 }

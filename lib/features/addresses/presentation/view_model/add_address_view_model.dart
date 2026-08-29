@@ -14,6 +14,7 @@ import 'package:flowrist/features/addresses/domain/use_cases/get_governorates_us
 import 'package:flowrist/features/addresses/domain/use_cases/open_app_settings_use_case.dart';
 import 'package:flowrist/features/addresses/domain/use_cases/request_location_permission_use_case.dart';
 import 'package:flowrist/features/addresses/domain/use_cases/request_location_service_use_case.dart';
+import 'package:flowrist/features/addresses/domain/use_cases/save_address_use_case.dart';
 import 'package:flowrist/features/addresses/presentation/view_model/add_address_event.dart';
 import 'package:flowrist/features/addresses/presentation/view_model/add_address_state.dart';
 import 'package:flutter/foundation.dart';
@@ -22,6 +23,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../shared/domain/entities/city_entity.dart';
 import '../../../../shared/domain/entities/governorate_entity.dart';
+import '../../data/models/add_address_request_model.dart';
 
 @injectable
 class AddAddressViewModel extends Cubit<AddAddressState> {
@@ -34,6 +36,7 @@ class AddAddressViewModel extends Cubit<AddAddressState> {
   final GetAddressFromLocationUseCase _getAddressFromLocationUseCase;
   final GetGovernoratesUseCase _getGovernoratesUseCase;
   final GetCitiesUseCase _getCitiesUseCase;
+  final SaveAddressUseCase _saveAddressUseCase;
   final AppConfig _appConfig;
 
   AddAddressViewModel(
@@ -46,6 +49,7 @@ class AddAddressViewModel extends Cubit<AddAddressState> {
     this._getAddressFromLocationUseCase,
     this._getGovernoratesUseCase,
     this._getCitiesUseCase,
+    this._saveAddressUseCase,
     this._appConfig,
   ) : super(AddAddressState.initial()) {
     _checkMapConfig();
@@ -87,6 +91,24 @@ class AddAddressViewModel extends Cubit<AddAddressState> {
         _selectGovernorate(event.governorate);
       case SelectCityEvent():
         _selectCity(event.city);
+      case SaveAddressEvent():
+        _saveAddress(event.request);
+    }
+  }
+
+  void _saveAddress(AddAddressRequestModel request) async {
+    emit(state.copyWith(saveAddressState: BaseState.loading()));
+    final response = await _saveAddressUseCase(request);
+    switch (response) {
+      case SuccessResponse<void>():
+        emit(state.copyWith(saveAddressState: BaseState.success(true)));
+
+      case ErrorResponse<void>():
+        emit(
+          state.copyWith(
+            saveAddressState: BaseState.error(response.errorMessage),
+          ),
+        );
     }
   }
 

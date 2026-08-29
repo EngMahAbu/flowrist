@@ -14,4 +14,5 @@ abstract final class Endpoints {
   static const String governorates = 'api/address-cart/locations/governorates';
   static const String cities =
       'api/address-cart/locations/governorates/{governorateId}/cities';
+  static const String saveAddress = 'api/address-cart/users/me/addresses';
 }
