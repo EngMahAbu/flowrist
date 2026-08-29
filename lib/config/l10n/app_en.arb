@@ -96,6 +96,9 @@
   "selectAddress":"Select Address",
   "setAsDefault":"Set as default",
   "addNewaddress":"Add new address",
+  "noAddressessaved":"No addresses saved",
+  "youHaveNosaved":"You have no saved address yet.",
+  "addOneTocomplete":"Add one to complete your gifting experience."
   "noAddressessaved":"No addresses saved"
   "occasion": "Occasion",
   "address": "Address",
