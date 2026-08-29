@@ -1,56 +1,69 @@
 import 'package:equatable/equatable.dart';
+import 'package:flowrist/config/base_state/base_state.dart';
 import 'package:flowrist/features/home/cart/domain/entities/cart_entity.dart';
 import 'package:flowrist/features/home/cart/domain/entities/cart_item_entity.dart';
 
 class CartState extends Equatable {
-  final bool isLoading;
-  final String? loadingProductId;
-  final String? errorMessage;
-  final CartEntity? cart;
+  final BaseState<CartEntity> cart;
+  final String? addingProductId;
+  final String? loadingItemId;
 
   const CartState({
-    this.isLoading = false,
-    this.loadingProductId,
-    this.errorMessage,
-    this.cart,
+    required this.cart,
+    this.addingProductId,
+    this.loadingItemId,
   });
 
-  List<CartItemEntity> get items => cart?.items ?? const [];
+  CartState.initial()
+    : this(
+        cart: BaseState.initial(),
+        addingProductId: null,
+        loadingItemId: null,
+      );
 
-  Map<String, int> get productQuantityMap => {
-    for (final item in items) item.productId: item.quantity,
-  };
+  CartState copyWith({
+    BaseState<CartEntity>? cart,
+    String? Function()? addingProductId,
+    String? Function()? loadingItemId,
+  }) {
+    return CartState(
+      cart: cart ?? this.cart,
+      addingProductId: addingProductId != null
+          ? addingProductId()
+          : this.addingProductId,
+      loadingItemId: loadingItemId != null
+          ? loadingItemId()
+          : this.loadingItemId,
+    );
+  }
 
-  int get totalQuantity => cart?.totalQuantity ?? 0;
-
-  int getQuantity(String productId) => productQuantityMap[productId] ?? 0;
-
-  bool isProductLoading(String productId) => loadingProductId == productId;
-
-  CartItemEntity? getItemByProductId(String productId) {
+  CartItemEntity? getCartItem(String productId) {
+    final cartData = cart.data;
+    if (cartData == null) return null;
     try {
-      return items.firstWhere((element) => element.productId == productId);
+      return cartData.items.firstWhere((item) => item.productId == productId);
     } catch (_) {
       return null;
     }
   }
 
-  CartState copyWith({
-    bool? isLoading,
-    String? Function()? loadingProductId,
-    String? Function()? errorMessage,
-    CartEntity? cart,
-  }) {
-    return CartState(
-      isLoading: isLoading ?? this.isLoading,
-      loadingProductId: loadingProductId != null
-          ? loadingProductId()
-          : this.loadingProductId,
-      errorMessage: errorMessage != null ? errorMessage() : this.errorMessage,
-      cart: cart ?? this.cart,
-    );
+  int getQuantity(String productId) {
+    return getCartItem(productId)?.quantity ?? 0;
+  }
+
+  String? getCartItemId(String productId) {
+    return getCartItem(productId)?.itemId;
+  }
+
+  bool isProductLoading(String productId) {
+    final itemId = getCartItemId(productId);
+    return itemId != null && loadingItemId == itemId;
+  }
+
+  bool isProductAdding(String productId) {
+    return addingProductId == productId;
   }
 
   @override
-  List<Object?> get props => [isLoading, loadingProductId, errorMessage, cart];
+  List<Object?> get props => [cart, addingProductId, loadingItemId];
 }

@@ -14,10 +14,21 @@ void main() {
   late MockCartRepository mockRepository;
   late GetCartUseCase useCase;
 
-  const tCart = CartEntity(cartId: 'cart_123', items: [], total: 0);
+  const tCart = CartEntity(
+    cartId: 'cart_123',
+    items: [],
+    totalQuantity: 0,
+    lineCount: 0,
+    subtotal: 0,
+    deliveryFee: 50,
+    total: 50,
+    hasChanges: false,
+  );
 
   setUpAll(() {
-    provideDummy<BaseResponse<CartEntity>>(SuccessResponse<CartEntity>(tCart));
+    provideDummy<BaseResponse<CartEntity>>(
+      SuccessResponse<CartEntity>(tCart),
+    );
   });
 
   setUp(() {
@@ -29,15 +40,30 @@ void main() {
     test(
       'should return BaseResponse<CartEntity> from the repository',
       () async {
+        // Arrange
         when(
           mockRepository.getCart(),
-        ).thenAnswer((_) async => SuccessResponse<CartEntity>(tCart));
+        ).thenAnswer(
+          (_) async => SuccessResponse<CartEntity>(tCart),
+        );
 
+        // Act
         final result = await useCase();
 
+        // Assert
         expect(result, isA<SuccessResponse<CartEntity>>());
+
         final data = (result as SuccessResponse<CartEntity>).data;
-        expect(data?.cartId, equals('cart_123'));
+
+        expect(data, isNotNull);
+        expect(data!.cartId, equals('cart_123'));
+        expect(data.totalQuantity, equals(0));
+        expect(data.lineCount, equals(0));
+        expect(data.subtotal, equals(0));
+        expect(data.deliveryFee, equals(50));
+        expect(data.total, equals(50));
+        expect(data.hasChanges, isFalse);
+
         verify(mockRepository.getCart()).called(1);
         verifyNoMoreInteractions(mockRepository);
       },

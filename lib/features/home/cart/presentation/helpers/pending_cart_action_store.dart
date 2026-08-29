@@ -12,7 +12,9 @@ class PendingCartActionStore {
 
   void executePendingActionIfAny(CartCubit cartCubit) {
     if (_pendingAddToCartEvent != null) {
-      cartCubit.doIntent(_pendingAddToCartEvent!);
+      cartCubit.doEvent
+      
+      (_pendingAddToCartEvent!);
       _pendingAddToCartEvent = null;
     }
   }

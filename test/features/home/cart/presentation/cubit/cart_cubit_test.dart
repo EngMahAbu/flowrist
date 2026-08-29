@@ -4,6 +4,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
 import 'package:flowrist/config/base_response/base_response.dart';
+import 'package:flowrist/config/base_state/base_state.dart';
 import 'package:flowrist/features/home/cart/domain/entities/cart_entity.dart';
 import 'package:flowrist/features/home/cart/domain/entities/cart_item_entity.dart';
 import 'package:flowrist/features/home/cart/domain/use_cases/add_to_cart_use_case.dart';
@@ -13,6 +14,7 @@ import 'package:flowrist/features/home/cart/domain/use_cases/update_cart_quantit
 import 'package:flowrist/features/home/cart/presentation/cubit/cart_cubit.dart';
 import 'package:flowrist/features/home/cart/presentation/cubit/cart_event.dart';
 import 'package:flowrist/features/home/cart/presentation/cubit/cart_state.dart';
+import 'cart_cubit_test.mocks.dart';
 
 @GenerateMocks([
   GetCartUseCase,
@@ -20,8 +22,6 @@ import 'package:flowrist/features/home/cart/presentation/cubit/cart_state.dart';
   UpdateCartQuantityUseCase,
   RemoveCartItemUseCase,
 ])
-import 'cart_cubit_test.mocks.dart';
-
 void main() {
   late MockGetCartUseCase mockGetCartUseCase;
   late MockAddToCartUseCase mockAddToCartUseCase;
@@ -37,7 +37,11 @@ void main() {
     unitPrice: 50,
     priceAtAdd: 50,
     quantity: 1,
+    lineSubtotal: 50,
     availableStock: 10,
+    isAvailable: true,
+    priceChanged: false,
+    stockChanged: false,
   );
 
   const tItem2 = CartItemEntity(
@@ -48,27 +52,51 @@ void main() {
     unitPrice: 30,
     priceAtAdd: 30,
     quantity: 2,
+    lineSubtotal: 60,
     availableStock: 5,
+    isAvailable: true,
+    priceChanged: false,
+    stockChanged: false,
   );
 
-  final tInitialCart = CartEntity(
+  const tInitialCart = CartEntity(
     cartId: 'cart_123',
-    items: const [tItem1],
-    total: 50,
+    items: [tItem1],
+    totalQuantity: 1,
+    lineCount: 1,
+    subtotal: 50,
+    deliveryFee: 20,
+    total: 70,
+    hasChanges: false,
   );
 
-  final tUpdatedCart = CartEntity(
+  const tUpdatedCart = CartEntity(
     cartId: 'cart_123',
-    items: const [tItem1, tItem2],
-    total: 110,
+    items: [tItem1, tItem2],
+    totalQuantity: 3,
+    lineCount: 2,
+    subtotal: 110,
+    deliveryFee: 20,
+    total: 130,
+    hasChanges: false,
+  );
+
+  const tEmptyCart = CartEntity(
+    cartId: 'cart_123',
+    items: [],
+    totalQuantity: 0,
+    lineCount: 0,
+    subtotal: 0,
+    deliveryFee: 20,
+    total: 20,
+    hasChanges: false,
   );
 
   setUpAll(() {
     provideDummy<BaseResponse<CartEntity>>(
-      SuccessResponse<CartEntity>(
-        const CartEntity(cartId: '', items: [], total: 0),
-      ),
+      SuccessResponse<CartEntity>(tEmptyCart),
     );
+
     provideDummy<BaseResponse<void>>(SuccessResponse<void>(null));
   });
 
@@ -86,27 +114,40 @@ void main() {
     );
   });
 
-  tearDown(() {
-    cartCubit.close();
+  tearDown(() async {
+    await cartCubit.close();
   });
 
   group('CartCubit - GetCartEvent Tests', () {
-    test('initial state should be CartState with default values', () {
-      expect(cartCubit.state, equals(const CartState()));
+    test('initial state should be CartState.initial()', () {
+      expect(cartCubit.state, equals(CartState.initial()));
     });
 
     blocTest<CartCubit, CartState>(
-      'emits [loading, success] when getCartUseCase succeeds',
+      'emits loading then success when getCartUseCase succeeds',
       build: () {
         when(
           mockGetCartUseCase(),
         ).thenAnswer((_) async => SuccessResponse<CartEntity>(tInitialCart));
+
         return cartCubit;
       },
-      act: (cubit) => cubit.doIntent(GetCartEvent()),
+      act: (cubit) => cubit.doEvent(GetCartEvent()),
       expect: () => [
-        const CartState(isLoading: true, cart: null, errorMessage: null),
-        CartState(isLoading: false, cart: tInitialCart, errorMessage: null),
+        CartState(
+          cart: BaseState<CartEntity>(
+            isLoading: true,
+            errorMessage: null,
+            data: null,
+          ),
+        ),
+        CartState(
+          cart: BaseState<CartEntity>(
+            isLoading: false,
+            errorMessage: null,
+            data: tInitialCart,
+          ),
+        ),
       ],
       verify: (_) {
         verify(mockGetCartUseCase()).called(1);
@@ -114,20 +155,29 @@ void main() {
     );
 
     blocTest<CartCubit, CartState>(
-      'emits [loading, error] when getCartUseCase fails',
+      'emits loading then error when getCartUseCase fails',
       build: () {
         when(
           mockGetCartUseCase(),
         ).thenAnswer((_) async => ErrorResponse<CartEntity>('Network Error'));
+
         return cartCubit;
       },
-      act: (cubit) => cubit.doIntent(GetCartEvent()),
+      act: (cubit) => cubit.doEvent(GetCartEvent()),
       expect: () => [
-        const CartState(isLoading: true, cart: null, errorMessage: null),
-        const CartState(
-          isLoading: false,
-          cart: null,
-          errorMessage: 'Network Error',
+        CartState(
+          cart: BaseState<CartEntity>(
+            isLoading: true,
+            errorMessage: null,
+            data: null,
+          ),
+        ),
+        CartState(
+          cart: BaseState<CartEntity>(
+            isLoading: false,
+            errorMessage: 'Network Error',
+            data: null,
+          ),
         ),
       ],
       verify: (_) {
@@ -138,30 +188,42 @@ void main() {
 
   group('CartCubit - AddToCartEvent Tests', () {
     blocTest<CartCubit, CartState>(
-      'emits [loadingProductId, updatedCart] when addToCart succeeds and syncs successfully',
+      'emits adding state then updated cart when addToCart succeeds',
       build: () {
         when(
           mockAddToCartUseCase(any),
         ).thenAnswer((_) async => SuccessResponse<void>(null));
+
         when(
           mockGetCartUseCase(),
         ).thenAnswer((_) async => SuccessResponse<CartEntity>(tUpdatedCart));
+
         return cartCubit;
       },
-      seed: () => CartState(cart: tInitialCart),
-      act: (cubit) => cubit.doIntent(AddToCartEvent(productId: 'prod_2')),
+      seed: () => CartState(
+        cart: BaseState<CartEntity>(
+          isLoading: false,
+          errorMessage: null,
+          data: tInitialCart,
+        ),
+      ),
+      act: (cubit) => cubit.doEvent(AddToCartEvent(productId: 'prod_2')),
       expect: () => [
         CartState(
-          isLoading: false,
-          loadingProductId: 'prod_2',
-          cart: tInitialCart,
-          errorMessage: null,
+          cart: BaseState<CartEntity>(
+            isLoading: false,
+            errorMessage: null,
+            data: tInitialCart,
+          ),
+          addingProductId: 'prod_2',
         ),
         CartState(
-          isLoading: false,
-          loadingProductId: null,
-          cart: tUpdatedCart,
-          errorMessage: null,
+          cart: BaseState<CartEntity>(
+            isLoading: false,
+            errorMessage: null,
+            data: tUpdatedCart,
+          ),
+          addingProductId: null,
         ),
       ],
       verify: (_) {
@@ -176,54 +238,78 @@ void main() {
         when(
           mockAddToCartUseCase(any),
         ).thenAnswer((_) async => ErrorResponse<void>('Failed to add item'));
+
         return cartCubit;
       },
-      seed: () => CartState(cart: tInitialCart),
-      act: (cubit) => cubit.doIntent(AddToCartEvent(productId: 'prod_2')),
+      seed: () => CartState(
+        cart: BaseState<CartEntity>(
+          isLoading: false,
+          errorMessage: null,
+          data: tInitialCart,
+        ),
+      ),
+      act: (cubit) => cubit.doEvent(AddToCartEvent(productId: 'prod_2')),
       expect: () => [
         CartState(
-          isLoading: false,
-          loadingProductId: 'prod_2',
-          cart: tInitialCart,
-          errorMessage: null,
+          cart: BaseState<CartEntity>(
+            isLoading: false,
+            errorMessage: null,
+            data: tInitialCart,
+          ),
+          addingProductId: 'prod_2',
         ),
         CartState(
-          isLoading: false,
-          loadingProductId: null,
-          cart: tInitialCart,
-          errorMessage: 'Failed to add item',
+          cart: BaseState<CartEntity>(
+            isLoading: false,
+            errorMessage: 'Failed to add item',
+            data: tInitialCart,
+          ),
+          addingProductId: null,
         ),
       ],
       verify: (_) {
         verify(mockAddToCartUseCase(any)).called(1);
+        verifyNever(mockGetCartUseCase());
       },
     );
 
     blocTest<CartCubit, CartState>(
-      'emits error when addToCart succeeds but sync fails',
+      'emits error when addToCart succeeds but getCart fails',
       build: () {
         when(
           mockAddToCartUseCase(any),
         ).thenAnswer((_) async => SuccessResponse<void>(null));
+
         when(
           mockGetCartUseCase(),
         ).thenAnswer((_) async => ErrorResponse<CartEntity>('Sync failed'));
+
         return cartCubit;
       },
-      seed: () => CartState(cart: tInitialCart),
-      act: (cubit) => cubit.doIntent(AddToCartEvent(productId: 'prod_2')),
+      seed: () => CartState(
+        cart: BaseState<CartEntity>(
+          isLoading: false,
+          errorMessage: null,
+          data: tInitialCart,
+        ),
+      ),
+      act: (cubit) => cubit.doEvent(AddToCartEvent(productId: 'prod_2')),
       expect: () => [
         CartState(
-          isLoading: false,
-          loadingProductId: 'prod_2',
-          cart: tInitialCart,
-          errorMessage: null,
+          cart: BaseState<CartEntity>(
+            isLoading: false,
+            errorMessage: null,
+            data: tInitialCart,
+          ),
+          addingProductId: 'prod_2',
         ),
         CartState(
-          isLoading: false,
-          loadingProductId: null,
-          cart: tInitialCart,
-          errorMessage: 'Sync failed',
+          cart: BaseState<CartEntity>(
+            isLoading: false,
+            errorMessage: 'Sync failed',
+            data: tInitialCart,
+          ),
+          addingProductId: null,
         ),
       ],
       verify: (_) {
@@ -233,15 +319,36 @@ void main() {
     );
   });
 
-  group('CartCubit - ChangeCartQuantityEvent Tests (Debounced)', () {
+  group('CartCubit - ChangeCartQuantityEvent Tests', () {
     blocTest<CartCubit, CartState>(
-      'instantly updates local state and calls API after debounce on delta = +1',
+      'updates quantity locally then updates server after debounce',
       build: () {
-        final serverUpdatedCart = CartEntity(
-          cartId: 'cart_123',
-          items: [tItem1.copyWith(quantity: 2)],
-          total: 100,
+        const serverUpdatedItem = CartItemEntity(
+          itemId: 'item_1',
+          productId: 'prod_1',
+          productName: 'Red Roses',
+          productImage: 'roses.png',
+          unitPrice: 50,
+          priceAtAdd: 50,
+          quantity: 2,
+          lineSubtotal: 100,
+          availableStock: 10,
+          isAvailable: true,
+          priceChanged: false,
+          stockChanged: false,
         );
+
+        const serverUpdatedCart = CartEntity(
+          cartId: 'cart_123',
+          items: [serverUpdatedItem],
+          totalQuantity: 2,
+          lineCount: 1,
+          subtotal: 100,
+          deliveryFee: 20,
+          total: 120,
+          hasChanges: false,
+        );
+
         when(
           mockUpdateCartQuantityUseCase(
             itemId: anyNamed('itemId'),
@@ -250,42 +357,87 @@ void main() {
         ).thenAnswer(
           (_) async => SuccessResponse<CartEntity>(serverUpdatedCart),
         );
+
         return cartCubit;
       },
-      seed: () => CartState(cart: tInitialCart),
-      act: (cubit) => cubit.doIntent(
-        ChangeCartQuantityEvent(productId: 'prod_1', delta: 1),
+      seed: () => CartState(
+        cart: BaseState<CartEntity>(
+          isLoading: false,
+          errorMessage: null,
+          data: tInitialCart,
+        ),
       ),
+      act: (cubit) =>
+          cubit.doEvent(ChangeCartQuantityEvent(itemId: 'item_1', quantity: 2)),
       wait: const Duration(milliseconds: 500),
       expect: () => [
+        // Local optimistic update.
+        // Quantity changes, but lineSubtotal is still the old value.
         CartState(
-          isLoading: false,
-          cart: CartEntity(
-            cartId: 'cart_123',
-            items: [tItem1.copyWith(quantity: 2)],
-            total: 100,
+          cart: BaseState<CartEntity>(
+            isLoading: false,
+            errorMessage: null,
+            data: const CartEntity(
+              cartId: 'cart_123',
+              items: [
+                CartItemEntity(
+                  itemId: 'item_1',
+                  productId: 'prod_1',
+                  productName: 'Red Roses',
+                  productImage: 'roses.png',
+                  unitPrice: 50,
+                  priceAtAdd: 50,
+                  quantity: 2,
+                  lineSubtotal: 50,
+                  availableStock: 10,
+                  isAvailable: true,
+                  priceChanged: false,
+                  stockChanged: false,
+                ),
+              ],
+              totalQuantity: 2,
+              lineCount: 1,
+              subtotal: 100,
+              deliveryFee: 20,
+              total: 120,
+              hasChanges: false,
+            ),
           ),
-          errorMessage: null,
+          loadingItemId: 'item_1',
         ),
+
+        // Server response.
         CartState(
-          isLoading: false,
-          loadingProductId: 'prod_1',
-          cart: CartEntity(
-            cartId: 'cart_123',
-            items: [tItem1.copyWith(quantity: 2)],
-            total: 100,
+          cart: BaseState<CartEntity>(
+            isLoading: false,
+            errorMessage: null,
+            data: const CartEntity(
+              cartId: 'cart_123',
+              items: [
+                CartItemEntity(
+                  itemId: 'item_1',
+                  productId: 'prod_1',
+                  productName: 'Red Roses',
+                  productImage: 'roses.png',
+                  unitPrice: 50,
+                  priceAtAdd: 50,
+                  quantity: 2,
+                  lineSubtotal: 100,
+                  availableStock: 10,
+                  isAvailable: true,
+                  priceChanged: false,
+                  stockChanged: false,
+                ),
+              ],
+              totalQuantity: 2,
+              lineCount: 1,
+              subtotal: 100,
+              deliveryFee: 20,
+              total: 120,
+              hasChanges: false,
+            ),
           ),
-          errorMessage: null,
-        ),
-        CartState(
-          isLoading: false,
-          loadingProductId: null,
-          cart: CartEntity(
-            cartId: 'cart_123',
-            items: [tItem1.copyWith(quantity: 2)],
-            total: 100,
-          ),
-          errorMessage: null,
+          loadingItemId: null,
         ),
       ],
       verify: (_) {
@@ -297,38 +449,40 @@ void main() {
         ).called(1);
       },
     );
-
     blocTest<CartCubit, CartState>(
-      'removes item and calls removeCartItemUseCase after debounce when quantity reaches 0',
+      'removes item when quantity becomes zero',
       build: () {
-        const emptyCart = CartEntity(cartId: 'cart_123', items: [], total: 0);
         when(
-          mockRemoveCartItemUseCase(any),
-        ).thenAnswer((_) async => SuccessResponse<CartEntity>(emptyCart));
+          mockRemoveCartItemUseCase('item_1'),
+        ).thenAnswer((_) async => SuccessResponse<CartEntity>(tEmptyCart));
+
         return cartCubit;
       },
-      seed: () => CartState(cart: tInitialCart),
-      act: (cubit) => cubit.doIntent(
-        ChangeCartQuantityEvent(productId: 'prod_1', delta: -1),
+      seed: () => CartState(
+        cart: BaseState<CartEntity>(
+          isLoading: false,
+          errorMessage: null,
+          data: tInitialCart,
+        ),
       ),
-      wait: const Duration(milliseconds: 500),
+      act: (cubit) =>
+          cubit.doEvent(ChangeCartQuantityEvent(itemId: 'item_1', quantity: 0)),
       expect: () => [
-        const CartState(
-          isLoading: false,
-          cart: CartEntity(cartId: 'cart_123', items: [], total: 0),
-          errorMessage: null,
+        CartState(
+          cart: BaseState<CartEntity>(
+            isLoading: false,
+            errorMessage: null,
+            data: tInitialCart,
+          ),
+          loadingItemId: 'item_1',
         ),
-        const CartState(
-          isLoading: false,
-          loadingProductId: 'prod_1',
-          cart: CartEntity(cartId: 'cart_123', items: [], total: 0),
-          errorMessage: null,
-        ),
-        const CartState(
-          isLoading: false,
-          loadingProductId: null,
-          cart: CartEntity(cartId: 'cart_123', items: [], total: 0),
-          errorMessage: null,
+        CartState(
+          cart: BaseState<CartEntity>(
+            isLoading: false,
+            errorMessage: null,
+            data: tEmptyCart,
+          ),
+          loadingItemId: null,
         ),
       ],
       verify: (_) {
@@ -339,28 +493,78 @@ void main() {
 
   group('CartCubit - RemoveCartItemEvent Tests', () {
     blocTest<CartCubit, CartState>(
-      'emits [loadingProductId, successCart] when removeCartItemUseCase succeeds',
+      'emits loading then updated cart when remove succeeds',
       build: () {
-        const emptyCart = CartEntity(cartId: 'cart_123', items: [], total: 0);
         when(
           mockRemoveCartItemUseCase('item_1'),
-        ).thenAnswer((_) async => SuccessResponse<CartEntity>(emptyCart));
+        ).thenAnswer((_) async => SuccessResponse<CartEntity>(tEmptyCart));
+
         return cartCubit;
       },
-      seed: () => CartState(cart: tInitialCart),
-      act: (cubit) => cubit.doIntent(RemoveCartItemEvent(itemId: 'item_1')),
+      seed: () => CartState(
+        cart: BaseState<CartEntity>(
+          isLoading: false,
+          errorMessage: null,
+          data: tInitialCart,
+        ),
+      ),
+      act: (cubit) => cubit.doEvent(RemoveCartItemEvent(itemId: 'item_1')),
       expect: () => [
         CartState(
-          isLoading: false,
-          loadingProductId: 'prod_1',
-          cart: tInitialCart,
-          errorMessage: null,
+          cart: BaseState<CartEntity>(
+            isLoading: false,
+            errorMessage: null,
+            data: tInitialCart,
+          ),
+          loadingItemId: 'item_1',
         ),
-        const CartState(
+        CartState(
+          cart: BaseState<CartEntity>(
+            isLoading: false,
+            errorMessage: null,
+            data: tEmptyCart,
+          ),
+          loadingItemId: null,
+        ),
+      ],
+      verify: (_) {
+        verify(mockRemoveCartItemUseCase('item_1')).called(1);
+      },
+    );
+
+    blocTest<CartCubit, CartState>(
+      'emits error when removeCartItemUseCase fails',
+      build: () {
+        when(mockRemoveCartItemUseCase('item_1')).thenAnswer(
+          (_) async => ErrorResponse<CartEntity>('Failed to remove item'),
+        );
+
+        return cartCubit;
+      },
+      seed: () => CartState(
+        cart: BaseState<CartEntity>(
           isLoading: false,
-          loadingProductId: null,
-          cart: CartEntity(cartId: 'cart_123', items: [], total: 0),
           errorMessage: null,
+          data: tInitialCart,
+        ),
+      ),
+      act: (cubit) => cubit.doEvent(RemoveCartItemEvent(itemId: 'item_1')),
+      expect: () => [
+        CartState(
+          cart: BaseState<CartEntity>(
+            isLoading: false,
+            errorMessage: null,
+            data: tInitialCart,
+          ),
+          loadingItemId: 'item_1',
+        ),
+        CartState(
+          cart: BaseState<CartEntity>(
+            isLoading: false,
+            errorMessage: 'Failed to remove item',
+            data: tInitialCart,
+          ),
+          loadingItemId: null,
         ),
       ],
       verify: (_) {

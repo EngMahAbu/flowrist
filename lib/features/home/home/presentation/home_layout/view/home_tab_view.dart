@@ -31,7 +31,7 @@ class _HomeTabViewState extends State<HomeTabView> {
     final token = await sessionService.getToken();
 
     if (!isGuest && token.isNotEmpty && mounted) {
-      context.read<CartCubit>().doIntent(GetCartEvent());
+      context.read<CartCubit>().doEvent(GetCartEvent());
     }
   }
 

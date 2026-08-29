@@ -68,10 +68,13 @@ class _HomeNavigationViewState extends State<HomeNavigationView> {
         ),
         BottomNavigationBarItem(
           icon: BlocBuilder<CartCubit, CartState>(
-            buildWhen: (prev, curr) => prev.totalQuantity != curr.totalQuantity,
+            buildWhen: (previous, current) {
+              final previousCount = previous.cart.data?.totalQuantity ?? 0;
+              final currentCount = current.cart.data?.totalQuantity ?? 0;
+              return previousCount != currentCount;
+            },
             builder: (context, state) {
-              final count = state.totalQuantity;
-
+              final count = state.cart.data?.totalQuantity ?? 0;
               return Badge(
                 isLabelVisible: count > 0,
                 label: AnimatedSwitcher(

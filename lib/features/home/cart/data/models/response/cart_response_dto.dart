@@ -24,7 +24,9 @@ class CartDataDto {
   final int? totalQuantity;
   final int? lineCount;
   final num? subtotal;
+  final num? deliveryFee;
   final num? total;
+  final bool? hasChanges;
 
   const CartDataDto({
     this.cartId,
@@ -32,7 +34,9 @@ class CartDataDto {
     this.totalQuantity,
     this.lineCount,
     this.subtotal,
+    this.deliveryFee,
     this.total,
+    this.hasChanges,
   });
 
   factory CartDataDto.fromJson(Map<String, dynamic> json) =>
@@ -53,6 +57,8 @@ class CartItemDto {
   final num? lineSubtotal;
   final int? availableStock;
   final bool? isAvailable;
+  final bool? priceChanged;
+  final bool? stockChanged;
 
   const CartItemDto({
     this.itemId,
@@ -65,8 +71,9 @@ class CartItemDto {
     this.lineSubtotal,
     this.availableStock,
     this.isAvailable,
+    this.priceChanged,
+    this.stockChanged,
   });
-
   factory CartItemDto.fromJson(Map<String, dynamic> json) =>
       _$CartItemDtoFromJson(json);
 
