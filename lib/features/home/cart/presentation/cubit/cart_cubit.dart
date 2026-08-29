@@ -321,7 +321,7 @@ class CartCubit extends Cubit<CartState> {
       (sum, item) => sum + (item.unitPrice * item.quantity),
     );
 
-    final deliveryFee = cart.deliveryFee ?? 0;
+    final deliveryFee = cart.deliveryFee;
 
     final total = subtotal + deliveryFee;
 

@@ -1,6 +1,7 @@
 import 'package:flowrist/config/base_state/base_state.dart';
 import 'package:flowrist/config/di/di.dart';
 import 'package:flowrist/config/session/session_guard.dart';
+import 'package:flowrist/features/home/cart/domain/entities/cart_item_entity.dart';
 import 'package:flowrist/features/home/cart/presentation/cubit/cart_cubit.dart';
 import 'package:flowrist/features/home/cart/presentation/cubit/cart_event.dart';
 import 'package:flowrist/features/home/cart/presentation/cubit/cart_state.dart';
@@ -146,8 +147,17 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
                   previous.isProductLoading(product.id) !=
                       current.isProductLoading(product.id),
               builder: (context, cartState) {
-                final isAdding = cartState.isProductLoading(product.id);
-                final quantity = cartState.getQuantity(product.id);
+                final cartItems = cartState.cart.data?.items ?? [];
+                final cartItem = cartItems.cast<CartItemEntity?>().firstWhere(
+                  (item) => item?.productId == product.id,
+                  orElse: () => null,
+                );
+
+                final quantity = cartItem?.quantity ?? 0;
+                final isAdding =
+                    cartState.addingProductId == product.id ||
+                    (cartItem != null &&
+                        cartState.loadingItemId == cartItem.itemId);
 
                 if (!product.inStock) {
                   return ElevatedButton(
@@ -239,10 +249,11 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
                       IconButton(
                         icon: const Icon(Icons.remove, color: Colors.white),
                         onPressed: () {
+                          if (cartItem == null) return;
                           context.read<CartCubit>().doEvent(
                             ChangeCartQuantityEvent(
-                              itemId: product.id,
-                              quantity: -1,
+                              itemId: cartItem.itemId,
+                              quantity: quantity - 1,
                             ),
                           );
                         },
@@ -264,6 +275,7 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
                       IconButton(
                         icon: const Icon(Icons.add, color: Colors.white),
                         onPressed: () {
+                          if (cartItem == null) return;
                           if (quantity >= product.availableStock) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
@@ -273,10 +285,11 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
                             );
                             return;
                           }
+                          // إرسال itemId الحقيقي والكمية الحالية مضافاً إليها 1
                           context.read<CartCubit>().doEvent(
                             ChangeCartQuantityEvent(
-                              itemId: product.id,
-                              quantity: 1,
+                              itemId: cartItem.itemId,
+                              quantity: quantity + 1,
                             ),
                           );
                         },

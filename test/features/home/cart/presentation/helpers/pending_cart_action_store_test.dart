@@ -24,10 +24,10 @@ void main() {
 
       store.executePendingActionIfAny(mockCartCubit);
 
-      verify(mockCartCubit.doIntent(event)).called(1);
+      verify(mockCartCubit.doEvent(event)).called(1);
 
       store.executePendingActionIfAny(mockCartCubit);
-      verifyNever(mockCartCubit.doIntent(any));
+      verifyNever(mockCartCubit.doEvent(any));
     });
 
     test('clear resets pending action', () {
@@ -35,7 +35,7 @@ void main() {
       store.clear();
 
       store.executePendingActionIfAny(mockCartCubit);
-      verifyNever(mockCartCubit.doIntent(any));
+      verifyNever(mockCartCubit.doEvent(any));
     });
   });
 }

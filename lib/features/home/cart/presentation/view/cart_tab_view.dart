@@ -1,5 +1,4 @@
 import 'package:flowrist/core/constants/app_colors.dart';
-import 'package:flowrist/core/constants/app_dimensions.dart';
 import 'package:flowrist/core/constants/app_styles.dart';
 import 'package:flowrist/core/ui/widgets/app_button.dart';
 import 'package:flowrist/core/ui/widgets/cart_item_card.dart';
@@ -28,18 +27,7 @@ class _CartTabViewState extends State<CartTabView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        titleSpacing: 0,
-        leading: Padding(
-          padding: const EdgeInsetsDirectional.only(
-            start: AppDimensions.defaultScreenPadding,
-          ),
-          child: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(Icons.arrow_back_ios_new),
-          ),
-        ),
+        automaticallyImplyLeading: false,
         title: BlocBuilder<CartCubit, CartState>(
           builder: (context, state) {
             final cart = state.cart.data;
