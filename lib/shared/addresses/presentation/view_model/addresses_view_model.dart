@@ -1,9 +1,10 @@
 import 'package:flowrist/config/base_response/base_response.dart';
 import 'package:flowrist/config/base_state/base_state.dart';
-import 'package:flowrist/config/location_services/location_services.dart';
+import 'package:flowrist/features/addresses/domain/entities/coordinates_entity.dart';
 import 'package:flowrist/shared/addresses/domain/entities/address_entity.dart';
 import 'package:flowrist/shared/addresses/domain/entities/default_address_entity.dart';
 import 'package:flowrist/shared/addresses/domain/use_cases/get_all_user_addresses_use_case.dart';
+import 'package:flowrist/shared/addresses/domain/use_cases/get_user_current_location_use_case.dart';
 import 'package:flowrist/shared/addresses/domain/use_cases/set_default_address_use_case.dart';
 import 'package:flowrist/shared/addresses/presentation/view_model/addresses_event.dart';
 import 'package:flowrist/shared/addresses/presentation/view_model/addresses_state.dart';
@@ -16,12 +17,12 @@ import 'package:injectable/injectable.dart';
 class AddressesViewModel extends Cubit<AddressesState> {
   final GetAllUserAddressesUseCase _getAllUserAddressesUseCase;
   final SetDefaultAddressUseCase _setDefaultAddressUseCase;
-  final LocationService _locationService;
+  final GetUserCurrentLocationUseCase _getUserCurrentLocationUseCase;
 
   AddressesViewModel(
     this._getAllUserAddressesUseCase,
-    this._locationService,
     this._setDefaultAddressUseCase,
+    this._getUserCurrentLocationUseCase,
   ) : super(
         AddressesState(
           addressesState: BaseState.initial(),
@@ -58,10 +59,12 @@ class AddressesViewModel extends Cubit<AddressesState> {
       // 1. GET USER LOCATION
       // ========================================================
 
-      Position? position;
+      CoordinatesEntity? position;
 
       try {
-        position = await _locationService.getCurrentPosition();
+        final response = await _getUserCurrentLocationUseCase();
+        final data = (response as SuccessResponse).data!;
+        position = data.$1;
       } catch (e) {
         debugPrint('LOCATION NOT AVAILABLE: $e');
       }
@@ -269,7 +272,7 @@ class AddressesViewModel extends Cubit<AddressesState> {
 
   AddressEntity? _findNearestAddress(
     List<AddressEntity> addresses,
-    Position position,
+    CoordinatesEntity position,
   ) {
     if (addresses.isEmpty) {
       return null;
