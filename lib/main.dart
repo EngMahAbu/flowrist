@@ -3,14 +3,15 @@ import 'package:flowrist/core/constants/app_colors.dart';
 import 'package:flowrist/core/constants/app_router.dart';
 import 'package:flowrist/core/constants/app_strings.dart';
 import 'package:flowrist/core/ui/theme/app_theme.dart';
-import 'package:flowrist/features/home/shared/home_address/presentation/cubit/home_address_cubit/home_address_cubit.dart';
 import 'package:flowrist/features/home/cart/presentation/cubit/cart_cubit.dart';
 import 'package:flowrist/features/home/cart/presentation/cubit/cart_state.dart';
 import 'package:flowrist/flowrist_bloc_observer.dart';
+import 'package:flowrist/shared/addresses/presentation/view_model/addresses_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+
 import 'config/l10n/app_localizations.dart';
 
 void main() async {
@@ -20,9 +21,14 @@ void main() async {
 
   Bloc.observer = FlowristBlocObserver();
 
-  runApp(const FlowristApp());
   runApp(
-    BlocProvider(create: (_) => getIt<CartCubit>(), child: const FlowristApp()),
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => getIt<CartCubit>()),
+        BlocProvider(create: (_) => getIt<AddressesViewModel>()),
+      ],
+      child: const FlowristApp(),
+    ),
   );
 }
 

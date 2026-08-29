@@ -1,13 +1,14 @@
 import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flowrist/core/constants/app_colors.dart';
-import 'package:flowrist/features/home/shared/home_address/domain/entities/address_entities/address_entity.dart';
-import 'package:flowrist/features/home/shared/home_address/presentation/cubit/home_address_cubit/home_address_cubit.dart';
-import 'package:flowrist/features/home/shared/home_address/presentation/cubit/home_address_cubit/home_address_event.dart';
-import 'package:flowrist/features/home/shared/home_address/presentation/cubit/home_address_cubit/home_address_state.dart';
 import 'package:flowrist/features/home/shared/home_address/presentation/widgets/address_bottom_sheet/address_item.dart';
 import 'package:flowrist/features/home/shared/home_address/presentation/widgets/address_bottom_sheet/empty_address_view.dart';
+import 'package:flowrist/shared/addresses/domain/entities/address_entity.dart';
+import 'package:flowrist/shared/addresses/presentation/view_model/addresses_event.dart';
+import 'package:flowrist/shared/addresses/presentation/view_model/addresses_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../../../../shared/addresses/presentation/view_model/addresses_state.dart';
 
 class AddressBottomSheetContent extends StatefulWidget {
   final List<AddressEntity> addresses;
@@ -61,7 +62,7 @@ class _AddressBottomSheetContentState
       return;
     }
 
-    context.read<HomeAddressCubit>().doEvent(
+    context.read<AddressesViewModel>().doEvent(
           SetDefaultAddress(address.id),
         );
   }
@@ -144,7 +145,7 @@ class _AddressBottomSheetContentState
       return _buildAddAddressButton();
     }
 
-    return BlocConsumer<HomeAddressCubit, HomeAddressState>(
+    return BlocConsumer<AddressesViewModel, AddressesState>(
       listenWhen: (previous, current) {
         final previousState = previous.setDefaultAddressState;
         final currentState = current.setDefaultAddressState;

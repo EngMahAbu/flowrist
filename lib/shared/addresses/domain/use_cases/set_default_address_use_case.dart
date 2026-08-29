@@ -1,11 +1,11 @@
 import 'package:flowrist/config/base_response/base_response.dart';
-import 'package:flowrist/features/home/shared/home_address/domain/entities/address_entities/default_address_entity.dart';
-import 'package:flowrist/features/home/shared/home_address/domain/repositories/set_default_address_repository.dart';
+import 'package:flowrist/shared/addresses/domain/entities/default_address_entity.dart';
+import 'package:flowrist/shared/addresses/domain/repositories/addresses_repository.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable
 class SetDefaultAddressUseCase {
-  final SetDefaultAddressRepository _repository;
+  final AddressesRepository _repository;
 
   SetDefaultAddressUseCase(this._repository);
 

@@ -1,23 +1,22 @@
 import 'package:dio/dio.dart';
 import 'package:flowrist/config/base_response/base_response.dart';
-import 'package:flowrist/features/home/shared/home_address/data/client/home_address_api_client.dart';
-import 'package:flowrist/features/home/shared/home_address/data/data_sources/impl/remote/home_address_data_source_impl.dart';
-import 'package:flowrist/features/home/shared/home_address/data/model/address_model/address_api_response_model.dart';
-import 'package:flowrist/features/home/shared/home_address/data/model/address_model/address_model.dart';
+import 'package:flowrist/shared/addresses/data/client/addresses_api_client.dart';
+import 'package:flowrist/shared/addresses/data/data_sources/impl/remote/home_address_data_source_impl.dart';
+import 'package:flowrist/shared/addresses/data/models/address_api_response_model.dart';
+import 'package:flowrist/shared/addresses/data/models/address_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
-
 import 'home_address_data_source_impl_test.mocks.dart';
 
-@GenerateMocks([HomeAddressApiClient])
+@GenerateMocks([AddressesApiClient])
 void main() {
-  late MockHomeAddressApiClient mockApiClient;
+  late MockAddressesApiClient mockApiClient;
   late AddressRemoteDataSourceImpl dataSource;
 
   setUp(() {
-    mockApiClient = MockHomeAddressApiClient();
+    mockApiClient = MockAddressesApiClient();
     dataSource = AddressRemoteDataSourceImpl(mockApiClient);
   });
 

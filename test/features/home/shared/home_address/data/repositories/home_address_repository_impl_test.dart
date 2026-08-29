@@ -1,27 +1,27 @@
 import 'package:flowrist/config/base_response/base_response.dart';
-import 'package:flowrist/features/home/shared/home_address/data/data_sources/contract/remote/home_address_data_source.dart';
-import 'package:flowrist/features/home/shared/home_address/data/model/address_model/address_model.dart';
-import 'package:flowrist/features/home/shared/home_address/data/repositories/home_address_repository_impl.dart';
-import 'package:flowrist/features/home/shared/home_address/domain/entities/address_entities/address_entity.dart';
+import 'package:flowrist/shared/addresses/data/data_sources/contract/remote/home_address_data_source.dart';
+import 'package:flowrist/shared/addresses/data/models/address_model.dart';
+import 'package:flowrist/shared/addresses/data/repositories/addresses_repository_impl.dart';
+import 'package:flowrist/shared/addresses/domain/entities/address_entity.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
 import 'home_address_repository_impl_test.mocks.dart';
 
-@GenerateMocks([AddressRemoteDataSource])
+@GenerateMocks([AddressesRemoteDataSource])
 void main() {
   provideDummy<BaseResponse<List<AddressModel>>>(
     SuccessResponse<List<AddressModel>>([]),
   );
 
-  late MockAddressRemoteDataSource mockRemoteDataSource;
-  late AddressRepositoryImpl repository;
+  late MockAddressesRemoteDataSource mockRemoteDataSource;
+  late AddressesRepositoryImpl repository;
 
   setUp(() {
-    mockRemoteDataSource = MockAddressRemoteDataSource();
+    mockRemoteDataSource = MockAddressesRemoteDataSource();
 
-    repository = AddressRepositoryImpl(mockRemoteDataSource);
+    repository = AddressesRepositoryImpl(mockRemoteDataSource);
   });
 
   group('getAllUserAddresses', () {

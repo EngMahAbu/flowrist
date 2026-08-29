@@ -1,4 +1,4 @@
-import 'package:flowrist/features/home/shared/home_address/data/model/address_model/default_address_response_model.dart';
+import 'package:flowrist/shared/addresses/data/models/default_address_response_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'set_default_address_response_model.g.dart';

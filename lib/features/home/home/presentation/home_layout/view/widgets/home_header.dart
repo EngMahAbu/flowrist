@@ -1,13 +1,9 @@
-import 'package:flowrist/config/di/di.dart';
 import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flowrist/core/constants/app_colors.dart';
 import 'package:flowrist/core/constants/app_images.dart';
 import 'package:flowrist/core/constants/app_styles.dart';
 import 'package:flowrist/features/home/home/presentation/home_layout/view/widgets/delivery_location_header.dart';
-import 'package:flowrist/features/home/shared/home_address/presentation/cubit/home_address_cubit/home_address_cubit.dart';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
 class HomeHeader extends StatelessWidget {
@@ -75,10 +71,7 @@ class HomeHeader extends StatelessWidget {
               ],
             ),
 
-            BlocProvider(
-            create: (_) => getIt<HomeAddressCubit>(),
-              child: DeliveryLocationHeader(),
-            ),
+            DeliveryLocationHeader(),
           ],
         ),
       ),

@@ -1,40 +1,40 @@
 import 'package:flowrist/config/base_response/base_response.dart';
 import 'package:flowrist/config/base_state/base_state.dart';
 import 'package:flowrist/config/location_services/location_services.dart';
-import 'package:flowrist/features/home/shared/home_address/domain/entities/address_entities/address_entity.dart';
-import 'package:flowrist/features/home/shared/home_address/domain/entities/address_entities/default_address_entity.dart';
-import 'package:flowrist/features/home/shared/home_address/domain/use_cases/get_all_user_addresses_use_case.dart';
-import 'package:flowrist/features/home/shared/home_address/domain/use_cases/set_default_address_use_case.dart';
-import 'package:flowrist/features/home/shared/home_address/presentation/cubit/home_address_cubit/home_address_event.dart';
+import 'package:flowrist/shared/addresses/domain/entities/address_entity.dart';
+import 'package:flowrist/shared/addresses/domain/entities/default_address_entity.dart';
+import 'package:flowrist/shared/addresses/domain/use_cases/get_all_user_addresses_use_case.dart';
+import 'package:flowrist/shared/addresses/domain/use_cases/set_default_address_use_case.dart';
+import 'package:flowrist/shared/addresses/presentation/view_model/addresses_event.dart';
+import 'package:flowrist/shared/addresses/presentation/view_model/addresses_state.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:injectable/injectable.dart';
-import 'home_address_state.dart';
 
 @injectable
-class HomeAddressCubit extends Cubit<HomeAddressState> {
+class AddressesViewModel extends Cubit<AddressesState> {
   final GetAllUserAddressesUseCase _getAllUserAddressesUseCase;
   final SetDefaultAddressUseCase _setDefaultAddressUseCase;
   final LocationService _locationService;
 
-  HomeAddressCubit(
+  AddressesViewModel(
     this._getAllUserAddressesUseCase,
     this._locationService,
     this._setDefaultAddressUseCase,
   ) : super(
-        HomeAddressState(
+        AddressesState(
           addressesState: BaseState.initial(),
           setDefaultAddressState: BaseState.initial(),
         ),
       );
 
-  Future<void> doEvent(HomeAddressEvent event) async {
+  Future<void> doEvent(AddressesEvent event) async {
     switch (event) {
       case InitializeAddress():
-        await initializeAddress();
+        await _initializeAddress();
       case SetDefaultAddress():
-        await setDefaultAddress(event.addressId);
+        await _setDefaultAddress(event.addressId);
     }
   }
 
@@ -43,7 +43,7 @@ class HomeAddressCubit extends Cubit<HomeAddressState> {
   // Called from Splash
   // ============================================================
 
-  Future<void> initializeAddress() async {
+  Future<void> _initializeAddress() async {
     emit(
       state.copyWith(
         addressesState: state.addressesState.copyWith(
@@ -130,8 +130,6 @@ class HomeAddressCubit extends Cubit<HomeAddressState> {
             // Only call PATCH if the nearest address
             // isn't already the default.
             if (currentDefault?.id != nearestAddress.id) {
-               
-
               await _makeAddressDefault(nearestAddress, addresses);
 
               return;
@@ -154,8 +152,6 @@ class HomeAddressCubit extends Cubit<HomeAddressState> {
           );
 
         case ErrorResponse<List<AddressEntity>>():
-       
-
           emit(
             state.copyWith(
               addressesState: state.addressesState.copyWith(
@@ -168,8 +164,6 @@ class HomeAddressCubit extends Cubit<HomeAddressState> {
           );
       }
     } catch (e, stackTrace) {
-     
-
       debugPrintStack(stackTrace: stackTrace);
 
       emit(
@@ -232,7 +226,6 @@ class HomeAddressCubit extends Cubit<HomeAddressState> {
           await _refreshAddresses(defaultAddress);
 
         case ErrorResponse<DefaultAddressEntity>():
-
           // PATCH failed.
           // Still show nearest address locally.
           emit(
@@ -294,8 +287,6 @@ class HomeAddressCubit extends Cubit<HomeAddressState> {
         address.lng,
       );
 
-     
-
       if (distance < shortestDistance) {
         shortestDistance = distance;
         nearestAddress = address;
@@ -331,7 +322,7 @@ class HomeAddressCubit extends Cubit<HomeAddressState> {
   // MANUAL SET DEFAULT
   // ============================================================
 
-  Future<void> setDefaultAddress(String addressId) async {
+  Future<void> _setDefaultAddress(String addressId) async {
     emit(
       state.copyWith(
         setDefaultAddressState: state.setDefaultAddressState.copyWith(

@@ -1,24 +1,24 @@
 import 'package:flowrist/config/base_response/base_response.dart';
-import 'package:flowrist/features/home/shared/home_address/domain/entities/address_entities/address_entity.dart';
-import 'package:flowrist/features/home/shared/home_address/domain/repositories/home_address_repository.dart';
-import 'package:flowrist/features/home/shared/home_address/domain/use_cases/get_all_user_addresses_use_case.dart';
+import 'package:flowrist/shared/addresses/domain/entities/address_entity.dart';
+import 'package:flowrist/shared/addresses/domain/repositories/addresses_repository.dart';
+import 'package:flowrist/shared/addresses/domain/use_cases/get_all_user_addresses_use_case.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
 import 'get_all_user_addresses_use_case_test.mocks.dart';
 
-@GenerateMocks([HomeAddressRepository])
+@GenerateMocks([AddressesRepository])
 void main() {
   provideDummy<BaseResponse<List<AddressEntity>>>(
     SuccessResponse<List<AddressEntity>>([]),
   );
 
-  late MockHomeAddressRepository mockRepository;
+  late MockAddressesRepository mockRepository;
   late GetAllUserAddressesUseCase useCase;
 
   setUp(() {
-    mockRepository = MockHomeAddressRepository();
+    mockRepository = MockAddressesRepository();
 
     useCase = GetAllUserAddressesUseCase(
       mockRepository,

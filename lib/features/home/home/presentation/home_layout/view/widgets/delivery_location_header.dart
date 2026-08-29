@@ -2,12 +2,14 @@ import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flowrist/core/constants/app_colors.dart';
 import 'package:flowrist/core/constants/app_styles.dart';
 import 'package:flowrist/core/constants/flowery_icons.dart';
-import 'package:flowrist/features/home/shared/home_address/domain/entities/address_entities/address_entity.dart';
-import 'package:flowrist/features/home/shared/home_address/presentation/cubit/home_address_cubit/home_address_cubit.dart';
-import 'package:flowrist/features/home/shared/home_address/presentation/cubit/home_address_cubit/home_address_state.dart';
 import 'package:flowrist/features/home/shared/home_address/presentation/widgets/address_bottom_sheet/address_bottom_sheet_content.dart';
+import 'package:flowrist/shared/addresses/domain/entities/address_entity.dart';
+import 'package:flowrist/shared/addresses/presentation/view_model/addresses_event.dart';
+import 'package:flowrist/shared/addresses/presentation/view_model/addresses_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../../../../shared/addresses/presentation/view_model/addresses_state.dart';
 
 class DeliveryLocationHeader extends StatefulWidget {
   const DeliveryLocationHeader({super.key});
@@ -26,16 +28,16 @@ class _DeliveryLocationHeaderState extends State<DeliveryLocationHeader> {
   }
 
   Future<void> _initializeAddress() async {
-    final addressCubit = context.read<HomeAddressCubit>();
+    final addressCubit = context.read<AddressesViewModel>();
 
-    await addressCubit.initializeAddress();
+    await addressCubit.doEvent(InitializeAddress());
   }
 
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
 
-    return BlocBuilder<HomeAddressCubit, HomeAddressState>(
+    return BlocBuilder<AddressesViewModel, AddressesState>(
       builder: (context, state) {
         final selectedAddress = state.selectedAddress;
 
@@ -92,7 +94,7 @@ class _DeliveryLocationHeaderState extends State<DeliveryLocationHeader> {
     );
   }
 
-  void _showAddressBottomSheet(BuildContext context, HomeAddressState state) {
+  void _showAddressBottomSheet(BuildContext context, AddressesState state) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -100,7 +102,7 @@ class _DeliveryLocationHeaderState extends State<DeliveryLocationHeader> {
       useRootNavigator: true,
       builder: (_) {
         return BlocProvider.value(
-          value: context.read<HomeAddressCubit>(),
+          value: context.read<AddressesViewModel>(),
           child: AddressBottomSheetContent(
             addresses: state.addressesState.data ?? [],
             selectedAddressId: state.selectedAddress?.id,
