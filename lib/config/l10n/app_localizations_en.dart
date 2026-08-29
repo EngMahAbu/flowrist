@@ -384,4 +384,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get mapConfigWarningDescription =>
       'Using basic map provider. Some map details may be missing.';
+
+  @override
+  String get addressSavedSuccessfully => 'Address saved successfully';
+
+  @override
+  String get selectCityAndArea => 'Please select city and area';
 }

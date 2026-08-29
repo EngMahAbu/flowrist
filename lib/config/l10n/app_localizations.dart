@@ -807,6 +807,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Using basic map provider. Some map details may be missing.'**
   String get mapConfigWarningDescription;
+
+  /// No description provided for @addressSavedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Address saved successfully'**
+  String get addressSavedSuccessfully;
+
+  /// No description provided for @selectCityAndArea.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select city and area'**
+  String get selectCityAndArea;
 }
 
 class _AppLocalizationsDelegate

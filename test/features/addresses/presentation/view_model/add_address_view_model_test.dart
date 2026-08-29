@@ -10,12 +10,16 @@ import 'package:flowrist/features/addresses/domain/use_cases/check_location_perm
 import 'package:flowrist/features/addresses/domain/use_cases/check_location_service_use_case.dart';
 import 'package:flowrist/features/addresses/domain/use_cases/fetch_user_current_location_use_case.dart';
 import 'package:flowrist/features/addresses/domain/use_cases/get_address_from_location_use_case.dart';
+import 'package:flowrist/features/addresses/domain/use_cases/get_cities_use_case.dart';
+import 'package:flowrist/features/addresses/domain/use_cases/get_governorates_use_case.dart';
 import 'package:flowrist/features/addresses/domain/use_cases/open_app_settings_use_case.dart';
 import 'package:flowrist/features/addresses/domain/use_cases/request_location_permission_use_case.dart';
 import 'package:flowrist/features/addresses/domain/use_cases/request_location_service_use_case.dart';
 import 'package:flowrist/features/addresses/presentation/view_model/add_address_event.dart';
 import 'package:flowrist/features/addresses/presentation/view_model/add_address_state.dart';
 import 'package:flowrist/features/addresses/presentation/view_model/add_address_view_model.dart';
+import 'package:flowrist/shared/domain/entities/city_entity.dart';
+import 'package:flowrist/shared/domain/entities/governorate_entity.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -28,6 +32,8 @@ import 'package:mockito/mockito.dart';
   OpenAppSettingsUseCase,
   FetchUserCurrentLocationUseCase,
   GetAddressFromLocationUseCase,
+  GetGovernoratesUseCase,
+  GetCitiesUseCase,
   AppConfig,
 ])
 import 'add_address_view_model_test.mocks.dart';
@@ -40,6 +46,12 @@ void main() {
     )),
   );
   provideDummy<BaseResponse<String?>>(SuccessResponse<String?>(null));
+  provideDummy<BaseResponse<List<GovernorateEntity>>>(
+    SuccessResponse<List<GovernorateEntity>>([]),
+  );
+  provideDummy<BaseResponse<List<CityEntity>>>(
+    SuccessResponse<List<CityEntity>>([]),
+  );
 
   late MockCheckLocationPermissionUseCase mockCheckPermission;
   late MockRequestLocationPermissionUseCase mockRequestPermission;
@@ -48,6 +60,8 @@ void main() {
   late MockOpenAppSettingsUseCase mockOpenAppSettings;
   late MockFetchUserCurrentLocationUseCase mockFetchLocation;
   late MockGetAddressFromLocationUseCase mockGetAddress;
+  late MockGetGovernoratesUseCase mockGetGovernorates;
+  late MockGetCitiesUseCase mockGetCities;
   late MockAppConfig mockAppConfig;
 
   setUp(() {
@@ -58,6 +72,8 @@ void main() {
     mockOpenAppSettings = MockOpenAppSettingsUseCase();
     mockFetchLocation = MockFetchUserCurrentLocationUseCase();
     mockGetAddress = MockGetAddressFromLocationUseCase();
+    mockGetGovernorates = MockGetGovernoratesUseCase();
+    mockGetCities = MockGetCitiesUseCase();
     mockAppConfig = MockAppConfig();
 
     when(mockAppConfig.mapTilerApiKey).thenReturn('test_key');
@@ -73,12 +89,25 @@ void main() {
       mockOpenAppSettings,
       mockFetchLocation,
       mockGetAddress,
+      mockGetGovernorates,
+      mockGetCities,
       mockAppConfig,
     );
   }
 
   const tCoordinates = CoordinatesEntity(latitude: 30.0444, longitude: 31.2357);
   const tAddress = '123 Main St';
+  const tGovernorate = GovernorateEntity(
+    id: 1,
+    nameAr: 'القاهرة',
+    nameEn: 'Cairo',
+  );
+  const tCity = CityEntity(
+    id: 1,
+    governorateId: 1,
+    nameAr: 'المعادي',
+    nameEn: 'Maadi',
+  );
 
   group('AddAddressViewModel Initial State', () {
     test('isMapConfigured should be true when mapTilerApiKey is non-empty', () {
@@ -622,6 +651,158 @@ void main() {
           (s) => s.userLocation?.errorMessage,
           'userLocation.errorMessage',
           contains('Sensor timeout'),
+        ),
+      ],
+    );
+  });
+
+  group('GetGovernoratesEvent Event', () {
+    blocTest<AddAddressViewModel, AddAddressState>(
+      'emits loading then success with governorates list',
+      build: () {
+        when(mockGetGovernorates()).thenAnswer(
+          (_) async => SuccessResponse<List<GovernorateEntity>>([tGovernorate]),
+        );
+        return buildViewModel();
+      },
+      act: (cubit) => cubit.doEvent(GetGovernoratesEvent()),
+      expect: () => [
+        isA<AddAddressState>().having(
+          (s) => s.governoratesState.isLoading,
+          'governoratesState.isLoading',
+          isTrue,
+        ),
+        isA<AddAddressState>().having(
+          (s) => s.governoratesState.data,
+          'governoratesState.data',
+          [tGovernorate],
+        ),
+      ],
+      verify: (_) {
+        verify(mockGetGovernorates()).called(1);
+      },
+    );
+
+    blocTest<AddAddressViewModel, AddAddressState>(
+      'emits error when governorates lookup fails',
+      build: () {
+        when(mockGetGovernorates()).thenAnswer(
+          (_) async => ErrorResponse<List<GovernorateEntity>>('Server Error'),
+        );
+        return buildViewModel();
+      },
+      act: (cubit) => cubit.doEvent(GetGovernoratesEvent()),
+      expect: () => [
+        isA<AddAddressState>().having(
+          (s) => s.governoratesState.isLoading,
+          'governoratesState.isLoading',
+          isTrue,
+        ),
+        isA<AddAddressState>().having(
+          (s) => s.governoratesState.errorMessage,
+          'governoratesState.errorMessage',
+          'Server Error',
+        ),
+      ],
+    );
+  });
+
+  group('GetCitiesEvent Event', () {
+    blocTest<AddAddressViewModel, AddAddressState>(
+      'emits loading then success with cities list',
+      build: () {
+        when(
+          mockGetCities(1),
+        ).thenAnswer((_) async => SuccessResponse<List<CityEntity>>([tCity]));
+        return buildViewModel();
+      },
+      act: (cubit) => cubit.doEvent(GetCitiesEvent(1)),
+      expect: () => [
+        isA<AddAddressState>().having(
+          (s) => s.citiesState.isLoading,
+          'citiesState.isLoading',
+          isTrue,
+        ),
+        isA<AddAddressState>().having(
+          (s) => s.citiesState.data,
+          'citiesState.data',
+          [tCity],
+        ),
+      ],
+      verify: (_) {
+        verify(mockGetCities(1)).called(1);
+      },
+    );
+
+    blocTest<AddAddressViewModel, AddAddressState>(
+      'emits error when cities lookup fails',
+      build: () {
+        when(mockGetCities(1)).thenAnswer(
+          (_) async => ErrorResponse<List<CityEntity>>('Network Error'),
+        );
+        return buildViewModel();
+      },
+      act: (cubit) => cubit.doEvent(GetCitiesEvent(1)),
+      expect: () => [
+        isA<AddAddressState>().having(
+          (s) => s.citiesState.isLoading,
+          'citiesState.isLoading',
+          isTrue,
+        ),
+        isA<AddAddressState>().having(
+          (s) => s.citiesState.errorMessage,
+          'citiesState.errorMessage',
+          'Network Error',
+        ),
+      ],
+    );
+  });
+
+  group('SelectGovernorateEvent Event', () {
+    blocTest<AddAddressViewModel, AddAddressState>(
+      'updates selectedGovernorate, clears selectedCity, and triggers GetCitiesEvent',
+      build: () {
+        when(
+          mockGetCities(tGovernorate.id!),
+        ).thenAnswer((_) async => SuccessResponse<List<CityEntity>>([tCity]));
+        return buildViewModel();
+      },
+      act: (cubit) => cubit.doEvent(SelectGovernorateEvent(tGovernorate)),
+      expect: () => [
+        isA<AddAddressState>()
+            .having(
+              (s) => s.selectedGovernorate,
+              'selectedGovernorate',
+              tGovernorate,
+            )
+            .having((s) => s.selectedCity, 'selectedCity', isNull),
+        isA<AddAddressState>().having(
+          (s) => s.citiesState.isLoading,
+          'citiesState.isLoading',
+          isTrue,
+        ),
+        isA<AddAddressState>().having(
+          (s) => s.citiesState.data,
+          'citiesState.data',
+          [tCity],
+        ),
+      ],
+      verify: (_) {
+        verify(mockGetCities(tGovernorate.id!)).called(1);
+      },
+    );
+  });
+
+  group('SelectCityEvent Event', () {
+    blocTest<AddAddressViewModel, AddAddressState>(
+      'updates selectedCity',
+      build: () => buildViewModel(),
+      act: (cubit) => cubit.doEvent(SelectCityEvent(tCity)),
+      expect: () => [
+        isA<AddAddressState>().having(
+          (s) => s.selectedCity,
+          'selectedCity',
+          tCity,
         ),
       ],
     );
