@@ -7,3 +7,9 @@ class SetDefaultAddress extends AddressesEvent {
 
   SetDefaultAddress(this.addressId);
 }
+
+class RefreshAddresses extends AddressesEvent {
+  final String? selectedAddressId;
+
+  RefreshAddresses({this.selectedAddressId});
+}

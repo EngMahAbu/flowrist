@@ -37,15 +37,7 @@ class LocationService {
   }
 
   String formatAddress(Placemark placemark) {
-    // TODO: delete this code if the business is just satisfied with the current address format
-    // final addressParts = [
-    //   placemark.street,
-    //   placemark.locality,
-    //   placemark.administrativeArea,
-    //   placemark.country,
-    // ].where((part) => part != null && part.isNotEmpty);
 
-    // return addressParts.join(' - ');
     return placemark.street ?? '';
   }
 }

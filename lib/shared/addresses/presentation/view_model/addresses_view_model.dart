@@ -24,25 +24,24 @@ class AddressesViewModel extends Cubit<AddressesState> {
     this._setDefaultAddressUseCase,
     this._getUserCurrentLocationUseCase,
   ) : super(
-        AddressesState(
-          addressesState: BaseState.initial(),
-          setDefaultAddressState: BaseState.initial(),
-        ),
-      );
+          AddressesState(
+            addressesState: BaseState.initial(),
+            setDefaultAddressState: BaseState.initial(),
+          ),
+        );
 
   Future<void> doEvent(AddressesEvent event) async {
     switch (event) {
       case InitializeAddress():
         await _initializeAddress();
+
       case SetDefaultAddress():
         await _setDefaultAddress(event.addressId);
+
+      case RefreshAddresses():
+        await _refreshAddresses(event.selectedAddressId);
     }
   }
-
-  // ============================================================
-  // INITIALIZE ADDRESS
-  // Called from Splash
-  // ============================================================
 
   Future<void> _initializeAddress() async {
     emit(
@@ -55,10 +54,6 @@ class AddressesViewModel extends Cubit<AddressesState> {
     );
 
     try {
-      // ========================================================
-      // 1. GET USER LOCATION
-      // ========================================================
-
       CoordinatesEntity? position;
 
       try {
@@ -69,19 +64,11 @@ class AddressesViewModel extends Cubit<AddressesState> {
         debugPrint('LOCATION NOT AVAILABLE: $e');
       }
 
-      // ========================================================
-      // 2. GET ADDRESSES FROM API
-      // ========================================================
-
       final response = await _getAllUserAddressesUseCase();
 
       switch (response) {
         case SuccessResponse<List<AddressEntity>>():
           final addresses = response.data ?? [];
-
-          // ====================================================
-          // NO ADDRESSES
-          // ====================================================
 
           if (addresses.isEmpty) {
             emit(
@@ -98,50 +85,30 @@ class AddressesViewModel extends Cubit<AddressesState> {
             return;
           }
 
-          // ====================================================
-          // 3. FIND NEAREST ADDRESS
-          // ====================================================
-
           AddressEntity? nearestAddress;
 
           if (position != null) {
-            nearestAddress = _findNearestAddress(addresses, position);
+            nearestAddress = _findNearestAddress(
+              addresses,
+              position,
+            );
           }
 
-          // ====================================================
-          // 4. LOCATION UNAVAILABLE
-          // USE EXISTING DEFAULT
-          // ====================================================
-
           nearestAddress ??= _findDefaultAddress(addresses);
-
-          // ====================================================
-          // 5. NO DEFAULT
-          // USE FIRST ADDRESS
-          // ====================================================
-
           nearestAddress ??= addresses.first;
-
-          // ====================================================
-          // 6. IF GPS WAS AVAILABLE
-          // MAKE NEAREST ADDRESS DEFAULT
-          // ====================================================
 
           if (position != null) {
             final currentDefault = _findDefaultAddress(addresses);
 
-            // Only call PATCH if the nearest address
-            // isn't already the default.
             if (currentDefault?.id != nearestAddress.id) {
-              await _makeAddressDefault(nearestAddress, addresses);
+              await _makeAddressDefault(
+                nearestAddress,
+                addresses,
+              );
 
               return;
             }
           }
-
-          // ====================================================
-          // 7. SAVE ADDRESS IN STATE
-          // ====================================================
 
           emit(
             state.copyWith(
@@ -182,9 +149,127 @@ class AddressesViewModel extends Cubit<AddressesState> {
     }
   }
 
-  // ============================================================
-  // MAKE NEAREST ADDRESS DEFAULT
-  // ============================================================
+  Future<void> _refreshAddresses(String? selectedAddressId) async {
+    emit(
+      state.copyWith(
+        addressesState: state.addressesState.copyWith(
+          isLoading: true,
+          errorMessage: null,
+        ),
+      ),
+    );
+
+    try {
+      final oldAddressIds = (state.addressesState.data ?? [])
+          .map((address) => address.id)
+          .toSet();
+
+      final response = await _getAllUserAddressesUseCase();
+
+      switch (response) {
+        case SuccessResponse<List<AddressEntity>>():
+          final addresses = response.data ?? [];
+
+          if (addresses.isEmpty) {
+            emit(
+              state.copyWith(
+                addressesState: state.addressesState.copyWith(
+                  data: const [],
+                  isLoading: false,
+                  errorMessage: null,
+                ),
+                clearSelectedAddress: true,
+              ),
+            );
+
+            return;
+          }
+
+          AddressEntity? newlyAddedAddress;
+
+          for (final address in addresses) {
+            if (!oldAddressIds.contains(address.id)) {
+              newlyAddedAddress = address;
+              break;
+            }
+          }
+
+          AddressEntity? selectedAddress;
+
+          if (newlyAddedAddress != null) {
+            selectedAddress = newlyAddedAddress;
+          }
+
+          if (selectedAddress == null &&
+              state.selectedAddress?.id != null) {
+            selectedAddress = _findAddressById(
+              addresses,
+              state.selectedAddress!.id,
+            );
+          }
+
+          if (selectedAddress == null && selectedAddressId != null) {
+            selectedAddress = _findAddressById(
+              addresses,
+              selectedAddressId,
+            );
+          }
+
+          selectedAddress ??= _findDefaultAddress(addresses);
+          selectedAddress ??= addresses.first;
+
+          emit(
+            state.copyWith(
+              addressesState: state.addressesState.copyWith(
+                data: addresses,
+                isLoading: false,
+                errorMessage: null,
+              ),
+              selectedAddress: selectedAddress,
+            ),
+          );
+
+          if (newlyAddedAddress != null &&
+              !newlyAddedAddress.isDefault) {
+            await _setNewAddressAsDefault(newlyAddedAddress);
+          }
+
+        case ErrorResponse<List<AddressEntity>>():
+          emit(
+            state.copyWith(
+              addressesState: state.addressesState.copyWith(
+                isLoading: false,
+                errorMessage: response.errorMessage,
+              ),
+            ),
+          );
+      }
+    } catch (e, stackTrace) {
+      debugPrintStack(stackTrace: stackTrace);
+
+      emit(
+        state.copyWith(
+          addressesState: state.addressesState.copyWith(
+            isLoading: false,
+            errorMessage: e.toString(),
+          ),
+        ),
+      );
+    }
+  }
+
+  AddressEntity? _findAddressById(
+    List<AddressEntity> addresses,
+    String id,
+  ) {
+    for (final address in addresses) {
+      if (address.id == id) {
+        return address;
+      }
+    }
+
+    return null;
+  }
 
   Future<void> _makeAddressDefault(
     AddressEntity nearestAddress,
@@ -202,14 +287,15 @@ class AddressesViewModel extends Cubit<AddressesState> {
     );
 
     try {
-      final response = await _setDefaultAddressUseCase(nearestAddress.id);
+      final response = await _setDefaultAddressUseCase(
+        nearestAddress.id,
+      );
 
       switch (response) {
         case SuccessResponse<DefaultAddressEntity>():
           final defaultAddress = response.data;
 
           if (defaultAddress == null) {
-            // Still use the nearest address locally.
             emit(
               state.copyWith(
                 addressesState: state.addressesState.copyWith(
@@ -224,13 +310,9 @@ class AddressesViewModel extends Cubit<AddressesState> {
             return;
           }
 
-          // Refresh addresses so isDefault values
-          // come from the backend.
-          await _refreshAddresses(defaultAddress);
+          await _refreshAddressesAfterDefault(defaultAddress);
 
         case ErrorResponse<DefaultAddressEntity>():
-          // PATCH failed.
-          // Still show nearest address locally.
           emit(
             state.copyWith(
               addressesState: state.addressesState.copyWith(
@@ -239,7 +321,8 @@ class AddressesViewModel extends Cubit<AddressesState> {
                 errorMessage: null,
               ),
               selectedAddress: nearestAddress,
-              setDefaultAddressState: state.setDefaultAddressState.copyWith(
+              setDefaultAddressState:
+                  state.setDefaultAddressState.copyWith(
                 isLoading: false,
                 errorMessage: response.errorMessage,
               ),
@@ -247,8 +330,6 @@ class AddressesViewModel extends Cubit<AddressesState> {
           );
       }
     } catch (e) {
-      // Don't prevent the user from entering Home
-      // if PATCH fails.
       emit(
         state.copyWith(
           addressesState: state.addressesState.copyWith(
@@ -257,7 +338,8 @@ class AddressesViewModel extends Cubit<AddressesState> {
             errorMessage: null,
           ),
           selectedAddress: nearestAddress,
-          setDefaultAddressState: state.setDefaultAddressState.copyWith(
+          setDefaultAddressState:
+              state.setDefaultAddressState.copyWith(
             isLoading: false,
             errorMessage: e.toString(),
           ),
@@ -266,9 +348,76 @@ class AddressesViewModel extends Cubit<AddressesState> {
     }
   }
 
-  // ============================================================
-  // FIND NEAREST ADDRESS
-  // ============================================================
+  Future<void> _setNewAddressAsDefault(
+    AddressEntity newAddress,
+  ) async {
+    emit(
+      state.copyWith(
+        selectedAddress: newAddress,
+        setDefaultAddressState:
+            state.setDefaultAddressState.copyWith(
+          isLoading: true,
+          errorMessage: null,
+        ),
+      ),
+    );
+
+    try {
+      final response = await _setDefaultAddressUseCase(
+        newAddress.id,
+      );
+
+      switch (response) {
+        case SuccessResponse<DefaultAddressEntity>():
+          final defaultAddress = response.data;
+
+          if (defaultAddress == null) {
+            emit(
+              state.copyWith(
+                selectedAddress: newAddress,
+                setDefaultAddressState:
+                    state.setDefaultAddressState.copyWith(
+                  isLoading: false,
+                  errorMessage:
+                      'Default address response is empty.',
+                ),
+              ),
+            );
+
+            return;
+          }
+
+          await _refreshAddressesAfterDefault(
+            defaultAddress,
+          );
+
+        case ErrorResponse<DefaultAddressEntity>():
+          emit(
+            state.copyWith(
+              selectedAddress: newAddress,
+              setDefaultAddressState:
+                  state.setDefaultAddressState.copyWith(
+                isLoading: false,
+                errorMessage: response.errorMessage,
+              ),
+            ),
+          );
+      }
+    } catch (e, stackTrace) {
+      debugPrintStack(stackTrace: stackTrace);
+
+      emit(
+        state.copyWith(
+          selectedAddress: newAddress,
+          setDefaultAddressState:
+              state.setDefaultAddressState.copyWith(
+            isLoading: false,
+            errorMessage: e.toString(),
+          ),
+        ),
+      );
+    }
+  }
 
   AddressEntity? _findNearestAddress(
     List<AddressEntity> addresses,
@@ -279,7 +428,6 @@ class AddressesViewModel extends Cubit<AddressesState> {
     }
 
     AddressEntity? nearestAddress;
-
     double shortestDistance = double.infinity;
 
     for (final address in addresses) {
@@ -299,11 +447,9 @@ class AddressesViewModel extends Cubit<AddressesState> {
     return nearestAddress;
   }
 
-  // ============================================================
-  // FIND DEFAULT ADDRESS
-  // ============================================================
-
-  AddressEntity? _findDefaultAddress(List<AddressEntity> addresses) {
+  AddressEntity? _findDefaultAddress(
+    List<AddressEntity> addresses,
+  ) {
     for (final address in addresses) {
       if (address.isDefault) {
         return address;
@@ -313,22 +459,21 @@ class AddressesViewModel extends Cubit<AddressesState> {
     return null;
   }
 
-  // ============================================================
-  // MANUAL SELECT
-  // ============================================================
-
   void selectAddress(AddressEntity address) {
-    emit(state.copyWith(selectedAddress: address));
-  }
-
-  // ============================================================
-  // MANUAL SET DEFAULT
-  // ============================================================
-
-  Future<void> _setDefaultAddress(String addressId) async {
     emit(
       state.copyWith(
-        setDefaultAddressState: state.setDefaultAddressState.copyWith(
+        selectedAddress: address,
+      ),
+    );
+  }
+
+  Future<void> _setDefaultAddress(
+    String addressId,
+  ) async {
+    emit(
+      state.copyWith(
+        setDefaultAddressState:
+            state.setDefaultAddressState.copyWith(
           isLoading: true,
           errorMessage: null,
         ),
@@ -336,7 +481,9 @@ class AddressesViewModel extends Cubit<AddressesState> {
     );
 
     try {
-      final response = await _setDefaultAddressUseCase(addressId);
+      final response = await _setDefaultAddressUseCase(
+        addressId,
+      );
 
       switch (response) {
         case SuccessResponse<DefaultAddressEntity>():
@@ -345,9 +492,11 @@ class AddressesViewModel extends Cubit<AddressesState> {
           if (defaultAddress == null) {
             emit(
               state.copyWith(
-                setDefaultAddressState: state.setDefaultAddressState.copyWith(
+                setDefaultAddressState:
+                    state.setDefaultAddressState.copyWith(
                   isLoading: false,
-                  errorMessage: 'Default address response is empty.',
+                  errorMessage:
+                      'Default address response is empty.',
                 ),
               ),
             );
@@ -355,12 +504,15 @@ class AddressesViewModel extends Cubit<AddressesState> {
             return;
           }
 
-          await _refreshAddresses(defaultAddress);
+          await _refreshAddressesAfterDefault(
+            defaultAddress,
+          );
 
         case ErrorResponse<DefaultAddressEntity>():
           emit(
             state.copyWith(
-              setDefaultAddressState: state.setDefaultAddressState.copyWith(
+              setDefaultAddressState:
+                  state.setDefaultAddressState.copyWith(
                 isLoading: false,
                 errorMessage: response.errorMessage,
               ),
@@ -370,7 +522,8 @@ class AddressesViewModel extends Cubit<AddressesState> {
     } catch (e) {
       emit(
         state.copyWith(
-          setDefaultAddressState: state.setDefaultAddressState.copyWith(
+          setDefaultAddressState:
+              state.setDefaultAddressState.copyWith(
             isLoading: false,
             errorMessage: e.toString(),
           ),
@@ -379,16 +532,35 @@ class AddressesViewModel extends Cubit<AddressesState> {
     }
   }
 
-  // ============================================================
-  // REFRESH AFTER PATCH
-  // ============================================================
-
-  Future<void> _refreshAddresses(DefaultAddressEntity defaultAddress) async {
+  Future<void> _refreshAddressesAfterDefault(
+    DefaultAddressEntity defaultAddress,
+  ) async {
     final response = await _getAllUserAddressesUseCase();
 
     switch (response) {
       case SuccessResponse<List<AddressEntity>>():
         final addresses = response.data ?? [];
+
+        if (addresses.isEmpty) {
+          emit(
+            state.copyWith(
+              addressesState: state.addressesState.copyWith(
+                data: const [],
+                isLoading: false,
+                errorMessage: null,
+              ),
+              clearSelectedAddress: true,
+              setDefaultAddressState:
+                  state.setDefaultAddressState.copyWith(
+                data: defaultAddress,
+                isLoading: false,
+                errorMessage: null,
+              ),
+            ),
+          );
+
+          return;
+        }
 
         AddressEntity? selectedAddress;
 
@@ -400,8 +572,7 @@ class AddressesViewModel extends Cubit<AddressesState> {
         }
 
         selectedAddress ??= _findDefaultAddress(addresses);
-
-        selectedAddress ??= addresses.isNotEmpty ? addresses.first : null;
+        selectedAddress ??= addresses.first;
 
         emit(
           state.copyWith(
@@ -411,7 +582,8 @@ class AddressesViewModel extends Cubit<AddressesState> {
               errorMessage: null,
             ),
             selectedAddress: selectedAddress,
-            setDefaultAddressState: state.setDefaultAddressState.copyWith(
+            setDefaultAddressState:
+                state.setDefaultAddressState.copyWith(
               data: defaultAddress,
               isLoading: false,
               errorMessage: null,
@@ -424,9 +596,10 @@ class AddressesViewModel extends Cubit<AddressesState> {
           state.copyWith(
             addressesState: state.addressesState.copyWith(
               isLoading: false,
-              errorMessage: null,
+              errorMessage: response.errorMessage,
             ),
-            setDefaultAddressState: state.setDefaultAddressState.copyWith(
+            setDefaultAddressState:
+                state.setDefaultAddressState.copyWith(
               data: defaultAddress,
               isLoading: false,
               errorMessage: response.errorMessage,

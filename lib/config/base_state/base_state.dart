@@ -5,13 +5,13 @@ class BaseState<T> extends Equatable {
   final String? errorMessage;
   final T? data;
 
-  BaseState({
+  const BaseState({
     required this.isLoading,
     required this.errorMessage,
     required this.data,
   });
 
-  BaseState.initial() : this(isLoading: false, errorMessage: null, data: null);
+  const BaseState.initial() : this(isLoading: false, errorMessage: null, data: null);
 
   factory BaseState.loading() =>
       BaseState(isLoading: true, errorMessage: null, data: null);
