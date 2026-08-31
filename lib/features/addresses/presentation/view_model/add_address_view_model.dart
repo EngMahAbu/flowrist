@@ -116,12 +116,13 @@ class AddAddressViewModel extends Cubit<AddAddressState> {
     emit(state.copyWith(governoratesState: BaseState.loading()));
     final response = await _getGovernoratesUseCase();
     if (response is SuccessResponse<List<GovernorateEntity>>) {
-      if (response.data == null) {
+      if (response.data == null || response.data!.isEmpty) {
         emit(
           state.copyWith(
             governoratesState: BaseState.error(AppStrings.noGovernoratesFound),
           ),
         );
+        return;
       }
 
       emit(
@@ -144,12 +145,13 @@ class AddAddressViewModel extends Cubit<AddAddressState> {
     emit(state.copyWith(citiesState: BaseState.loading()));
     final response = await _getCitiesUseCase(governorateId);
     if (response is SuccessResponse<List<CityEntity>>) {
-      if (response.data == null) {
+      if (response.data == null || response.data!.isEmpty) {
         emit(
           state.copyWith(
             citiesState: BaseState.error(AppStrings.noCitiesFound),
           ),
         );
+        return;
       }
 
       emit(
@@ -195,6 +197,9 @@ class AddAddressViewModel extends Cubit<AddAddressState> {
       if (serviceStatus == ServiceStatusEntity.enabled) {
         _fetchUserLocation();
       }
+    } else {
+      // TODO: this branch needs revisiting to check its logic
+      emit(state.copyWith(locationPermission: BaseState.success(status)));
     }
   }
 
