@@ -20,19 +20,12 @@ class AddAddressView extends StatefulWidget {
 
 class _AddAddressViewState extends State<AddAddressView>
     with WidgetsBindingObserver {
- 
-
   @override
   void initState() {
     super.initState();
-
     WidgetsBinding.instance.addObserver(this);
-
-    final viewModel = context.read<AddAddressViewModel>();
-
-    viewModel.doEvent(CheckLocationPermission());
-    viewModel.doEvent(CheckLocationService());
-    viewModel.doEvent(GetGovernoratesEvent());
+    context.read<AddAddressViewModel>().doEvent(CheckLocationPermission());
+    context.read<AddAddressViewModel>().doEvent(GetGovernoratesEvent());
   }
 
   @override
@@ -44,10 +37,7 @@ class _AddAddressViewState extends State<AddAddressView>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed && mounted) {
-      final viewModel = context.read<AddAddressViewModel>();
-
-      viewModel.doEvent(CheckLocationPermission());
-      viewModel.doEvent(CheckLocationService());
+      context.read<AddAddressViewModel>().doEvent(CheckLocationPermission());
     }
   }
 
@@ -56,9 +46,7 @@ class _AddAddressViewState extends State<AddAddressView>
     final localizations = AppLocalizations.of(context)!;
 
     return BlocListener<AddAddressViewModel, AddAddressState>(
-      listenWhen: (previous, current) {
-        return previous.saveAddressState != current.saveAddressState;
-      },
+      listenWhen: (previous, current) => previous.saveAddressState != current.saveAddressState,
       listener: (context, state) {
         final saveState = state.saveAddressState;
 
@@ -115,10 +103,10 @@ class _AddAddressViewState extends State<AddAddressView>
     );
   }
 
-
   Widget _loadingView() {
-    return const SizedBox(
+    return Container(
       width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: Center(child: CircularProgressIndicator()),
     );
   }
@@ -131,14 +119,12 @@ class _AddAddressViewState extends State<AddAddressView>
     switch (permissionStatus) {
       case PermissionStatusEntity.denied:
         return const AddAddressFormView(showSoftPermissionBanner: true);
-
       case PermissionStatusEntity.granted:
         return _buildViewByServiceStatus(
           isLocationEnabled: isServiceEnabled,
           context: context,
           localizations: localizations,
         );
-
       case PermissionStatusEntity.restricted:
       case PermissionStatusEntity.limited:
       case PermissionStatusEntity.permanentlyDenied:
@@ -155,61 +141,59 @@ class _AddAddressViewState extends State<AddAddressView>
         );
     }
   }
+}
 
+Widget _buildViewByServiceStatus({
+  required bool isLocationEnabled,
+  required BuildContext context,
+  required AppLocalizations localizations,
+}) {
+  return isLocationEnabled
+      ? AddAddressFormView()
+      : _buildLocationDisabledView(
+          context: context,
+          mainIcon: Icons.location_off_outlined,
+          title: localizations.turnOnLocation,
+          description: localizations.locationDisabledDescription,
+          mainButtonTitle: localizations.enableLocation,
+          mainButtonAction: () {
+            context.read<AddAddressViewModel>().doEvent(
+              RequestLocationService(),
+            );
+          },
+        );
+}
 
-  Widget _buildViewByServiceStatus({
-    required bool isLocationEnabled,
-    required BuildContext context,
-    required AppLocalizations localizations,
-  }) {
-    if (isLocationEnabled) {
-      return const AddAddressFormView();
-    }
+Widget _buildPermissionBlockedView({
+  required BuildContext context,
+  required IconData mainIcon,
+  required String title,
+  required String description,
+  required String mainButtonTitle,
+  required void Function() mainButtonAction,
+}) {
+  return AddressWarningView(
+    mainIcon,
+    title,
+    description,
+    mainButtonTitle,
+    mainButtonAction,
+  );
+}
 
-    return _buildLocationDisabledView(
-      context: context,
-      mainIcon: Icons.location_off_outlined,
-      title: localizations.turnOnLocation,
-      description: localizations.locationDisabledDescription,
-      mainButtonTitle: localizations.enableLocation,
-      mainButtonAction: () {
-        context.read<AddAddressViewModel>().doEvent(RequestLocationService());
-      },
-    );
-  }
-
-
-  Widget _buildPermissionBlockedView({
-    required BuildContext context,
-    required IconData mainIcon,
-    required String title,
-    required String description,
-    required String mainButtonTitle,
-    required VoidCallback mainButtonAction,
-  }) {
-    return AddressWarningView(
-      mainIcon,
-      title,
-      description,
-      mainButtonTitle,
-      mainButtonAction,
-    );
-  }
-
-  Widget _buildLocationDisabledView({
-    required BuildContext context,
-    required IconData mainIcon,
-    required String title,
-    required String description,
-    required String mainButtonTitle,
-    required VoidCallback mainButtonAction,
-  }) {
-    return AddressWarningView(
-      mainIcon,
-      title,
-      description,
-      mainButtonTitle,
-      mainButtonAction,
-    );
-  }
+Widget _buildLocationDisabledView({
+  required BuildContext context,
+  required IconData mainIcon,
+  required String title,
+  required String description,
+  required String mainButtonTitle,
+  required void Function() mainButtonAction,
+}) {
+  return AddressWarningView(
+    mainIcon,
+    title,
+    description,
+    mainButtonTitle,
+    mainButtonAction,
+  );
 }

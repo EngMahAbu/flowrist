@@ -116,11 +116,22 @@ class AddAddressViewModel extends Cubit<AddAddressState> {
     emit(state.copyWith(governoratesState: BaseState.loading()));
     final response = await _getGovernoratesUseCase();
     if (response is SuccessResponse<List<GovernorateEntity>>) {
+      if (response.data == null || response.data!.isEmpty) {
+        emit(
+          state.copyWith(
+            governoratesState: BaseState.error(AppStrings.noGovernoratesFound),
+          ),
+        );
+        return;
+      }
+
       emit(
         state.copyWith(
-          governoratesState: BaseState.success(response.data ?? []),
+          governoratesState: BaseState.success(response.data!),
+          selectedGovernorate: response.data![0],
         ),
       );
+      _loadCities(response.data![0].id!);
     } else if (response is ErrorResponse<List<GovernorateEntity>>) {
       emit(
         state.copyWith(
@@ -134,7 +145,21 @@ class AddAddressViewModel extends Cubit<AddAddressState> {
     emit(state.copyWith(citiesState: BaseState.loading()));
     final response = await _getCitiesUseCase(governorateId);
     if (response is SuccessResponse<List<CityEntity>>) {
-      emit(state.copyWith(citiesState: BaseState.success(response.data ?? [])));
+      if (response.data == null || response.data!.isEmpty) {
+        emit(
+          state.copyWith(
+            citiesState: BaseState.error(AppStrings.noCitiesFound),
+          ),
+        );
+        return;
+      }
+
+      emit(
+        state.copyWith(
+          citiesState: BaseState.success(response.data!),
+          selectedCity: response.data![0],
+        ),
+      );
     } else if (response is ErrorResponse<List<CityEntity>>) {
       emit(state.copyWith(citiesState: BaseState.error(response.errorMessage)));
     }
@@ -161,13 +186,20 @@ class AddAddressViewModel extends Cubit<AddAddressState> {
 
     final status = await _checkLocationPermissionUseCase();
 
-    emit(state.copyWith(locationPermission: BaseState.success(status)));
-
     if (status == PermissionStatusEntity.granted) {
       final serviceStatus = await _checkLocationServiceUseCase();
+      emit(
+        state.copyWith(
+          locationPermission: BaseState.success(status),
+          locationEnabled: serviceStatus == ServiceStatusEntity.enabled,
+        ),
+      );
       if (serviceStatus == ServiceStatusEntity.enabled) {
         _fetchUserLocation();
       }
+    } else {
+      // TODO: this branch needs revisiting to check its logic
+      emit(state.copyWith(locationPermission: BaseState.success(status)));
     }
   }
 
@@ -218,20 +250,28 @@ class AddAddressViewModel extends Cubit<AddAddressState> {
     try {
       final response = await _getAddressFromLocationUseCase(location);
 
-      if (response is SuccessResponse<String?>) {
-        if (response.data == null) {
+      switch (response) {
+        case SuccessResponse<String?>():
+          if (response.data == null) {
+            emit(
+              state.copyWith(
+                userLocation: BaseState.error(
+                  AppStrings.addressNotFoundMessage,
+                ),
+              ),
+            );
+          } else {
+            emit(
+              state.copyWith(userLocation: BaseState.success(response.data!)),
+            );
+          }
+
+        case ErrorResponse<String?>():
           emit(
             state.copyWith(
-              userLocation: BaseState.error(AppStrings.addressNotFoundMessage),
+              userLocation: BaseState.error(response.errorMessage),
             ),
           );
-        } else {
-          emit(state.copyWith(userLocation: BaseState.success(response.data!)));
-        }
-      } else if (response is ErrorResponse<String?>) {
-        emit(
-          state.copyWith(userLocation: BaseState.error(response.errorMessage)),
-        );
       }
     } catch (e) {
       emit(state.copyWith(userLocation: BaseState.error(e.toString())));

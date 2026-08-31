@@ -31,14 +31,12 @@ class _AddAddressFormViewState extends State<AddAddressFormView> {
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _areaController = TextEditingController();
 
   @override
   void dispose() {
     _addressController.dispose();
     _phoneController.dispose();
     _nameController.dispose();
-    _areaController.dispose();
     super.dispose();
   }
 
@@ -160,14 +158,18 @@ class _AddAddressFormViewState extends State<AddAddressFormView> {
   ) {
     return Stack(
       children: [
-        AddressMapWidget(
-          mapTilerApiKey: context.read<AddAddressViewModel>().mapTilerApiKey,
-          selectedLocation: state.selectedLocation,
-          onLocationSelected: (CoordinatesEntity location) {
-            context.read<AddAddressViewModel>().doEvent(
-              SelectMapLocation(location),
-            );
-          },
+        BlocBuilder<AddAddressViewModel, AddAddressState>(
+          buildWhen: (prev, curr) =>
+              prev.selectedLocation != curr.selectedLocation,
+          builder: (context, state) => AddressMapWidget(
+            mapTilerApiKey: context.read<AddAddressViewModel>().mapTilerApiKey,
+            selectedLocation: state.selectedLocation,
+            onLocationSelected: (CoordinatesEntity location) {
+              context.read<AddAddressViewModel>().doEvent(
+                SelectMapLocation(location),
+              );
+            },
+          ),
         ),
         if (widget.showSoftPermissionBanner)
           _buildPermissionNeededView(context, localizations),
@@ -346,28 +348,33 @@ class _AddAddressFormViewState extends State<AddAddressFormView> {
     required AddAddressState state,
   }) {
     return [
-      state.userLocation != null && state.userLocation!.isLoading
-          ? _buildLocationLoadingField(localizations)
-          : AppTextField(
-              label: localizations.address,
-              hint: localizations.enterAddress,
-              controller: _addressController,
-              localizations: localizations,
-              suffixIcon: IconButton(
-                onPressed: () {
-                  context.read<AddAddressViewModel>().doEvent(
-                    FetchUserLocation(),
-                  );
-                },
-                icon: Icon(Icons.loop_outlined),
-              ),
-              labelStyle: AppStyles.regular12Inter.copyWith(
-                color: AppColors.grey,
-              ),
-              hintStyle: AppStyles.regular14Inter.copyWith(
-                color: AppColors.black10,
-              ),
-            ),
+      BlocBuilder<AddAddressViewModel, AddAddressState>(
+        buildWhen: (prev, curr) => prev.userLocation != curr.userLocation,
+        builder: (context, state) {
+          return state.userLocation != null && state.userLocation!.isLoading
+              ? _buildLocationLoadingField(localizations)
+              : AppTextField(
+                  label: localizations.address,
+                  hint: localizations.enterAddress,
+                  controller: _addressController,
+                  localizations: localizations,
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      context.read<AddAddressViewModel>().doEvent(
+                        FetchUserLocation(),
+                      );
+                    },
+                    icon: Icon(Icons.loop_outlined),
+                  ),
+                  labelStyle: AppStyles.regular12Inter.copyWith(
+                    color: AppColors.grey,
+                  ),
+                  hintStyle: AppStyles.regular14Inter.copyWith(
+                    color: AppColors.black10,
+                  ),
+                );
+        },
+      ),
       const SizedBox(height: 16),
       AppTextField(
         label: localizations.phoneNumber,
@@ -383,15 +390,6 @@ class _AddAddressFormViewState extends State<AddAddressFormView> {
         label: localizations.recipientName,
         hint: localizations.enterRecipientName,
         controller: _nameController,
-        localizations: localizations,
-        labelStyle: AppStyles.regular12Inter.copyWith(color: AppColors.grey),
-        hintStyle: AppStyles.regular14Inter.copyWith(color: AppColors.black10),
-      ),
-      const SizedBox(height: 16),
-      AppTextField(
-        label: localizations.area,
-        hint: localizations.area,
-        controller: _areaController,
         localizations: localizations,
         labelStyle: AppStyles.regular12Inter.copyWith(color: AppColors.grey),
         hintStyle: AppStyles.regular14Inter.copyWith(color: AppColors.black10),
@@ -459,40 +457,46 @@ class _AddAddressFormViewState extends State<AddAddressFormView> {
         ],
       ),
       const SizedBox(height: 48),
-      SizedBox(
-        width: double.infinity,
-        height: 52,
-        child: AppButton(
-          text: localizations.saveAddress,
-          isLoading: state.saveAddressState.isLoading,
-          onPressed: () {
-            if (_formKey.currentState!.validate()) {
-              if (state.selectedGovernorate == null ||
-                  state.selectedCity == null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(localizations.selectCityAndArea)),
-                );
-                return;
-              }
+      BlocBuilder<AddAddressViewModel, AddAddressState>(
+        buildWhen: (prev, curr) =>
+            prev.saveAddressState != curr.saveAddressState,
+        builder: (context, state) {
+          return SizedBox(
+            width: double.infinity,
+            height: 52,
+            child: AppButton(
+              text: localizations.saveAddress,
+              isLoading: state.saveAddressState.isLoading,
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  if (state.selectedGovernorate == null ||
+                      state.selectedCity == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(localizations.selectCityAndArea)),
+                    );
+                    return;
+                  }
 
-              final request = AddAddressRequestModel(
-                recipientName: _nameController.text,
-                recipientPhone: _phoneController.text,
-                addressLine: _addressController.text,
-                governorateId: state.selectedGovernorate!.id!,
-                cityId: state.selectedCity!.id!,
-                area: _areaController.text,
-                lat: state.selectedLocation?.latitude ?? 0.0,
-                lng: state.selectedLocation?.longitude ?? 0.0,
-                label: "home",
-              );
-              context.read<AddAddressViewModel>().doEvent(
-                SaveAddressEvent(request),
-              );
-            }
-          },
-          backgroundColor: AppColors.white80,
-        ),
+                  final request = AddAddressRequestModel(
+                    recipientName: _nameController.text,
+                    recipientPhone: _phoneController.text,
+                    addressLine: _addressController.text,
+                    governorateId: state.selectedGovernorate!.id!,
+                    cityId: state.selectedCity!.id!,
+                    // TODO: wait for the backend team's response regarding what to send in this field of the request
+                    area: state.selectedCity!.nameEn!,
+                    lat: state.selectedLocation?.latitude ?? 0.0,
+                    lng: state.selectedLocation?.longitude ?? 0.0,
+                    label: "home",
+                  );
+                  context.read<AddAddressViewModel>().doEvent(
+                    SaveAddressEvent(request),
+                  );
+                }
+              },
+            ),
+          );
+        },
       ),
     ];
   }
