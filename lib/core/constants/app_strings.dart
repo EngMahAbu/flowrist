@@ -31,4 +31,8 @@ abstract final class AppStrings {
 
   static const String addressNotFoundMessage =
       'We couldn\'t find a specific address for this location. Please try entering it manually.';
+  static const String noGovernoratesFound =
+      'We could not find any governorates. Please try again.';
+  static const String noCitiesFound =
+      'We could not find any cities. Please try again.';
 }

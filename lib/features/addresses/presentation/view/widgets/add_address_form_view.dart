@@ -31,14 +31,12 @@ class _AddAddressFormViewState extends State<AddAddressFormView> {
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _areaController = TextEditingController();
 
   @override
   void dispose() {
     _addressController.dispose();
     _phoneController.dispose();
     _nameController.dispose();
-    _areaController.dispose();
     super.dispose();
   }
 
@@ -388,15 +386,6 @@ class _AddAddressFormViewState extends State<AddAddressFormView> {
         hintStyle: AppStyles.regular14Inter.copyWith(color: AppColors.black10),
       ),
       const SizedBox(height: 16),
-      AppTextField(
-        label: localizations.area,
-        hint: localizations.area,
-        controller: _areaController,
-        localizations: localizations,
-        labelStyle: AppStyles.regular12Inter.copyWith(color: AppColors.grey),
-        hintStyle: AppStyles.regular14Inter.copyWith(color: AppColors.black10),
-      ),
-      const SizedBox(height: 16),
       Row(
         children: [
           Expanded(
@@ -481,7 +470,8 @@ class _AddAddressFormViewState extends State<AddAddressFormView> {
                 addressLine: _addressController.text,
                 governorateId: state.selectedGovernorate!.id!,
                 cityId: state.selectedCity!.id!,
-                area: _areaController.text,
+                // TODO: wait for the backend team's response regarding what to send in this field of the request
+                area: state.selectedCity!.nameEn!,
                 lat: state.selectedLocation?.latitude ?? 0.0,
                 lng: state.selectedLocation?.longitude ?? 0.0,
                 label: "home",

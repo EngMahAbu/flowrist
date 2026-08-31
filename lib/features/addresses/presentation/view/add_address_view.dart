@@ -38,7 +38,6 @@ class _AddAddressViewState extends State<AddAddressView>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       context.read<AddAddressViewModel>().doEvent(CheckLocationPermission());
-      context.read<AddAddressViewModel>().doEvent(CheckLocationService());
     }
   }
 

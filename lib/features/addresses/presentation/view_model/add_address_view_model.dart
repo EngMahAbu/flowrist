@@ -116,11 +116,21 @@ class AddAddressViewModel extends Cubit<AddAddressState> {
     emit(state.copyWith(governoratesState: BaseState.loading()));
     final response = await _getGovernoratesUseCase();
     if (response is SuccessResponse<List<GovernorateEntity>>) {
+      if (response.data == null) {
+        emit(
+          state.copyWith(
+            governoratesState: BaseState.error(AppStrings.noGovernoratesFound),
+          ),
+        );
+      }
+
       emit(
         state.copyWith(
-          governoratesState: BaseState.success(response.data ?? []),
+          governoratesState: BaseState.success(response.data!),
+          selectedGovernorate: response.data![0],
         ),
       );
+      _loadCities(response.data![0].id!);
     } else if (response is ErrorResponse<List<GovernorateEntity>>) {
       emit(
         state.copyWith(
@@ -134,7 +144,20 @@ class AddAddressViewModel extends Cubit<AddAddressState> {
     emit(state.copyWith(citiesState: BaseState.loading()));
     final response = await _getCitiesUseCase(governorateId);
     if (response is SuccessResponse<List<CityEntity>>) {
-      emit(state.copyWith(citiesState: BaseState.success(response.data ?? [])));
+      if (response.data == null) {
+        emit(
+          state.copyWith(
+            citiesState: BaseState.error(AppStrings.noCitiesFound),
+          ),
+        );
+      }
+
+      emit(
+        state.copyWith(
+          citiesState: BaseState.success(response.data!),
+          selectedCity: response.data![0],
+        ),
+      );
     } else if (response is ErrorResponse<List<CityEntity>>) {
       emit(state.copyWith(citiesState: BaseState.error(response.errorMessage)));
     }
@@ -161,10 +184,14 @@ class AddAddressViewModel extends Cubit<AddAddressState> {
 
     final status = await _checkLocationPermissionUseCase();
 
-    emit(state.copyWith(locationPermission: BaseState.success(status)));
-
     if (status == PermissionStatusEntity.granted) {
       final serviceStatus = await _checkLocationServiceUseCase();
+      emit(
+        state.copyWith(
+          locationPermission: BaseState.success(status),
+          locationEnabled: serviceStatus == ServiceStatusEntity.enabled,
+        ),
+      );
       if (serviceStatus == ServiceStatusEntity.enabled) {
         _fetchUserLocation();
       }
