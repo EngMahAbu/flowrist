@@ -457,41 +457,46 @@ class _AddAddressFormViewState extends State<AddAddressFormView> {
         ],
       ),
       const SizedBox(height: 48),
-      SizedBox(
-        width: double.infinity,
-        height: 52,
-        child: AppButton(
-          text: localizations.saveAddress,
-          isLoading: state.saveAddressState.isLoading,
-          onPressed: () {
-            if (_formKey.currentState!.validate()) {
-              if (state.selectedGovernorate == null ||
-                  state.selectedCity == null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(localizations.selectCityAndArea)),
-                );
-                return;
-              }
+      BlocBuilder<AddAddressViewModel, AddAddressState>(
+        buildWhen: (prev, curr) =>
+            prev.saveAddressState != curr.saveAddressState,
+        builder: (context, state) {
+          return SizedBox(
+            width: double.infinity,
+            height: 52,
+            child: AppButton(
+              text: localizations.saveAddress,
+              isLoading: state.saveAddressState.isLoading,
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  if (state.selectedGovernorate == null ||
+                      state.selectedCity == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(localizations.selectCityAndArea)),
+                    );
+                    return;
+                  }
 
-              final request = AddAddressRequestModel(
-                recipientName: _nameController.text,
-                recipientPhone: _phoneController.text,
-                addressLine: _addressController.text,
-                governorateId: state.selectedGovernorate!.id!,
-                cityId: state.selectedCity!.id!,
-                // TODO: wait for the backend team's response regarding what to send in this field of the request
-                area: state.selectedCity!.nameEn!,
-                lat: state.selectedLocation?.latitude ?? 0.0,
-                lng: state.selectedLocation?.longitude ?? 0.0,
-                label: "home",
-              );
-              context.read<AddAddressViewModel>().doEvent(
-                SaveAddressEvent(request),
-              );
-            }
-          },
-          backgroundColor: AppColors.white80,
-        ),
+                  final request = AddAddressRequestModel(
+                    recipientName: _nameController.text,
+                    recipientPhone: _phoneController.text,
+                    addressLine: _addressController.text,
+                    governorateId: state.selectedGovernorate!.id!,
+                    cityId: state.selectedCity!.id!,
+                    // TODO: wait for the backend team's response regarding what to send in this field of the request
+                    area: state.selectedCity!.nameEn!,
+                    lat: state.selectedLocation?.latitude ?? 0.0,
+                    lng: state.selectedLocation?.longitude ?? 0.0,
+                    label: "home",
+                  );
+                  context.read<AddAddressViewModel>().doEvent(
+                    SaveAddressEvent(request),
+                  );
+                }
+              },
+            ),
+          );
+        },
       ),
     ];
   }
