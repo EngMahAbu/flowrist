@@ -158,14 +158,18 @@ class _AddAddressFormViewState extends State<AddAddressFormView> {
   ) {
     return Stack(
       children: [
-        AddressMapWidget(
-          mapTilerApiKey: context.read<AddAddressViewModel>().mapTilerApiKey,
-          selectedLocation: state.selectedLocation,
-          onLocationSelected: (CoordinatesEntity location) {
-            context.read<AddAddressViewModel>().doEvent(
-              SelectMapLocation(location),
-            );
-          },
+        BlocBuilder<AddAddressViewModel, AddAddressState>(
+          buildWhen: (prev, curr) =>
+              prev.selectedLocation != curr.selectedLocation,
+          builder: (context, state) => AddressMapWidget(
+            mapTilerApiKey: context.read<AddAddressViewModel>().mapTilerApiKey,
+            selectedLocation: state.selectedLocation,
+            onLocationSelected: (CoordinatesEntity location) {
+              context.read<AddAddressViewModel>().doEvent(
+                SelectMapLocation(location),
+              );
+            },
+          ),
         ),
         if (widget.showSoftPermissionBanner)
           _buildPermissionNeededView(context, localizations),
@@ -344,28 +348,33 @@ class _AddAddressFormViewState extends State<AddAddressFormView> {
     required AddAddressState state,
   }) {
     return [
-      state.userLocation != null && state.userLocation!.isLoading
-          ? _buildLocationLoadingField(localizations)
-          : AppTextField(
-              label: localizations.address,
-              hint: localizations.enterAddress,
-              controller: _addressController,
-              localizations: localizations,
-              suffixIcon: IconButton(
-                onPressed: () {
-                  context.read<AddAddressViewModel>().doEvent(
-                    FetchUserLocation(),
-                  );
-                },
-                icon: Icon(Icons.loop_outlined),
-              ),
-              labelStyle: AppStyles.regular12Inter.copyWith(
-                color: AppColors.grey,
-              ),
-              hintStyle: AppStyles.regular14Inter.copyWith(
-                color: AppColors.black10,
-              ),
-            ),
+      BlocBuilder<AddAddressViewModel, AddAddressState>(
+        buildWhen: (prev, curr) => prev.userLocation != curr.userLocation,
+        builder: (context, state) {
+          return state.userLocation != null && state.userLocation!.isLoading
+              ? _buildLocationLoadingField(localizations)
+              : AppTextField(
+                  label: localizations.address,
+                  hint: localizations.enterAddress,
+                  controller: _addressController,
+                  localizations: localizations,
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      context.read<AddAddressViewModel>().doEvent(
+                        FetchUserLocation(),
+                      );
+                    },
+                    icon: Icon(Icons.loop_outlined),
+                  ),
+                  labelStyle: AppStyles.regular12Inter.copyWith(
+                    color: AppColors.grey,
+                  ),
+                  hintStyle: AppStyles.regular14Inter.copyWith(
+                    color: AppColors.black10,
+                  ),
+                );
+        },
+      ),
       const SizedBox(height: 16),
       AppTextField(
         label: localizations.phoneNumber,

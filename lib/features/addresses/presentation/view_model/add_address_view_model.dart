@@ -245,20 +245,28 @@ class AddAddressViewModel extends Cubit<AddAddressState> {
     try {
       final response = await _getAddressFromLocationUseCase(location);
 
-      if (response is SuccessResponse<String?>) {
-        if (response.data == null) {
+      switch (response) {
+        case SuccessResponse<String?>():
+          if (response.data == null) {
+            emit(
+              state.copyWith(
+                userLocation: BaseState.error(
+                  AppStrings.addressNotFoundMessage,
+                ),
+              ),
+            );
+          } else {
+            emit(
+              state.copyWith(userLocation: BaseState.success(response.data!)),
+            );
+          }
+
+        case ErrorResponse<String?>():
           emit(
             state.copyWith(
-              userLocation: BaseState.error(AppStrings.addressNotFoundMessage),
+              userLocation: BaseState.error(response.errorMessage),
             ),
           );
-        } else {
-          emit(state.copyWith(userLocation: BaseState.success(response.data!)));
-        }
-      } else if (response is ErrorResponse<String?>) {
-        emit(
-          state.copyWith(userLocation: BaseState.error(response.errorMessage)),
-        );
       }
     } catch (e) {
       emit(state.copyWith(userLocation: BaseState.error(e.toString())));
