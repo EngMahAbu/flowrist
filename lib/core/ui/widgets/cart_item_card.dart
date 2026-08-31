@@ -26,18 +26,43 @@ class CartItemCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.whiteBase,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: AppColors.grey,
-          width: 0.5,
-        ),
+        border: Border.all(color: AppColors.grey, width: 0.5),
       ),
       child: Row(
         children: [
-          Image.network(
-            item.productImage,
-            width: 100,
-            height: 120,
-            fit: BoxFit.cover,
+          ClipRRect(
+            borderRadius: BorderRadius.circular(6),
+            child: SizedBox(
+              width: 100,
+              height: 120,
+              child: Image.network(
+                item.productImage,
+                fit: BoxFit.cover,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Container(
+                    color: AppColors.white70.withValues(alpha: 0.15),
+                    child: const Center(
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: AppColors.purpleBase,
+                      ),
+                    ),
+                  );
+                },
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    color: AppColors.white70.withValues(alpha: 0.2),
+                    alignment: Alignment.center,
+                    child: const Icon(
+                      Icons.image_not_supported_outlined,
+                      color: AppColors.white70,
+                      size: 32,
+                    ),
+                  );
+                },
+              ),
+            ),
           ),
 
           const SizedBox(width: 20),
@@ -59,10 +84,7 @@ class CartItemCard extends StatelessWidget {
 
                     IconButton(
                       onPressed: isLoading ? null : onDelete,
-                      icon: Icon(
-                        Icons.delete_outline,
-                        color: AppColors.red,
-                      ),
+                      icon: Icon(Icons.delete_outline, color: AppColors.red),
                     ),
                   ],
                 ),
@@ -76,10 +98,7 @@ class CartItemCard extends StatelessWidget {
 
                 Row(
                   children: [
-                    Text(
-                      'EGP ${item.unitPrice}',
-                      style: AppStyles.semiBold14,
-                    ),
+                    Text('EGP ${item.unitPrice}', style: AppStyles.semiBold14),
 
                     const Spacer(),
 
@@ -98,10 +117,7 @@ class CartItemCard extends StatelessWidget {
 
                     IconButton(
                       onPressed: isLoading ? null : onIncrease,
-                      icon: const Icon(
-                        Icons.add,
-                        color: AppColors.blackBase,
-                      ),
+                      icon: const Icon(Icons.add, color: AppColors.blackBase),
                     ),
                   ],
                 ),
