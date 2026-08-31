@@ -19,6 +19,7 @@ class OccasionsRemoteDataSourceImpl implements OccasionsRemoteDataSource {
   Future<ProductsResponseDto> getProducts({
     String? occasionId,
     String? categoryId,
+    String? sort,
   }) async {
     // // Simulate network delay for testing purposes
     // await Future.delayed(const Duration(milliseconds: 500));
@@ -33,6 +34,7 @@ class OccasionsRemoteDataSourceImpl implements OccasionsRemoteDataSource {
     return await _apiClient.getProducts(
       occasionId: occasionId,
       categoryId: categoryId,
+      sort: sort,
     );
   }
 }

@@ -119,5 +119,13 @@
   "permissionRequired": "Permission Required",
   "locationPermissionDeniedSettingsMessage": "The location permission is permanently denied. Please enable it in settings to use the address auto-detection.",
   "mapConfigWarning": "High-quality maps are unavailable",
-  "mapConfigWarningDescription": "Using basic map provider. Some map details may be missing."
+  "mapConfigWarningDescription": "Using basic map provider. Some map details may be missing.",
+  "searchForAnyProductYouWant": "Search For Any Product You Want",
+  "sortBy": "Sort by",
+  "lowestPrice": "Lowest Price",
+  "highestPrice": "Highest Price",
+  "newest": "New",
+  "oldest": "Old",
+  "filter": "Filter",
+  "clear": "Clear" 
 }

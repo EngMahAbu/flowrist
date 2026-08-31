@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -367,4 +366,28 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get mapConfigWarningDescription =>
       'Using basic map provider. Some map details may be missing.';
+
+  @override
+  String get searchForAnyProductYouWant => 'Search For Any Product You Want';
+
+  @override
+  String get sortBy => 'Sort by';
+
+  @override
+  String get lowestPrice => 'Lowest Price';
+
+  @override
+  String get highestPrice => 'Highest Price';
+
+  @override
+  String get newest => 'New';
+
+  @override
+  String get oldest => 'Old';
+
+  @override
+  String get filter => 'Filter';
+
+  @override
+  String get clear => 'Clear';
 }
