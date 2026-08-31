@@ -187,7 +187,7 @@ abstract class AppLocalizations {
   /// No description provided for @confirmPassword.
   ///
   /// In en, this message translates to:
-  /// **'Confirm Password'**
+  /// **'Confirm password'**
   String get confirmPassword;
 
   /// No description provided for @phoneNumber.
@@ -334,12 +334,6 @@ abstract class AppLocalizations {
   /// **'Login Successfully'**
   String get loginSuccessfully;
 
-  /// No description provided for @email.
-  ///
-  /// In en, this message translates to:
-  /// **'Email'**
-  String get email;
-
   /// No description provided for @emailHint.
   ///
   /// In en, this message translates to:
@@ -369,6 +363,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter your email address and we will send you an OTP.'**
   String get forgotPasswordDescription;
+
+  /// No description provided for @email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get email;
 
   /// No description provided for @enterYourEmail.
   ///
@@ -819,6 +819,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please select city and area'**
   String get selectCityAndArea;
+
+  /// No description provided for @searchForAnyProductYouWant.
+  ///
+  /// In en, this message translates to:
+  /// **'Search For Any Product You Want'**
+  String get searchForAnyProductYouWant;
+
+  /// No description provided for @sortBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort by'**
+  String get sortBy;
+
+  /// No description provided for @lowestPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Lowest Price'**
+  String get lowestPrice;
+
+  /// No description provided for @highestPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Highest Price'**
+  String get highestPrice;
+
+  /// No description provided for @newest.
+  ///
+  /// In en, this message translates to:
+  /// **'New'**
+  String get newest;
+
+  /// No description provided for @oldest.
+  ///
+  /// In en, this message translates to:
+  /// **'Old'**
+  String get oldest;
+
+  /// No description provided for @filter.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter'**
+  String get filter;
+
+  /// No description provided for @clear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get clear;
 }
 
 class _AppLocalizationsDelegate

@@ -6,5 +6,6 @@ abstract interface class OccasionsRemoteDataSource {
   Future<ProductsResponseDto> getProducts({
     String? occasionId,
     String? categoryId,
+    String? sort,
   });
 }

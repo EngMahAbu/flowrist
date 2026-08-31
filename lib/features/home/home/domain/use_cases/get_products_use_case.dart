@@ -12,10 +12,12 @@ class GetProductsUseCase {
   Future<BaseResponse<List<ProductEntity>>> call({
     String? occasionId,
     String? categoryId,
+    String? sort,
   }) async {
     return await _repository.getProducts(
       occasionId: occasionId,
       categoryId: categoryId,
+      sort: sort,
     );
   }
 }

@@ -54,7 +54,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enterPassword => 'Enter password';
 
   @override
-  String get confirmPassword => 'Confirm Password';
+  String get confirmPassword => 'Confirm password';
 
   @override
   String get phoneNumber => 'Phone number';
@@ -134,9 +134,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginSuccessfully => 'Login Successfully';
 
   @override
-  String get email => 'Email';
-
-  @override
   String get emailHint => 'Enter your email';
 
   @override
@@ -151,6 +148,9 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get forgotPasswordDescription =>
       'Enter your email address and we will send you an OTP.';
+
+  @override
+  String get email => 'Email';
 
   @override
   String get enterYourEmail => 'Enter your email';
@@ -390,4 +390,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get selectCityAndArea => 'Please select city and area';
+
+  @override
+  String get searchForAnyProductYouWant => 'Search For Any Product You Want';
+
+  @override
+  String get sortBy => 'Sort by';
+
+  @override
+  String get lowestPrice => 'Lowest Price';
+
+  @override
+  String get highestPrice => 'Highest Price';
+
+  @override
+  String get newest => 'New';
+
+  @override
+  String get oldest => 'Old';
+
+  @override
+  String get filter => 'Filter';
+
+  @override
+  String get clear => 'Clear';
 }

@@ -13,6 +13,7 @@ import 'package:flowrist/features/home/home/presentation/home_layout/view/home_t
 import 'package:flowrist/features/home/home/presentation/occasion/cubit/occasion_cubit.dart';
 import 'package:flowrist/features/home/home/presentation/occasion/view/occasion_view.dart';
 import 'package:flowrist/features/home/profile/presentation/view/profile_tab_view.dart';
+import 'package:flowrist/features/home/search_and_filtering/search/presentation/view/search_view.dart';
 import 'package:flowrist/features/home/shared/home_navigation_view.dart';
 import 'package:flowrist/features/splash/presentation/view/splash_view.dart';
 import 'package:flutter/material.dart';
@@ -40,6 +41,7 @@ abstract final class AppRoutes {
 
   static const forgetPassword = '/forgot-password';
 
+  static const search = '/search';
   static const bestSeller = '/best-seller';
   static const occasions = '/occasions';
   static const addAddress = '/add-address';
@@ -72,6 +74,16 @@ abstract final class AppRouter {
           return ProductDetailsScreen(productId: productId);
         },
       ),
+
+      // --------------------------------------------------
+      // Search
+      // --------------------------------------------------
+      GoRoute(
+        path: AppRoutes.search,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const SearchView(),
+      ),
+
       // --------------------------------------------------
       // Splash
       // --------------------------------------------------
