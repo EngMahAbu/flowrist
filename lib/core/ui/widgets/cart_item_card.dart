@@ -1,7 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flowrist/core/constants/app_colors.dart';
 import 'package:flowrist/core/constants/app_styles.dart';
 import 'package:flowrist/features/home/cart/domain/entities/cart_item_entity.dart';
 import 'package:flutter/material.dart';
+import 'package:flowrist/core/constants/app_images.dart';
 
 class CartItemCard extends StatelessWidget {
   final CartItemEntity item;
@@ -21,24 +24,17 @@ class CartItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localization = AppLocalizations.of(context)!;
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: AppColors.whiteBase,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: AppColors.grey,
-          width: 0.5,
-        ),
+        border: Border.all(color: AppColors.grey, width: 0.5),
       ),
       child: Row(
         children: [
-          Image.network(
-            item.productImage,
-            width: 100,
-            height: 120,
-            fit: BoxFit.cover,
-          ),
+          _buildProductImage(),
 
           const SizedBox(width: 20),
 
@@ -59,16 +55,13 @@ class CartItemCard extends StatelessWidget {
 
                     IconButton(
                       onPressed: isLoading ? null : onDelete,
-                      icon: Icon(
-                        Icons.delete_outline,
-                        color: AppColors.red,
-                      ),
+                      icon: Icon(Icons.delete_outline, color: AppColors.red),
                     ),
                   ],
                 ),
 
                 Text(
-                  'Available stock: ${item.availableStock}',
+                  '${localization.availableStock}: ${item.availableStock}',
                   style: AppStyles.regular13Grey,
                 ),
 
@@ -77,7 +70,7 @@ class CartItemCard extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      'EGP ${item.unitPrice}',
+                      '${localization.egp} ${item.unitPrice}',
                       style: AppStyles.semiBold14,
                     ),
 
@@ -98,10 +91,7 @@ class CartItemCard extends StatelessWidget {
 
                     IconButton(
                       onPressed: isLoading ? null : onIncrease,
-                      icon: const Icon(
-                        Icons.add,
-                        color: AppColors.blackBase,
-                      ),
+                      icon: const Icon(Icons.add, color: AppColors.blackBase),
                     ),
                   ],
                 ),
@@ -109,6 +99,38 @@ class CartItemCard extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildProductImage() {
+    if (item.productImage.isEmpty) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: Image.asset(
+          AppImages.cardDefultImage,
+          width: 100,
+          height: 120,
+          fit: BoxFit.cover,
+        ),
+      );
+    }
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: CachedNetworkImage(
+        imageUrl: item.productImage,
+        width: 100,
+        height: 120,
+        fit: BoxFit.cover,
+        errorWidget: (context, url, error) {
+          return Image.asset(
+            AppImages.cardDefultImage,
+            width: 100,
+            height: 120,
+            fit: BoxFit.cover,
+          );
+        },
       ),
     );
   }

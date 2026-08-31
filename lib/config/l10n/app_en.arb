@@ -92,5 +92,14 @@
   "deliverTo": "Deliver to",
   "viewAll": "View All",
   "bestSellers": "Best Sellers",
-  "occasion": "Occasion"
+  "occasion": "Occasion",
+  "cart": "Cart",
+  "items": "items",
+  "availableStock": "Available stock",
+  "yourCartIsEmpty": "Your cart is empty",
+  "subTotal": "Sub Total",
+  "deliveryFee": "Delivery Fee",
+  "total": "Total",
+  "checkout": "Checkout",
+  "deliverTo": "Deliver to"
 }

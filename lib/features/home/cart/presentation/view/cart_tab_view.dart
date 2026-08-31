@@ -1,3 +1,4 @@
+import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flowrist/core/constants/app_colors.dart';
 import 'package:flowrist/core/constants/app_styles.dart';
 import 'package:flowrist/core/ui/widgets/app_button.dart';
@@ -25,14 +26,22 @@ class _CartTabViewState extends State<CartTabView> {
 
   @override
   Widget build(BuildContext context) {
+    final localization = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: BlocBuilder<CartCubit, CartState>(
+          buildWhen: (previous, current) {
+            return previous.cart.data?.totalQuantity !=
+                current.cart.data?.totalQuantity;
+          },
           builder: (context, state) {
             final cart = state.cart.data;
+            final itemCount = cart?.totalQuantity ?? 0;
 
-            return Text('Cart (${cart?.totalQuantity ?? 0} items)');
+            return Text(
+              '${localization.cart} ($itemCount ${localization.items})',
+            );
           },
         ),
       ),
@@ -56,7 +65,7 @@ class _CartTabViewState extends State<CartTabView> {
             final cart = state.cart.data;
 
             if (cart == null || cart.items.isEmpty) {
-              return const Center(child: Text('Your cart is empty'));
+              return Center(child: Text(localization.yourCartIsEmpty));
             }
 
             return Padding(
@@ -80,7 +89,9 @@ class _CartTabViewState extends State<CartTabView> {
                     itemBuilder: (context, index) {
                       final item = cart.items[index];
 
-                      final isLoading = state.loadingItemId == item.itemId;
+                      final isLoading = state.loadingItemIds.contains(
+                        item.itemId,
+                      );
 
                       return CartItemCard(
                         item: item,
@@ -122,20 +133,26 @@ class _CartTabViewState extends State<CartTabView> {
 
                   Row(
                     children: [
-                      Text('Sub Total', style: AppStyles.medium16Roboto),
+                      Text(
+                        localization.subTotal,
+                        style: AppStyles.medium16Roboto,
+                      ),
                       const Spacer(),
                       Text(
-                        'EGP ${cart.subtotal}',
+                        '${localization.egp} ${cart.subtotal}',
                         style: AppStyles.regular14Inter,
                       ),
                     ],
                   ),
                   Row(
                     children: [
-                      Text('Delivery Fee', style: AppStyles.medium16Roboto),
+                      Text(
+                        localization.deliveryFee,
+                        style: AppStyles.medium16Roboto,
+                      ),
                       const Spacer(),
                       Text(
-                        'EGP ${cart.deliveryFee}',
+                        '${localization.egp} ${cart.deliveryFee}',
                         style: AppStyles.regular14Inter,
                       ),
                     ],
@@ -146,15 +163,16 @@ class _CartTabViewState extends State<CartTabView> {
                   // Total
                   Row(
                     children: [
-                      Text('Total', style: AppStyles.medium18Inter),
+                      Text(localization.total, style: AppStyles.medium18Inter),
                       const Spacer(),
-                      Text('EGP ${cart.total}', style: AppStyles.medium18Inter),
+                      Text(
+                        '${localization.egp} ${cart.total}',
+                        style: AppStyles.medium18Inter,
+                      ),
                     ],
                   ),
-
                   const SizedBox(height: 40),
-
-                  AppButton(text: 'Checkout', onPressed: () {}),
+                  AppButton(text: localization.checkout, onPressed: () {}),
                 ],
               ),
             );

@@ -279,4 +279,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get bestSellers => 'Best Sellers';
+
+  @override
+  String get items => 'items';
+
+  @override
+  String get availableStock => 'Available stock';
+
+  @override
+  String get yourCartIsEmpty => 'Your cart is empty';
+
+  @override
+  String get subTotal => 'Sub Total';
+
+  @override
+  String get deliveryFee => 'Delivery Fee';
+
+  @override
+  String get total => 'Total';
+
+  @override
+  String get checkout => 'Checkout';
 }
