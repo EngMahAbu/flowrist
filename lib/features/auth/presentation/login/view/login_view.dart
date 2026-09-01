@@ -72,7 +72,7 @@ class _LoginViewState extends State<LoginView> {
 
         case LoginSuccess():
           final cartCubit = context.read<CartCubit>();
-          cartCubit.doIntent(GetCartEvent());
+          cartCubit.doEvent(GetCartEvent());
           getIt<PendingCartActionStore>().executePendingActionIfAny(cartCubit);
           context.go(AppRoutes.homeTab);
 

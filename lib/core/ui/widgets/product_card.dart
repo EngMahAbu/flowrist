@@ -42,7 +42,9 @@ class ProductCard extends StatelessWidget {
       child: Column(
         children: [
           _buildProductImage(),
+
           const SizedBox(height: 10),
+
           Align(
             alignment: Alignment.centerLeft,
             child: Text(
@@ -52,14 +54,18 @@ class ProductCard extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
           ),
+
           const SizedBox(height: 8),
+
           Row(
             children: [
               Text(
                 '${AppLocalizations.of(context)!.egp} $price',
                 style: AppStyles.regular14InterW500,
               ),
+
               const SizedBox(width: 6),
+
               if (oldPrice.isNotEmpty)
                 Text(
                   oldPrice,
@@ -67,7 +73,9 @@ class ProductCard extends StatelessWidget {
                     decoration: TextDecoration.lineThrough,
                   ),
                 ),
+
               const SizedBox(width: 6),
+
               if (discount.isNotEmpty)
                 Text(
                   discount,
@@ -77,7 +85,9 @@ class ProductCard extends StatelessWidget {
                 ),
             ],
           ),
+
           const Spacer(),
+
           _buildAddToCartSection(context),
         ],
       ),
@@ -86,13 +96,22 @@ class ProductCard extends StatelessWidget {
 
   Widget _buildAddToCartSection(BuildContext context) {
     return BlocBuilder<CartCubit, CartState>(
-      buildWhen: (previous, current) =>
-          previous.getQuantity(productId) != current.getQuantity(productId) ||
-          previous.isProductLoading(productId) !=
-              current.isProductLoading(productId),
+      buildWhen: (previous, current) {
+        return previous.getQuantity(productId) !=
+                current.getQuantity(productId) ||
+            previous.isProductAdding(productId) !=
+                current.isProductAdding(productId) ||
+            previous.isProductLoading(productId) !=
+                current.isProductLoading(productId);
+      },
       builder: (context, state) {
-        final isAdding = state.isProductLoading(productId);
         final quantity = state.getQuantity(productId);
+
+        final isAdding = state.isProductAdding(productId);
+
+        final isUpdating = state.isProductLoading(productId);
+
+        final cartItem = state.getCartItem(productId);
 
         if (quantity == 0) {
           return SizedBox(
@@ -107,13 +126,15 @@ class ProductCard extends StatelessWidget {
                       final event = AddToCartEvent(productId: productId);
 
                       final canContinue = await checkGuestMode(context);
+
                       if (!canContinue) {
                         getIt<PendingCartActionStore>().setPendingAction(event);
                         return;
                       }
+
                       if (!context.mounted) return;
 
-                      context.read<CartCubit>().doIntent(event);
+                      context.read<CartCubit>().doEvent(event);
                     },
               child: isAdding
                   ? const SizedBox(
@@ -133,6 +154,10 @@ class ProductCard extends StatelessWidget {
           );
         }
 
+        if (cartItem == null) {
+          return const SizedBox.shrink();
+        }
+
         return Container(
           height: 38,
           decoration: BoxDecoration(
@@ -144,29 +169,49 @@ class ProductCard extends StatelessWidget {
             children: [
               IconButton(
                 icon: const Icon(Icons.remove, size: 18),
-                onPressed: () {
-                  context.read<CartCubit>().doIntent(
-                    ChangeCartQuantityEvent(productId: productId, delta: -1),
-                  );
-                },
+                onPressed: isUpdating
+                    ? null
+                    : () {
+                        context.read<CartCubit>().doEvent(
+                          ChangeCartQuantityEvent(
+                            itemId: cartItem.itemId,
+                            quantity: quantity - 1,
+                          ),
+                        );
+                      },
               ),
+
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 200),
-                transitionBuilder: (child, animation) =>
-                    ScaleTransition(scale: animation, child: child),
-                child: Text(
-                  '$quantity',
-                  key: ValueKey<int>(quantity),
-                  style: AppStyles.regular14InterW500,
-                ),
+                transitionBuilder: (child, animation) {
+                  return ScaleTransition(scale: animation, child: child);
+                },
+                child: isUpdating
+                    ? const SizedBox(
+                        key: ValueKey('loading'),
+                        height: 18,
+                        width: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : Text(
+                        '$quantity',
+                        key: ValueKey<int>(quantity),
+                        style: AppStyles.regular14InterW500,
+                      ),
               ),
+
               IconButton(
                 icon: const Icon(Icons.add, size: 18),
-                onPressed: () {
-                  context.read<CartCubit>().doIntent(
-                    ChangeCartQuantityEvent(productId: productId, delta: 1),
-                  );
-                },
+                onPressed: isUpdating || quantity >= cartItem.availableStock
+                    ? null
+                    : () {
+                        context.read<CartCubit>().doEvent(
+                          ChangeCartQuantityEvent(
+                            itemId: cartItem.itemId,
+                            quantity: quantity + 1,
+                          ),
+                        );
+                      },
               ),
             ],
           ),

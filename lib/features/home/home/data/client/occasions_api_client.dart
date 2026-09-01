@@ -21,5 +21,6 @@ abstract class OccasionsApiClient {
   Future<ProductsResponseDto> getProducts({
     @Query(AppConstants.occasionId) String? occasionId,
     @Query(AppConstants.categoryId) String? categoryId,
+    @Query(AppConstants.sortParam) String? sort,
   });
 }

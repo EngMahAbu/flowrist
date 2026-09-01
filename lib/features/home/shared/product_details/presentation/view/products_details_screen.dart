@@ -1,6 +1,7 @@
 import 'package:flowrist/config/base_state/base_state.dart';
 import 'package:flowrist/config/di/di.dart';
 import 'package:flowrist/config/session/session_guard.dart';
+import 'package:flowrist/features/home/cart/domain/entities/cart_item_entity.dart';
 import 'package:flowrist/features/home/cart/presentation/cubit/cart_cubit.dart';
 import 'package:flowrist/features/home/cart/presentation/cubit/cart_event.dart';
 import 'package:flowrist/features/home/cart/presentation/cubit/cart_state.dart';
@@ -134,9 +135,6 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
     return Scaffold(
       backgroundColor: Colors.white,
 
-      // ==========================================
-      // ADD TO CART / QUANTITY CONTROLLER
-      // ==========================================
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -147,10 +145,21 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
                   previous.getQuantity(product.id) !=
                       current.getQuantity(product.id) ||
                   previous.isProductLoading(product.id) !=
-                      current.isProductLoading(product.id),
+                      current.isProductLoading(product.id) ||
+                  previous.isProductAdding(product.id) !=
+                      current.isProductAdding(product.id),
               builder: (context, cartState) {
-                final isAdding = cartState.isProductLoading(product.id);
-                final quantity = cartState.getQuantity(product.id);
+                final cartItems = cartState.cart.data?.items ?? [];
+                final cartItem = cartItems.cast<CartItemEntity?>().firstWhere(
+                  (item) => item?.productId == product.id,
+                  orElse: () => null,
+                );
+
+                final quantity = cartItem?.quantity ?? 0;
+                final isAdding =
+                    cartState.addingProductIds.contains(product.id) ||
+                    (cartItem != null &&
+                        cartState.loadingItemIds.contains(cartItem.itemId));
 
                 if (!product.inStock) {
                   return ElevatedButton(
@@ -189,7 +198,7 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
                             }
 
                             if (!context.mounted) return;
-                            context.read<CartCubit>().doIntent(event);
+                            context.read<CartCubit>().doEvent(event);
                           },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFCE1567),
@@ -242,10 +251,11 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
                       IconButton(
                         icon: const Icon(Icons.remove, color: Colors.white),
                         onPressed: () {
-                          context.read<CartCubit>().doIntent(
+                          if (cartItem == null) return;
+                          context.read<CartCubit>().doEvent(
                             ChangeCartQuantityEvent(
-                              productId: product.id,
-                              delta: -1,
+                              itemId: cartItem.itemId,
+                              quantity: quantity - 1,
                             ),
                           );
                         },
@@ -267,6 +277,7 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
                       IconButton(
                         icon: const Icon(Icons.add, color: Colors.white),
                         onPressed: () {
+                          if (cartItem == null) return;
                           if (quantity >= product.availableStock) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
@@ -276,10 +287,11 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
                             );
                             return;
                           }
-                          context.read<CartCubit>().doIntent(
+                          // إرسال itemId الحقيقي والكمية الحالية مضافاً إليها 1
+                          context.read<CartCubit>().doEvent(
                             ChangeCartQuantityEvent(
-                              productId: product.id,
-                              delta: 1,
+                              itemId: cartItem.itemId,
+                              quantity: quantity + 1,
                             ),
                           );
                         },
@@ -293,9 +305,6 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
         ),
       ),
 
-      // ==========================================
-      // BODY
-      // ==========================================
       body: CustomScrollView(
         slivers: [
           SliverAppBar(

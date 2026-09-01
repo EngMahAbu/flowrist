@@ -31,7 +31,7 @@ class _HomeTabViewState extends State<HomeTabView> {
     final token = await sessionService.getToken();
 
     if (!isGuest && token.isNotEmpty && mounted) {
-      context.read<CartCubit>().doIntent(GetCartEvent());
+      context.read<CartCubit>().doEvent(GetCartEvent());
     }
   }
 
@@ -61,12 +61,10 @@ class _HomeTabViewState extends State<HomeTabView> {
             return ListView.builder(
               itemCount: sections.length + 1,
               itemBuilder: (context, index) {
-                // Header
                 if (index == 0) {
                   return const HomeHeader();
                 }
 
-                // Home sections
                 final section = sections[index - 1];
 
                 return HomeSection(section: section);

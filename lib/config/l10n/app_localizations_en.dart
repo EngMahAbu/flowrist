@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -55,7 +54,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enterPassword => 'Enter password';
 
   @override
-  String get confirmPassword => 'Confirm Password';
+  String get confirmPassword => 'Confirm password';
 
   @override
   String get phoneNumber => 'Phone number';
@@ -135,9 +134,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginSuccessfully => 'Login Successfully';
 
   @override
-  String get email => 'Email';
-
-  @override
   String get emailHint => 'Enter your email';
 
   @override
@@ -152,6 +148,9 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get forgotPasswordDescription =>
       'Enter your email address and we will send you an OTP.';
+
+  @override
+  String get email => 'Email';
 
   @override
   String get enterYourEmail => 'Enter your email';
@@ -282,6 +281,45 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bestSellers => 'Best Sellers';
 
   @override
+  String get items => 'items';
+
+  @override
+  String get availableStock => 'Available stock';
+
+  @override
+  String get yourCartIsEmpty => 'Your cart is empty';
+
+  @override
+  String get subTotal => 'Sub Total';
+
+  @override
+  String get deliveryFee => 'Delivery Fee';
+
+  @override
+  String get total => 'Total';
+
+  @override
+  String get checkout => 'Checkout';
+
+  @override
+  String get selectAddress => 'Select Address';
+
+  @override
+  String get setAsDefault => 'Set as default';
+
+  @override
+  String get addNewaddress => 'Add new address';
+
+  @override
+  String get noAddressessaved => 'No addresses saved';
+
+  @override
+  String get youHaveNosaved => 'You have no saved address yet.';
+
+  @override
+  String get addOneTocomplete => 'Add one to complete your gifting experience.';
+
+  @override
   String get address => 'Address';
 
   @override
@@ -367,4 +405,34 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get mapConfigWarningDescription =>
       'Using basic map provider. Some map details may be missing.';
+
+  @override
+  String get addressSavedSuccessfully => 'Address saved successfully';
+
+  @override
+  String get selectCityAndArea => 'Please select city and area';
+
+  @override
+  String get searchForAnyProductYouWant => 'Search For Any Product You Want';
+
+  @override
+  String get sortBy => 'Sort by';
+
+  @override
+  String get lowestPrice => 'Lowest Price';
+
+  @override
+  String get highestPrice => 'Highest Price';
+
+  @override
+  String get newest => 'New';
+
+  @override
+  String get oldest => 'Old';
+
+  @override
+  String get filter => 'Filter';
+
+  @override
+  String get clear => 'Clear';
 }

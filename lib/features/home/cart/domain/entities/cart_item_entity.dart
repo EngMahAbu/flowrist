@@ -8,7 +8,11 @@ class CartItemEntity extends Equatable {
   final num unitPrice;
   final num priceAtAdd;
   final int quantity;
+  final num lineSubtotal;
   final int availableStock;
+  final bool isAvailable;
+  final bool priceChanged;
+  final bool stockChanged;
 
   const CartItemEntity({
     required this.itemId,
@@ -18,7 +22,11 @@ class CartItemEntity extends Equatable {
     required this.unitPrice,
     required this.priceAtAdd,
     required this.quantity,
+    required this.lineSubtotal,
     required this.availableStock,
+    required this.isAvailable,
+    required this.priceChanged,
+    required this.stockChanged,
   });
 
   CartItemEntity copyWith({
@@ -29,7 +37,11 @@ class CartItemEntity extends Equatable {
     num? unitPrice,
     num? priceAtAdd,
     int? quantity,
+    num? lineSubtotal,
     int? availableStock,
+    bool? isAvailable,
+    bool? priceChanged,
+    bool? stockChanged,
   }) {
     return CartItemEntity(
       itemId: itemId ?? this.itemId,
@@ -39,7 +51,11 @@ class CartItemEntity extends Equatable {
       unitPrice: unitPrice ?? this.unitPrice,
       priceAtAdd: priceAtAdd ?? this.priceAtAdd,
       quantity: quantity ?? this.quantity,
+      lineSubtotal: lineSubtotal ?? this.lineSubtotal,
       availableStock: availableStock ?? this.availableStock,
+      isAvailable: isAvailable ?? this.isAvailable,
+      priceChanged: priceChanged ?? this.priceChanged,
+      stockChanged: stockChanged ?? this.stockChanged,
     );
   }
 
@@ -52,6 +68,10 @@ class CartItemEntity extends Equatable {
     unitPrice,
     priceAtAdd,
     quantity,
+    lineSubtotal,
     availableStock,
+    isAvailable,
+    priceChanged,
+    stockChanged,
   ];
 }

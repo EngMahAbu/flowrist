@@ -6,6 +6,7 @@ import 'package:flowrist/core/ui/theme/app_theme.dart';
 import 'package:flowrist/features/home/cart/presentation/cubit/cart_cubit.dart';
 import 'package:flowrist/features/home/cart/presentation/cubit/cart_state.dart';
 import 'package:flowrist/flowrist_bloc_observer.dart';
+import 'package:flowrist/shared/addresses/presentation/view_model/addresses_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -17,10 +18,17 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await _loadEnvironmentVariables();
   configureDependencies();
+
   Bloc.observer = FlowristBlocObserver();
 
   runApp(
-    BlocProvider(create: (_) => getIt<CartCubit>(), child: const FlowristApp()),
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => getIt<CartCubit>()),
+        BlocProvider(create: (_) => getIt<AddressesViewModel>()),
+      ],
+      child: const FlowristApp(),
+    ),
   );
 }
 
@@ -51,12 +59,12 @@ class FlowristApp extends StatelessWidget {
       builder: (context, child) {
         return BlocListener<CartCubit, CartState>(
           listenWhen: (prev, curr) =>
-              curr.errorMessage != null &&
-              prev.errorMessage != curr.errorMessage,
+              curr.cart.errorMessage != null &&
+              prev.cart.errorMessage != curr.cart.errorMessage,
           listener: (context, state) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.errorMessage!),
+                content: Text(state.cart.errorMessage!),
                 backgroundColor: AppColors.red,
                 behavior: SnackBarBehavior.floating,
               ),

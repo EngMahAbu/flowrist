@@ -6,17 +6,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-class HomeNavigationView extends StatelessWidget {
+class HomeNavigationView extends StatefulWidget {
   final StatefulNavigationShell tabViewShell;
 
   const HomeNavigationView({super.key, required this.tabViewShell});
+
+  @override
+  State<HomeNavigationView> createState() => _HomeNavigationViewState();
+}
+
+class _HomeNavigationViewState extends State<HomeNavigationView> {
+    @override
+  void initState() {
+    super.initState();
+
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   _initializeAddress();
+    // });
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
     final AppLocalizations l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      body: tabViewShell,
+      body: widget.tabViewShell,
       bottomNavigationBar: _buildBottomNavigationBar(
         context: context,
         localization: l10n,
@@ -29,7 +45,7 @@ class HomeNavigationView extends StatelessWidget {
     required AppLocalizations localization,
   }) {
     return BottomNavigationBar(
-      currentIndex: tabViewShell.currentIndex,
+      currentIndex: widget.tabViewShell.currentIndex,
       onTap: (index) async {
         if (index == 3 || index == 2) {
           final canContinue = await checkGuestMode(context);
@@ -39,7 +55,7 @@ class HomeNavigationView extends StatelessWidget {
           }
         }
 
-        tabViewShell.goBranch(index);
+        widget.tabViewShell.goBranch(index);
       },
       items: [
         BottomNavigationBarItem(
@@ -52,10 +68,13 @@ class HomeNavigationView extends StatelessWidget {
         ),
         BottomNavigationBarItem(
           icon: BlocBuilder<CartCubit, CartState>(
-            buildWhen: (prev, curr) => prev.totalQuantity != curr.totalQuantity,
+            buildWhen: (previous, current) {
+              final previousCount = previous.cart.data?.totalQuantity ?? 0;
+              final currentCount = current.cart.data?.totalQuantity ?? 0;
+              return previousCount != currentCount;
+            },
             builder: (context, state) {
-              final count = state.totalQuantity;
-
+              final count = state.cart.data?.totalQuantity ?? 0;
               return Badge(
                 isLabelVisible: count > 0,
                 label: AnimatedSwitcher(

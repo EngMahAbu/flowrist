@@ -14,4 +14,6 @@ abstract class HomeApiClient {
 
   @GET(Endpoints.home)
   Future<HomeApiResponseModel> getHomeLayout();
+
+ 
 }

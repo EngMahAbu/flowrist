@@ -9,10 +9,10 @@ class AddToCartEvent extends CartEvent {
 }
 
 class ChangeCartQuantityEvent extends CartEvent {
-  final String productId;
-  final int delta;
+  final String itemId;
+  final int quantity;
 
-  ChangeCartQuantityEvent({required this.productId, required this.delta});
+  ChangeCartQuantityEvent({required this.itemId, required this.quantity});
 }
 
 class RemoveCartItemEvent extends CartEvent {

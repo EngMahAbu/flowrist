@@ -1,11 +1,12 @@
 import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flowrist/core/constants/app_colors.dart';
 import 'package:flowrist/core/constants/app_images.dart';
+import 'package:flowrist/core/constants/app_router.dart';
 import 'package:flowrist/core/constants/app_styles.dart';
 import 'package:flowrist/features/home/home/presentation/home_layout/view/widgets/delivery_location_header.dart';
- 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeHeader extends StatelessWidget {
   const HomeHeader({super.key});
@@ -29,17 +30,17 @@ class HomeHeader extends StatelessWidget {
                     width: 24,
                   ),
                 ),
-
                 const SizedBox(width: 8),
-
                 Text(localizations.flowery, style: AppStyles.appTitle),
-
                 const SizedBox(width: 17),
-
                 Expanded(
                   child: SizedBox(
                     height: 40,
                     child: TextFormField(
+                      readOnly: true,
+                      onTap: () {
+                        context.push(AppRoutes.search);
+                      },
                       decoration: InputDecoration(
                         prefixIcon: const Icon(
                           Icons.search,
@@ -47,10 +48,7 @@ class HomeHeader extends StatelessWidget {
                           size: 24,
                         ),
                         hintText: localizations.search,
-                        hintStyle: const TextStyle(
-                          color: AppColors.white70,
-                          fontSize: 14,
-                        ),
+                        hintStyle: AppStyles.regular14Roboto,
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                           borderSide: const BorderSide(
@@ -71,7 +69,7 @@ class HomeHeader extends StatelessWidget {
                 ),
               ],
             ),
-            DeliveryLocationHeader(),
+            const DeliveryLocationHeader(),
           ],
         ),
       ),

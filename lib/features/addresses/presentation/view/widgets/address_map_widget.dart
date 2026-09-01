@@ -24,7 +24,7 @@ class AddressMapWidget extends StatefulWidget {
 class _AddressMapWidgetState extends State<AddressMapWidget> {
   late final MapController _mapController;
 
-  // TODO: check the business if they would like to change this default value
+
   static const CoordinatesEntity _defaultLocation = CoordinatesEntity(
     latitude: 30.0444,
     longitude: 31.2357,

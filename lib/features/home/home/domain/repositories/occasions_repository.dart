@@ -7,5 +7,6 @@ abstract interface class OccasionsRepository {
   Future<BaseResponse<List<ProductEntity>>> getProducts({
     String? occasionId,
     String? categoryId,
+    String? sort,
   });
 }
