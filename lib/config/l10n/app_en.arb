@@ -94,7 +94,7 @@
   "deliveryFee": "Delivery Fee",
   "total": "Total",
   "checkout": "Checkout",
-  "deliverTo": "Deliver to"
+  "deliverTo": "Deliver to",
   "selectAddress":"Select Address",
   "setAsDefault":"Set as default",
   "addNewaddress":"Add new address",

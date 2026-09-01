@@ -89,9 +89,16 @@ class _CartTabViewState extends State<CartTabView> {
                       BlocBuilder<AddressesViewModel, AddressesState>(
                         builder: (context, state) {
                           final selectedAddress = state.selectedAddress;
-                          return Text(
-                            '${localizations.deliverTo} '
-                            '${selectedAddress?.area}-${selectedAddress?.addressLine}',
+                          return Expanded(
+                            child: Text(
+                              '${localization.deliverTo} '
+                              '${selectedAddress?.area}-${selectedAddress?.addressLine}',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppStyles.medium18Inter.copyWith(
+                                fontSize: 14,
+                              ),
+                            ),
                           );
                         },
                       ),
