@@ -198,7 +198,6 @@ class AddAddressViewModel extends Cubit<AddAddressState> {
         _fetchUserLocation();
       }
     } else {
-      // TODO: this branch needs revisiting to check its logic
       emit(state.copyWith(locationPermission: BaseState.success(status)));
     }
   }

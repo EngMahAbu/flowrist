@@ -11,10 +11,11 @@ class BaseState<T> extends Equatable {
     required this.data,
   });
 
-  const BaseState.initial() : this(isLoading: false, errorMessage: null, data: null);
+  const BaseState.initial()
+    : this(isLoading: false, errorMessage: null, data: null);
 
   factory BaseState.loading() =>
-      BaseState(isLoading: true, errorMessage: null, data: null);
+      const BaseState(isLoading: true, errorMessage: null, data: null);
 
   factory BaseState.success(T data) =>
       BaseState(isLoading: false, errorMessage: null, data: data);

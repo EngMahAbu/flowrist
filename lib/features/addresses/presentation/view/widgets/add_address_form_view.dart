@@ -71,10 +71,6 @@ class _AddAddressFormViewState extends State<AddAddressFormView> {
         }
       },
       child: BlocBuilder<AddAddressViewModel, AddAddressState>(
-        buildWhen: (prev, curr) =>
-            prev.selectedLocation != curr.selectedLocation ||
-            prev.isMapConfigured != curr.isMapConfigured ||
-            prev.userLocation?.errorMessage != curr.userLocation?.errorMessage,
         builder: (context, state) {
           return Form(
             key: _formKey,
@@ -458,8 +454,6 @@ class _AddAddressFormViewState extends State<AddAddressFormView> {
       ),
       const SizedBox(height: 48),
       BlocBuilder<AddAddressViewModel, AddAddressState>(
-        buildWhen: (prev, curr) =>
-            prev.saveAddressState != curr.saveAddressState,
         builder: (context, state) {
           return SizedBox(
             width: double.infinity,
