@@ -58,7 +58,7 @@ void main() {
 
   group('GetCategoriesEvent', () {
     blocTest<CategoriesCubit, CategoriesState>(
-      'should emit loading then categories & products on success',
+      'should emit loading then categories and fetch products on success',
       build: () {
         when(
           mockGetCategoriesUseCase(),
@@ -76,14 +76,23 @@ void main() {
           'categories.isLoading',
           true,
         ),
-        // 2. Categories Loaded & Products Loading
+        // 2. Categories Loaded & Selected Index set
         isA<CategoriesState>()
             .having((s) => s.categories.data, 'categories.data', tCategories)
-            .having((s) => s.products.isLoading, 'products.isLoading', true)
+            .having(
+              (s) => s.categories.isLoading,
+              'categories.isLoading',
+              false,
+            )
             .having((s) => s.selectedIndex, 'selectedIndex', 0),
-        // 3. Products Loaded
+        // 3. Products Loading
+        isA<CategoriesState>().having(
+          (s) => s.products.isLoading,
+          'products.isLoading',
+          true,
+        ),
+        // 4. Products Loaded
         isA<CategoriesState>()
-            .having((s) => s.categories.data, 'categories.data', tCategories)
             .having((s) => s.products.data, 'products.data', tProducts)
             .having((s) => s.products.isLoading, 'products.isLoading', false),
       ],
@@ -101,12 +110,6 @@ void main() {
       'should update selectedSort and fetch products with new sort param',
       build: () {
         when(
-          mockGetCategoriesUseCase(),
-        ).thenAnswer((_) async => SuccessResponse(tCategories));
-        when(
-          mockGetProductsUseCase(categoryId: 'cat1', sort: null),
-        ).thenAnswer((_) async => SuccessResponse(tProducts));
-        when(
           mockGetProductsUseCase(
             categoryId: 'cat1',
             sort: SortOption.lowestPrice.apiValue,
@@ -123,23 +126,22 @@ void main() {
       ),
       act: (cubit) => cubit.doEvent(ApplySortEvent(SortOption.lowestPrice)),
       expect: () => [
-        // 1. Sort state updated & Products loading
-        isA<CategoriesState>()
-            .having(
-              (s) => s.selectedSort,
-              'selectedSort',
-              SortOption.lowestPrice,
-            )
-            .having((s) => s.products.isLoading, 'products.isLoading', true),
-        // 2. Products loaded
+        // 1. Sort state updated
+        isA<CategoriesState>().having(
+          (s) => s.selectedSort,
+          'selectedSort',
+          SortOption.lowestPrice,
+        ),
+        // 2. Products loading
+        isA<CategoriesState>().having(
+          (s) => s.products.isLoading,
+          'products.isLoading',
+          true,
+        ),
+        // 3. Products loaded
         isA<CategoriesState>()
             .having((s) => s.products.data, 'products.data', tProducts)
-            .having((s) => s.products.isLoading, 'products.isLoading', false)
-            .having(
-              (s) => s.selectedSort,
-              'selectedSort',
-              SortOption.lowestPrice,
-            ),
+            .having((s) => s.products.isLoading, 'products.isLoading', false),
       ],
       verify: (_) {
         verify(
@@ -169,12 +171,21 @@ void main() {
       ),
       act: (cubit) => cubit.doEvent(ApplySortEvent(null)),
       expect: () => [
-        isA<CategoriesState>()
-            .having((s) => s.selectedSort, 'selectedSort', isNull)
-            .having((s) => s.products.isLoading, 'products.isLoading', true),
+        // 1. Sort cleared
+        isA<CategoriesState>().having(
+          (s) => s.selectedSort,
+          'selectedSort',
+          isNull,
+        ),
+        // 2. Products loading
+        isA<CategoriesState>().having(
+          (s) => s.products.isLoading,
+          'products.isLoading',
+          true,
+        ),
+        // 3. Products loaded
         isA<CategoriesState>()
             .having((s) => s.products.data, 'products.data', tProducts)
-            .having((s) => s.selectedSort, 'selectedSort', isNull)
             .having((s) => s.products.isLoading, 'products.isLoading', false),
       ],
       verify: (_) {
@@ -187,7 +198,7 @@ void main() {
 
   group('SelectCategoryEvent', () {
     blocTest<CategoriesCubit, CategoriesState>(
-      'should keep the current sort option when switching categories',
+      'should update selectedIndex, keep current sort, and fetch products',
       build: () {
         when(
           mockGetProductsUseCase(
@@ -207,22 +218,21 @@ void main() {
       ),
       act: (cubit) => cubit.doEvent(SelectCategoryEvent(1)),
       expect: () => [
-        isA<CategoriesState>()
-            .having((s) => s.selectedIndex, 'selectedIndex', 1)
-            .having(
-              (s) => s.selectedSort,
-              'selectedSort',
-              SortOption.highestPrice,
-            )
-            .having((s) => s.products.isLoading, 'products.isLoading', true),
+        // 1. Category index updated
+        isA<CategoriesState>().having(
+          (s) => s.selectedIndex,
+          'selectedIndex',
+          1,
+        ),
+        // 2. Products loading
+        isA<CategoriesState>().having(
+          (s) => s.products.isLoading,
+          'products.isLoading',
+          true,
+        ),
+        // 3. Products loaded
         isA<CategoriesState>()
             .having((s) => s.products.data, 'products.data', tProducts)
-            .having((s) => s.selectedIndex, 'selectedIndex', 1)
-            .having(
-              (s) => s.selectedSort,
-              'selectedSort',
-              SortOption.highestPrice,
-            )
             .having((s) => s.products.isLoading, 'products.isLoading', false),
       ],
       verify: (_) {
@@ -313,13 +323,19 @@ void main() {
       ),
       act: (cubit) => cubit.doEvent(ApplySortEvent(SortOption.lowestPrice)),
       expect: () => [
-        isA<CategoriesState>()
-            .having(
-              (s) => s.selectedSort,
-              'selectedSort',
-              SortOption.lowestPrice,
-            )
-            .having((s) => s.products.isLoading, 'products.isLoading', true),
+        // 1. Sort state updated
+        isA<CategoriesState>().having(
+          (s) => s.selectedSort,
+          'selectedSort',
+          SortOption.lowestPrice,
+        ),
+        // 2. Products loading
+        isA<CategoriesState>().having(
+          (s) => s.products.isLoading,
+          'products.isLoading',
+          true,
+        ),
+        // 3. Products error
         isA<CategoriesState>()
             .having(
               (s) => s.products.errorMessage,

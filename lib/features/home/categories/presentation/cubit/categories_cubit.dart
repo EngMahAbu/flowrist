@@ -91,14 +91,10 @@ class CategoriesCubit extends Cubit<CategoriesState> {
               data: categories,
             ),
             selectedIndex: targetIndex,
-            products: state.products.copyWith(
-              isLoading: true,
-              errorMessage: null,
-            ),
           ),
         );
 
-        await _fetchProductsOnly(
+        await _getProductsByCategory(
           categories[targetIndex].id,
           sort: state.selectedSort?.apiValue,
         );
@@ -121,14 +117,9 @@ class CategoriesCubit extends Cubit<CategoriesState> {
       return;
     }
 
-    emit(
-      state.copyWith(
-        selectedIndex: index,
-        products: state.products.copyWith(isLoading: true, errorMessage: null),
-      ),
-    );
+    emit(state.copyWith(selectedIndex: index));
 
-    await _fetchProductsOnly(
+    await _getProductsByCategory(
       categories[index].id,
       sort: state.selectedSort?.apiValue,
     );
@@ -139,15 +130,11 @@ class CategoriesCubit extends Cubit<CategoriesState> {
     if (categories == null || categories.isEmpty) return;
 
     emit(
-      state.copyWith(
-        selectedSort: sortOption,
-        clearSort: sortOption == null,
-        products: state.products.copyWith(isLoading: true, errorMessage: null),
-      ),
+      state.copyWith(selectedSort: sortOption, clearSort: sortOption == null),
     );
 
     final currentCategoryId = categories[state.selectedIndex].id;
-    await _fetchProductsOnly(currentCategoryId, sort: sortOption?.apiValue);
+    await _getProductsByCategory(currentCategoryId, sort: sortOption?.apiValue);
   }
 
   Future<void> _getProductsByCategory(String categoryId, {String? sort}) async {
@@ -156,10 +143,7 @@ class CategoriesCubit extends Cubit<CategoriesState> {
         products: state.products.copyWith(isLoading: true, errorMessage: null),
       ),
     );
-    await _fetchProductsOnly(categoryId, sort: sort);
-  }
 
-  Future<void> _fetchProductsOnly(String categoryId, {String? sort}) async {
     final result = await _getProductsUseCase(
       categoryId: categoryId,
       sort: sort,

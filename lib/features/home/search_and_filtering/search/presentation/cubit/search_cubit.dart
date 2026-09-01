@@ -25,14 +25,13 @@ class SearchCubit extends Cubit<SearchState> {
   }
 
   void _onQueryChanged(String newQuery) {
-    emit(state.copyWith(query: newQuery));
-
     _debounceTimer?.cancel();
     final trimmedQuery = newQuery.trim();
 
     if (trimmedQuery.isEmpty) {
       emit(
         state.copyWith(
+          query: newQuery,
           results: BaseState<List<ProductEntity>>(
             isLoading: false,
             errorMessage: null,
@@ -42,6 +41,8 @@ class SearchCubit extends Cubit<SearchState> {
       );
       return;
     }
+
+    emit(state.copyWith(query: newQuery));
 
     _debounceTimer = Timer(const Duration(milliseconds: 500), () {
       _fetchProducts(trimmedQuery);

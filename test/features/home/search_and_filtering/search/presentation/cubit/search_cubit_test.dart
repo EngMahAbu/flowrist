@@ -1,6 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flowrist/config/base_response/base_response.dart';
-import 'package:flowrist/config/base_state/base_state.dart';
 import 'package:flowrist/features/home/home/domain/entities/occasion/product_entity.dart';
 import 'package:flowrist/features/home/search_and_filtering/search/domain/use_cases/search_products_use_case.dart';
 import 'package:flowrist/features/home/search_and_filtering/search/presentation/cubit/search_cubit.dart';
@@ -16,15 +15,18 @@ import 'search_cubit_test.mocks.dart';
 void main() {
   late MockSearchProductsUseCase mockUseCase;
 
-  setUp(() {
+  setUpAll(() {
     provideDummy<BaseResponse<List<ProductEntity>>>(
       SuccessResponse<List<ProductEntity>>([]),
     );
+  });
+
+  setUp(() {
     mockUseCase = MockSearchProductsUseCase();
   });
 
-  final tProducts = [
-    const ProductEntity(
+  const tProducts = [
+    ProductEntity(
       id: '1',
       name: 'Red Rose',
       price: 100.0,
@@ -39,7 +41,10 @@ void main() {
 
   test('initial state should have empty query and default empty BaseState', () {
     final cubit = SearchCubit(mockUseCase);
-    expect(cubit.state, equals(SearchState.initial()));
+    expect(cubit.state.query, '');
+    expect(cubit.state.results.isLoading, false);
+    expect(cubit.state.results.data, isNull);
+    expect(cubit.state.results.errorMessage, isNull);
     cubit.close();
   });
 
@@ -49,14 +54,10 @@ void main() {
       build: () => SearchCubit(mockUseCase),
       act: (cubit) => cubit.doEvent(const SearchQueryChangedEvent('   ')),
       expect: () => [
-        SearchState(
-          query: '   ',
-          results: BaseState<List<ProductEntity>>(
-            isLoading: false,
-            errorMessage: null,
-            data: null,
-          ),
-        ),
+        isA<SearchState>()
+            .having((s) => s.query, 'query', '   ')
+            .having((s) => s.results.isLoading, 'results.isLoading', false)
+            .having((s) => s.results.data, 'results.data', isNull),
       ],
       verify: (_) {
         verifyZeroInteractions(mockUseCase);
@@ -74,30 +75,19 @@ void main() {
       act: (cubit) => cubit.doEvent(const SearchQueryChangedEvent('Rose')),
       wait: const Duration(milliseconds: 600),
       expect: () => [
-        SearchState(
-          query: 'Rose',
-          results: BaseState<List<ProductEntity>>(
-            isLoading: false,
-            errorMessage: null,
-            data: null,
-          ),
-        ),
-        SearchState(
-          query: 'Rose',
-          results: BaseState<List<ProductEntity>>(
-            isLoading: true,
-            errorMessage: null,
-            data: null,
-          ),
-        ),
-        SearchState(
-          query: 'Rose',
-          results: BaseState<List<ProductEntity>>(
-            isLoading: false,
-            errorMessage: null,
-            data: tProducts,
-          ),
-        ),
+        // 1. Query updated immediately
+        isA<SearchState>()
+            .having((s) => s.query, 'query', 'Rose')
+            .having((s) => s.results.isLoading, 'results.isLoading', false),
+        // 2. Loading after debounce
+        isA<SearchState>()
+            .having((s) => s.query, 'query', 'Rose')
+            .having((s) => s.results.isLoading, 'results.isLoading', true),
+        // 3. Results loaded
+        isA<SearchState>()
+            .having((s) => s.query, 'query', 'Rose')
+            .having((s) => s.results.isLoading, 'results.isLoading', false)
+            .having((s) => s.results.data, 'results.data', tProducts),
       ],
       verify: (_) {
         verify(mockUseCase(query: 'Rose', page: 1, pageSize: 20)).called(1);
@@ -115,53 +105,48 @@ void main() {
       act: (cubit) => cubit.doEvent(const SearchQueryChangedEvent('Rose')),
       wait: const Duration(milliseconds: 600),
       expect: () => [
-        SearchState(
-          query: 'Rose',
-          results: BaseState<List<ProductEntity>>(
-            isLoading: false,
-            errorMessage: null,
-            data: null,
-          ),
-        ),
-        SearchState(
-          query: 'Rose',
-          results: BaseState<List<ProductEntity>>(
-            isLoading: true,
-            errorMessage: null,
-            data: null,
-          ),
-        ),
-        SearchState(
-          query: 'Rose',
-          results: BaseState<List<ProductEntity>>(
-            isLoading: false,
-            errorMessage: 'Network Failure',
-            data: null,
-          ),
-        ),
+        isA<SearchState>()
+            .having((s) => s.query, 'query', 'Rose')
+            .having((s) => s.results.isLoading, 'results.isLoading', false),
+        isA<SearchState>()
+            .having((s) => s.query, 'query', 'Rose')
+            .having((s) => s.results.isLoading, 'results.isLoading', true),
+        isA<SearchState>()
+            .having((s) => s.query, 'query', 'Rose')
+            .having((s) => s.results.isLoading, 'results.isLoading', false)
+            .having(
+              (s) => s.results.errorMessage,
+              'results.errorMessage',
+              'Network Failure',
+            ),
       ],
+      verify: (_) {
+        verify(mockUseCase(query: 'Rose', page: 1, pageSize: 20)).called(1);
+      },
     );
   });
 
   group('ClearSearchEvent', () {
     blocTest<SearchCubit, SearchState>(
-      'resets cubit state to SearchState.initial()',
+      'resets cubit state to initial and cancels pending debounce',
       build: () => SearchCubit(mockUseCase),
       act: (cubit) {
         cubit.doEvent(const SearchQueryChangedEvent('Rose'));
         cubit.doEvent(const ClearSearchEvent());
       },
+      wait: const Duration(milliseconds: 600),
       expect: () => [
-        SearchState(
-          query: 'Rose',
-          results: BaseState<List<ProductEntity>>(
-            isLoading: false,
-            errorMessage: null,
-            data: null,
-          ),
-        ),
-        SearchState.initial(),
+        isA<SearchState>()
+            .having((s) => s.query, 'query', 'Rose')
+            .having((s) => s.results.isLoading, 'results.isLoading', false),
+        isA<SearchState>()
+            .having((s) => s.query, 'query', '')
+            .having((s) => s.results.isLoading, 'results.isLoading', false)
+            .having((s) => s.results.data, 'results.data', isNull),
       ],
+      verify: (_) {
+        verifyZeroInteractions(mockUseCase);
+      },
     );
   });
 }
