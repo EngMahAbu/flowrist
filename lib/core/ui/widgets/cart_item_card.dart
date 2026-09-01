@@ -1,7 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flowrist/core/constants/app_colors.dart';
 import 'package:flowrist/core/constants/app_styles.dart';
 import 'package:flowrist/features/home/cart/domain/entities/cart_item_entity.dart';
 import 'package:flutter/material.dart';
+import 'package:flowrist/core/constants/app_images.dart';
 
 class CartItemCard extends StatelessWidget {
   final CartItemEntity item;
@@ -21,6 +24,7 @@ class CartItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localization = AppLocalizations.of(context)!;
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
@@ -30,40 +34,7 @@ class CartItemCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(6),
-            child: SizedBox(
-              width: 100,
-              height: 120,
-              child: Image.network(
-                item.productImage,
-                fit: BoxFit.cover,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return Container(
-                    color: AppColors.white70.withValues(alpha: 0.15),
-                    child: const Center(
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: AppColors.purpleBase,
-                      ),
-                    ),
-                  );
-                },
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    color: AppColors.white70.withValues(alpha: 0.2),
-                    alignment: Alignment.center,
-                    child: const Icon(
-                      Icons.image_not_supported_outlined,
-                      color: AppColors.white70,
-                      size: 32,
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
+          _buildProductImage(),
 
           const SizedBox(width: 20),
 
@@ -90,7 +61,7 @@ class CartItemCard extends StatelessWidget {
                 ),
 
                 Text(
-                  'Available stock: ${item.availableStock}',
+                  '${localization.availableStock}: ${item.availableStock}',
                   style: AppStyles.regular13Grey,
                 ),
 
@@ -98,7 +69,10 @@ class CartItemCard extends StatelessWidget {
 
                 Row(
                   children: [
-                    Text('EGP ${item.unitPrice}', style: AppStyles.semiBold14),
+                    Text(
+                      '${localization.egp} ${item.unitPrice}',
+                      style: AppStyles.semiBold14,
+                    ),
 
                     const Spacer(),
 
@@ -125,6 +99,38 @@ class CartItemCard extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildProductImage() {
+    if (item.productImage.isEmpty) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: Image.asset(
+          AppImages.cardDefultImage,
+          width: 100,
+          height: 120,
+          fit: BoxFit.cover,
+        ),
+      );
+    }
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: CachedNetworkImage(
+        imageUrl: item.productImage,
+        width: 100,
+        height: 120,
+        fit: BoxFit.cover,
+        errorWidget: (context, url, error) {
+          return Image.asset(
+            AppImages.cardDefultImage,
+            width: 100,
+            height: 120,
+            fit: BoxFit.cover,
+          );
+        },
       ),
     );
   }

@@ -5,41 +5,40 @@ import 'package:flowrist/features/home/cart/domain/entities/cart_item_entity.dar
 
 class CartState extends Equatable {
   final BaseState<CartEntity> cart;
-  final String? addingProductId;
-  final String? loadingItemId;
+
+  final Set<String> addingProductIds;
+  final Set<String> loadingItemIds;
 
   const CartState({
     required this.cart,
-    this.addingProductId,
-    this.loadingItemId,
+    this.addingProductIds = const {},
+    this.loadingItemIds = const {},
   });
 
   CartState.initial()
     : this(
         cart: BaseState.initial(),
-        addingProductId: null,
-        loadingItemId: null,
+        addingProductIds: const {},
+        loadingItemIds: const {},
       );
 
   CartState copyWith({
     BaseState<CartEntity>? cart,
-    String? Function()? addingProductId,
-    String? Function()? loadingItemId,
+    Set<String>? addingProductIds,
+    Set<String>? loadingItemIds,
   }) {
     return CartState(
       cart: cart ?? this.cart,
-      addingProductId: addingProductId != null
-          ? addingProductId()
-          : this.addingProductId,
-      loadingItemId: loadingItemId != null
-          ? loadingItemId()
-          : this.loadingItemId,
+      addingProductIds: addingProductIds ?? this.addingProductIds,
+      loadingItemIds: loadingItemIds ?? this.loadingItemIds,
     );
   }
 
   CartItemEntity? getCartItem(String productId) {
     final cartData = cart.data;
+
     if (cartData == null) return null;
+
     try {
       return cartData.items.firstWhere((item) => item.productId == productId);
     } catch (_) {
@@ -57,13 +56,14 @@ class CartState extends Equatable {
 
   bool isProductLoading(String productId) {
     final itemId = getCartItemId(productId);
-    return itemId != null && loadingItemId == itemId;
+
+    return itemId != null && loadingItemIds.contains(itemId);
   }
 
   bool isProductAdding(String productId) {
-    return addingProductId == productId;
+    return addingProductIds.contains(productId);
   }
 
   @override
-  List<Object?> get props => [cart, addingProductId, loadingItemId];
+  List<Object?> get props => [cart, addingProductIds, loadingItemIds];
 }

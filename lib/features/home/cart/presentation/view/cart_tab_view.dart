@@ -3,6 +3,7 @@ import 'package:flowrist/core/constants/app_colors.dart';
 import 'package:flowrist/core/constants/app_styles.dart';
 import 'package:flowrist/core/ui/widgets/app_button.dart';
 import 'package:flowrist/core/ui/widgets/cart_item_card.dart';
+import 'package:flowrist/features/home/cart/domain/entities/cart_item_entity.dart';
 import 'package:flowrist/features/home/cart/presentation/cubit/cart_cubit.dart';
 import 'package:flowrist/features/home/cart/presentation/cubit/cart_event.dart';
 import 'package:flowrist/features/home/cart/presentation/cubit/cart_state.dart';
@@ -28,21 +29,35 @@ class _CartTabViewState extends State<CartTabView> {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!;
+    final localization = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: BlocBuilder<CartCubit, CartState>(
+          buildWhen: (previous, current) {
+            return previous.cart.data?.totalQuantity !=
+                current.cart.data?.totalQuantity;
+          },
           builder: (context, state) {
             final cart = state.cart.data;
+            final itemCount = cart?.totalQuantity ?? 0;
 
-            return Text('Cart (${cart?.totalQuantity ?? 0} items)');
+            return Text(
+              '${localization.cart} ($itemCount ${localization.items})',
+            );
           },
         ),
       ),
 
       body: SafeArea(
         child: BlocBuilder<CartCubit, CartState>(
+          buildWhen: (previous, current) {
+            return previous.cart.isLoading != current.cart.isLoading ||
+                previous.cart.errorMessage != current.cart.errorMessage ||
+                previous.cart.data?.items.length !=
+                    current.cart.data?.items.length;
+          },
           builder: (context, state) {
             if (state.cart.isLoading && state.cart.data == null) {
               return const Center(child: CircularProgressIndicator());
@@ -60,7 +75,7 @@ class _CartTabViewState extends State<CartTabView> {
             final cart = state.cart.data;
 
             if (cart == null || cart.items.isEmpty) {
-              return const Center(child: Text('Your cart is empty'));
+              return Center(child: Text(localization.yourCartIsEmpty));
             }
 
             return Padding(
@@ -90,37 +105,89 @@ class _CartTabViewState extends State<CartTabView> {
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: cart.items.length,
                     itemBuilder: (context, index) {
-                      final item = cart.items[index];
+                      final itemId = cart.items[index].itemId;
 
-                      final isLoading = state.loadingItemId == item.itemId;
+                      return BlocBuilder<CartCubit, CartState>(
+                        buildWhen: (previous, current) {
+                          final previousCart = previous.cart.data;
+                          final currentCart = current.cart.data;
 
-                      return CartItemCard(
-                        item: item,
-                        isLoading: isLoading,
-
-                        onDelete: () {
-                          context.read<CartCubit>().doEvent(
-                            RemoveCartItemEvent(itemId: item.itemId),
-                          );
-                        },
-
-                        onIncrease: () {
-                          if (item.quantity < item.availableStock) {
-                            context.read<CartCubit>().doEvent(
-                              ChangeCartQuantityEvent(
-                                itemId: item.itemId,
-                                quantity: item.quantity + 1,
-                              ),
-                            );
+                          if (previousCart == null || currentCart == null) {
+                            return true;
                           }
-                        },
 
-                        onDecrease: () {
-                          context.read<CartCubit>().doEvent(
-                            ChangeCartQuantityEvent(
-                              itemId: item.itemId,
-                              quantity: item.quantity - 1,
-                            ),
+                          final previousIndex = previousCart.items.indexWhere(
+                            (item) => item.itemId == itemId,
+                          );
+                          final currentIndex = currentCart.items.indexWhere(
+                            (item) => item.itemId == itemId,
+                          );
+
+                          if (previousIndex == -1 || currentIndex == -1) {
+                            return true;
+                          }
+
+                          final previousItem =
+                              previousCart.items[previousIndex];
+                          final currentItem = currentCart.items[currentIndex];
+                          final previousIsLoading = previous.loadingItemIds
+                              .contains(itemId);
+                          final currentIsLoading = current.loadingItemIds
+                              .contains(itemId);
+
+                          return previousItem.quantity !=
+                                  currentItem.quantity ||
+                              previousIsLoading != currentIsLoading;
+                        },
+                        builder: (context, state) {
+                          final cart = state.cart.data;
+
+                          if (cart == null) {
+                            return const SizedBox.shrink();
+                          }
+
+                          final itemIndex = cart.items.indexWhere(
+                            (item) => item.itemId == itemId,
+                          );
+
+                          if (itemIndex == -1) {
+                            return const SizedBox.shrink();
+                          }
+
+                          final CartItemEntity item = cart.items[itemIndex];
+                          final isLoading = state.loadingItemIds.contains(
+                            item.itemId,
+                          );
+
+                          return CartItemCard(
+                            item: item,
+                            isLoading: isLoading,
+
+                            onDelete: () {
+                              context.read<CartCubit>().doEvent(
+                                RemoveCartItemEvent(itemId: item.itemId),
+                              );
+                            },
+
+                            onIncrease: () {
+                              if (item.quantity < item.availableStock) {
+                                context.read<CartCubit>().doEvent(
+                                  ChangeCartQuantityEvent(
+                                    itemId: item.itemId,
+                                    quantity: item.quantity + 1,
+                                  ),
+                                );
+                              }
+                            },
+
+                            onDecrease: () {
+                              context.read<CartCubit>().doEvent(
+                                ChangeCartQuantityEvent(
+                                  itemId: item.itemId,
+                                  quantity: item.quantity - 1,
+                                ),
+                              );
+                            },
                           );
                         },
                       );
@@ -132,41 +199,79 @@ class _CartTabViewState extends State<CartTabView> {
 
                   const SizedBox(height: 30),
 
-                  Row(
-                    children: [
-                      Text('Sub Total', style: AppStyles.medium16Roboto),
-                      const Spacer(),
-                      Text(
-                        'EGP ${cart.subtotal}',
-                        style: AppStyles.regular14Inter,
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text('Delivery Fee', style: AppStyles.medium16Roboto),
-                      const Spacer(),
-                      Text(
-                        'EGP ${cart.deliveryFee}',
-                        style: AppStyles.regular14Inter,
-                      ),
-                    ],
-                  ),
+                  BlocBuilder<CartCubit, CartState>(
+                    buildWhen: (previous, current) {
+                      final previousCart = previous.cart.data;
+                      final currentCart = current.cart.data;
 
-                  const Divider(color: AppColors.white70, thickness: 0.5),
+                      return previousCart?.subtotal != currentCart?.subtotal ||
+                          previousCart?.deliveryFee !=
+                              currentCart?.deliveryFee ||
+                          previousCart?.total != currentCart?.total;
+                    },
+                    builder: (context, state) {
+                      final cart = state.cart.data;
 
-                  // Total
-                  Row(
-                    children: [
-                      Text('Total', style: AppStyles.medium18Inter),
-                      const Spacer(),
-                      Text('EGP ${cart.total}', style: AppStyles.medium18Inter),
-                    ],
+                      if (cart == null) {
+                        return const SizedBox.shrink();
+                      }
+
+                      return Column(
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                localization.subTotal,
+                                style: AppStyles.medium16Roboto,
+                              ),
+                              const Spacer(),
+                              Text(
+                                '${localization.egp} ${cart.subtotal}',
+                                style: AppStyles.regular14Inter,
+                              ),
+                            ],
+                          ),
+
+                          Row(
+                            children: [
+                              Text(
+                                localization.deliveryFee,
+                                style: AppStyles.medium16Roboto,
+                              ),
+                              const Spacer(),
+                              Text(
+                                '${localization.egp} ${cart.deliveryFee}',
+                                style: AppStyles.regular14Inter,
+                              ),
+                            ],
+                          ),
+
+                          const Divider(
+                            color: AppColors.white70,
+                            thickness: 0.5,
+                          ),
+
+                          Row(
+                            children: [
+                              Text(
+                                localization.total,
+                                style: AppStyles.medium18Inter,
+                              ),
+                              const Spacer(),
+                              Text(
+                                '${localization.egp} ${cart.total}',
+                                style: AppStyles.medium18Inter,
+                              ),
+                            ],
+                          ),
+                        ],
+                      );
+                    },
                   ),
 
                   const SizedBox(height: 40),
 
-                  AppButton(text: 'Checkout', onPressed: () {}),
+                  AppButton(text: localization.checkout, onPressed: () {}),
                 ],
               ),
             );

@@ -145,7 +145,9 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
                   previous.getQuantity(product.id) !=
                       current.getQuantity(product.id) ||
                   previous.isProductLoading(product.id) !=
-                      current.isProductLoading(product.id),
+                      current.isProductLoading(product.id) ||
+                  previous.isProductAdding(product.id) !=
+                      current.isProductAdding(product.id),
               builder: (context, cartState) {
                 final cartItems = cartState.cart.data?.items ?? [];
                 final cartItem = cartItems.cast<CartItemEntity?>().firstWhere(
@@ -155,9 +157,9 @@ class _ProductDetailsBodyState extends State<_ProductDetailsBody> {
 
                 final quantity = cartItem?.quantity ?? 0;
                 final isAdding =
-                    cartState.addingProductId == product.id ||
+                    cartState.addingProductIds.contains(product.id) ||
                     (cartItem != null &&
-                        cartState.loadingItemId == cartItem.itemId);
+                        cartState.loadingItemIds.contains(cartItem.itemId));
 
                 if (!product.inStock) {
                   return ElevatedButton(
