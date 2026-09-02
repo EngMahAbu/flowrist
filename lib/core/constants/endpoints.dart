@@ -6,6 +6,7 @@ abstract final class Endpoints {
   static const products = 'api/catalog/products';
   static const home = 'api/catalog/home/layout';
   static const getAllAddress = 'api/address-cart/addresses';
+  static const createCheckOut = 'api/payment/checkout';
   static const addressId = 'addressId';
   static const setDefaultAddress =
       'api/address-cart/users/me/addresses/{addressId}/default';

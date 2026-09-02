@@ -1,5 +1,6 @@
 import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flowrist/core/constants/app_colors.dart';
+import 'package:flowrist/core/constants/app_router.dart';
 import 'package:flowrist/core/constants/app_styles.dart';
 import 'package:flowrist/core/ui/widgets/app_button.dart';
 import 'package:flowrist/core/ui/widgets/cart_item_card.dart';
@@ -11,6 +12,7 @@ import 'package:flowrist/shared/addresses/presentation/view_model/addresses_stat
 import 'package:flowrist/shared/addresses/presentation/view_model/addresses_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class CartTabView extends StatefulWidget {
   const CartTabView({super.key});
@@ -29,6 +31,14 @@ class _CartTabViewState extends State<CartTabView> {
 
   @override
   Widget build(BuildContext context) {
+ 
+// final mockCheckout = CreateCheckoutEntity(
+//   orderId: '3f284444-5717-4562-b3fc-2c963f66a3a6',
+//   amountTotal: 600,
+//   currency: 'USD',
+// );
+ 
+
     final localization = AppLocalizations.of(context)!;
 
     return Scaffold(
@@ -278,7 +288,12 @@ class _CartTabViewState extends State<CartTabView> {
 
                   const SizedBox(height: 40),
 
-                  AppButton(text: localization.checkout, onPressed: () {}),
+                  AppButton(
+                    text: localization.checkout,
+                    onPressed: () {
+                      context.push(AppRoutes.checkOut);
+                    },
+                  ),
                 ],
               ),
             );

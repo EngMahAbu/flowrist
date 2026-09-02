@@ -3,6 +3,8 @@ import 'package:flowrist/features/addresses/presentation/view/add_address_view.d
 import 'package:flowrist/features/auth/presentation/login/cubit/login_cubit.dart';
 import 'package:flowrist/features/auth/presentation/login/view/login_view.dart';
 import 'package:flowrist/features/auth/presentation/signup/view/signup_view.dart';
+import 'package:flowrist/features/checkout/presentation/view/checkout_view.dart';
+import 'package:flowrist/features/checkout/presentation/view_model/checkout_cubit.dart';
 import 'package:flowrist/features/home/cart/presentation/view/cart_tab_view.dart';
 import 'package:flowrist/features/home/categories/presentation/cubit/categories_cubit.dart';
 import 'package:flowrist/features/home/categories/presentation/cubit/categories_events.dart';
@@ -31,6 +33,7 @@ abstract final class AppRoutes {
   static const homeTab = '/home-tab';
   static const categoriesTab = '/categories-tab';
   static const cartTab = '/cart-tab';
+  static const checkOut = '/checkout';
   static const profileTab = '/profile-tab';
 
   static const productDetails = '/product/:productId';
@@ -58,7 +61,6 @@ abstract final class AppRouter {
       // ==================================================
       // PRODUCT DETAILS
       // ==================================================
-
       GoRoute(
         path: AppRoutes.productDetails,
         parentNavigatorKey: _rootNavigatorKey,
@@ -83,7 +85,15 @@ abstract final class AppRouter {
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => const SearchView(),
       ),
-
+      GoRoute(
+        path: AppRoutes.checkOut,
+        builder: (context, state) {
+          return BlocProvider(
+            create: (_) => getIt<CheckoutCubit>(),
+            child:   CheckoutView(),
+          );
+        },
+      ),
       // --------------------------------------------------
       // Splash
       // --------------------------------------------------

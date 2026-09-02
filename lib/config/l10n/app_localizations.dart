@@ -909,6 +909,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Clear'**
   String get clear;
+
+  /// No description provided for @deliveryTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery time'**
+  String get deliveryTime;
+
+  /// No description provided for @instantArriveBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Instant, Arrive by'**
+  String get instantArriveBy;
+
+  /// No description provided for @deliveryAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery address'**
+  String get deliveryAddress;
+
+  /// No description provided for @addNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Add New'**
+  String get addNew;
+
+  /// No description provided for @paymentMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment method'**
+  String get paymentMethod;
+
+  /// No description provided for @cashOnDelivery.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash on delivery'**
+  String get cashOnDelivery;
+
+  /// No description provided for @creditCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit card'**
+  String get creditCard;
+
+  /// No description provided for @itIsAGift.
+  ///
+  /// In en, this message translates to:
+  /// **'It is a gift'**
+  String get itIsAGift;
+
+  /// No description provided for @enterTheName.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the name'**
+  String get enterTheName;
+
+  /// No description provided for @name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get name;
+
+  /// No description provided for @enterThePhoneNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the phone number'**
+  String get enterThePhoneNumber;
+
+  /// No description provided for @placeOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Place order'**
+  String get placeOrder;
 }
 
 class _AppLocalizationsDelegate
