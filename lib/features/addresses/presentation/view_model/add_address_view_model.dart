@@ -147,9 +147,7 @@ class AddAddressViewModel extends Cubit<AddAddressState> {
         }
       } else if (response is ErrorResponse<String?>) {
         emit(
-          state.copyWith(
-            userLocation: BaseState.error(response.errorMessage),
-          ),
+          state.copyWith(userLocation: BaseState.error(response.errorMessage)),
         );
       }
     } catch (e) {
@@ -184,9 +182,7 @@ class AddAddressViewModel extends Cubit<AddAddressState> {
         }
       } else if (response is ErrorResponse<(CoordinatesEntity, String?)>) {
         emit(
-          state.copyWith(
-            userLocation: BaseState.error(response.errorMessage),
-          ),
+          state.copyWith(userLocation: BaseState.error(response.errorMessage)),
         );
       }
     } catch (e) {

@@ -15,11 +15,11 @@ class CategoriesState extends Equatable {
   });
 
   CategoriesState.initial()
-      : this(
-          categories: BaseState.initial(),
-          products: BaseState.initial(),
-          selectedIndex: 0,
-        );
+    : this(
+        categories: BaseState.initial(),
+        products: BaseState.initial(),
+        selectedIndex: 0,
+      );
 
   CategoriesState copyWith({
     BaseState<List<CategoryEntity>>? categories,
@@ -34,9 +34,5 @@ class CategoriesState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [
-        categories,
-        products,
-        selectedIndex,
-      ];
+  List<Object?> get props => [categories, products, selectedIndex];
 }

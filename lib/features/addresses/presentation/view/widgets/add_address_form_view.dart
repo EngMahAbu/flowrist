@@ -36,7 +36,7 @@ class _AddAddressFormViewState extends State<AddAddressFormView> {
 
     return BlocListener<AddAddressViewModel, AddAddressState>(
       listenWhen: (prev, curr) =>
-      curr.userLocation != null &&
+          curr.userLocation != null &&
           !curr.userLocation!.isLoading &&
           prev.userLocation?.data != curr.userLocation?.data,
       listener: (context, state) {
@@ -44,31 +44,34 @@ class _AddAddressFormViewState extends State<AddAddressFormView> {
       },
       child: BlocBuilder<AddAddressViewModel, AddAddressState>(
         buildWhen: (prev, curr) =>
-        prev.selectedLocation != curr.selectedLocation ||
+            prev.selectedLocation != curr.selectedLocation ||
             prev.isMapConfigured != curr.isMapConfigured ||
             prev.userLocation?.errorMessage != curr.userLocation?.errorMessage,
         builder: (context, state) {
           return SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildMapView(context, localizations, state),
-              if (!state.isMapConfigured) _buildMapWarningView(localizations),
-              if (state.userLocation != null &&
-                  state.userLocation!.errorMessage != null)
-                ..._buildAddressErrorView(
-                  context,
-                  localizations,
-                  state.userLocation!.errorMessage!,
-                ),
-              const SizedBox(height: 32),
-              ..._buildAddressForm(localizations: localizations),
-              const SizedBox(height: 24),
-            ],
-          ),
-        );
-      },
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24.0,
+              vertical: 16.0,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildMapView(context, localizations, state),
+                if (!state.isMapConfigured) _buildMapWarningView(localizations),
+                if (state.userLocation != null &&
+                    state.userLocation!.errorMessage != null)
+                  ..._buildAddressErrorView(
+                    context,
+                    localizations,
+                    state.userLocation!.errorMessage!,
+                  ),
+                const SizedBox(height: 32),
+                ..._buildAddressForm(localizations: localizations),
+                const SizedBox(height: 24),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
@@ -336,7 +339,7 @@ class _AddAddressFormViewState extends State<AddAddressFormView> {
     return [
       BlocBuilder<AddAddressViewModel, AddAddressState>(
         buildWhen: (prev, curr) =>
-        prev.userLocation?.isLoading != curr.userLocation?.isLoading ||
+            prev.userLocation?.isLoading != curr.userLocation?.isLoading ||
             prev.userLocation?.data != curr.userLocation?.data,
         builder: ((context, state) {
           if (state.userLocation == null) return const SizedBox.shrink();
