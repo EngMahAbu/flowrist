@@ -1,0 +1,26 @@
+name: Unit Testing Check Action
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/*
+  pull_request:
+    types:
+      - opened
+      - synchronize
+jobs:
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.44.4
+      - name: Install packages
+        run: flutter pub get
+      - name: Run generator
+        run: flutter pub run build_runner build
+      - name: Run test
+        run: flutter test test
