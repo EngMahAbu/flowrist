@@ -1,4 +1,5 @@
 name: Testing Check Action
+
 on:
   workflow_dispatch:
   push:
@@ -8,6 +9,7 @@ on:
     types:
       - opened
       - synchronize
+
 jobs:
   unit-widget-test:
     runs-on: ubuntu-latest
