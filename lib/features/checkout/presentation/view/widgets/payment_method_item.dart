@@ -11,29 +11,31 @@ class PaymentMethodItem extends StatelessWidget {
 
   final String title;
   final bool isSelected;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(10),
-      child: Container(
-        height: 60,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: isSelected
-                ? AppColors.purpleBase
-                : AppColors.white90.withValues(alpha: 0.45),
+      child: Opacity(
+        opacity: onTap == null ? 0.6 : 1,
+        child: Container(
+          height: 60,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: isSelected
+                  ? AppColors.purpleBase
+                  : AppColors.white90.withValues(
+                      alpha: 0.45,
+                    ),
+            ),
+            borderRadius: BorderRadius.circular(10),
           ),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: RadioGroup<String>(
-          groupValue: isSelected ? title : null,
-          onChanged: (_) => onTap(),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment:
+                MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 title,
@@ -42,7 +44,15 @@ class PaymentMethodItem extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              Radio<String>(value: title),
+              RadioGroup<bool>(
+                groupValue: isSelected,
+                onChanged: (_) {
+                  onTap?.call();
+                },
+                child: const Radio<bool>(
+                  value: true,
+                ),
+              ),
             ],
           ),
         ),

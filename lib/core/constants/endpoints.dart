@@ -1,3 +1,4 @@
+
 abstract final class Endpoints {
   static const baseUrl = 'http://10.0.2.2:5000/';
   static const register = 'api/identity/auth/register';
@@ -7,6 +8,8 @@ abstract final class Endpoints {
   static const home = 'api/catalog/home/layout';
   static const getAllAddress = 'api/address-cart/addresses';
   static const createCheckOut = 'api/payment/checkout';
+  static const deliveryFee = 'api/orders/checkout/estimate-delivery';
+  static const placeOrder = 'api/orders/place';
   static const addressId = 'addressId';
   static const setDefaultAddress =
       'api/address-cart/users/me/addresses/{addressId}/default';

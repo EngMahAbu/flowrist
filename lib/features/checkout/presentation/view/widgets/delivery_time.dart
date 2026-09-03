@@ -1,13 +1,25 @@
 import 'package:flowrist/config/l10n/app_localizations.dart';
 import 'package:flowrist/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class DeliveryTime extends StatelessWidget {
-  const DeliveryTime({super.key});
+  const DeliveryTime({super.key, this.estimatedDeliveryAt});
+
+  final DateTime? estimatedDeliveryAt;
 
   @override
   Widget build(BuildContext context) {
-      final localizations = AppLocalizations.of(context)!;
+    final localizations = AppLocalizations.of(context)!;
+     
+    final deliveryTime = estimatedDeliveryAt == null
+    ? '--'
+    : DateFormat(
+        'dd MMM yyyy, hh:mm a',
+      ).format(
+        estimatedDeliveryAt!.toLocal(),
+      );
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
@@ -15,19 +27,24 @@ class DeliveryTime extends StatelessWidget {
         children: [
           Text(
             localizations.deliveryTime,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Row(
             children: [
-              Icon(Icons.access_time),
+              const Icon(Icons.access_time),
+              const SizedBox(width: 8),
               Text(
-                 localizations.instantArriveBy,
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                localizations.instantArriveBy,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
+              const SizedBox(width: 4),
               Text(
-                "03 Sep 2024, 11:00 AM ",
-                style: TextStyle(
+                deliveryTime,
+                style: const TextStyle(
                   color: AppColors.green,
                   fontSize: 14,
                   fontWeight: FontWeight.w500,

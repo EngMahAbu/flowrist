@@ -5,6 +5,7 @@ import 'package:flowrist/features/auth/presentation/login/view/login_view.dart';
 import 'package:flowrist/features/auth/presentation/signup/view/signup_view.dart';
 import 'package:flowrist/features/checkout/presentation/view/checkout_view.dart';
 import 'package:flowrist/features/checkout/presentation/view_model/checkout_cubit.dart';
+import 'package:flowrist/features/home/cart/presentation/helpers/checkout_arguments.dart';
 import 'package:flowrist/features/home/cart/presentation/view/cart_tab_view.dart';
 import 'package:flowrist/features/home/categories/presentation/cubit/categories_cubit.dart';
 import 'package:flowrist/features/home/categories/presentation/cubit/categories_events.dart';
@@ -88,9 +89,21 @@ abstract final class AppRouter {
       GoRoute(
         path: AppRoutes.checkOut,
         builder: (context, state) {
+          final args = state.extra as CheckoutArguments?;
+
+          if (args == null) {
+            return const Scaffold(
+              body: Center(child: Text('Checkout data is required')),
+            );
+          }
+
           return BlocProvider(
             create: (_) => getIt<CheckoutCubit>(),
-            child:   CheckoutView(),
+            child: CheckoutView(
+              cartId: args.cartId,
+              addressId: args.addressId,
+              subTotal: args.subTotal,
+            ),
           );
         },
       ),

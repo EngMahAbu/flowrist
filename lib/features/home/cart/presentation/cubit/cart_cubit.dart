@@ -397,4 +397,32 @@ class CartCubit extends Cubit<CartState> {
 
     return super.close();
   }
+    void clearCartLocally() {
+    final currentCart = state.cart.data;
+
+    if (currentCart == null) return;
+
+    final emptyCart = CartEntity(
+      cartId: currentCart.cartId,
+      items: const [],
+      totalQuantity: 0,
+      lineCount: 0,
+      subtotal: 0,
+      deliveryFee: 0,
+      total: 0,
+      hasChanges: false,
+    );
+
+    emit(
+      state.copyWith(
+        loadingItemIds: const {},
+        addingProductIds: const {},
+        cart: state.cart.copyWith(
+          isLoading: false,
+          errorMessage: null,
+          data: emptyCart,
+        ),
+      ),
+    );
+  }
 }
