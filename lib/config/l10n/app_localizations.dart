@@ -909,6 +909,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Clear'**
   String get clear;
+
+  /// No description provided for @activeSessions.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Sessions'**
+  String get activeSessions;
+
+  /// No description provided for @noActiveSessions.
+  ///
+  /// In en, this message translates to:
+  /// **'No active sessions found'**
+  String get noActiveSessions;
+
+  /// No description provided for @thisDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'This Device'**
+  String get thisDevice;
+
+  /// No description provided for @activeNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Now'**
+  String get activeNow;
+
+  /// No description provided for @revoke.
+  ///
+  /// In en, this message translates to:
+  /// **'Revoke'**
+  String get revoke;
+
+  /// No description provided for @logOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Log Out'**
+  String get logOut;
+
+  /// No description provided for @logOutEverywhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Log out everywhere'**
+  String get logOutEverywhere;
+
+  /// No description provided for @revokeSessionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Revoke Session'**
+  String get revokeSessionTitle;
+
+  /// No description provided for @revokeSessionConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to log out from this device?'**
+  String get revokeSessionConfirmation;
+
+  /// No description provided for @revokeAllTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Log out everywhere'**
+  String get revokeAllTitle;
+
+  /// No description provided for @revokeAllConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'This will revoke all active sessions except your current device. Continue?'**
+  String get revokeAllConfirmation;
+
+  /// No description provided for @sessionRevokedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Session revoked successfully'**
+  String get sessionRevokedSuccessfully;
+
+  /// No description provided for @currentSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Session'**
+  String get currentSession;
+
+  /// No description provided for @allSessionsRevokedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'All sessions revoked successfully'**
+  String get allSessionsRevokedSuccessfully;
 }
 
 class _AppLocalizationsDelegate
