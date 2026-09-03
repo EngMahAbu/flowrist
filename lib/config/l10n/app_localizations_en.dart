@@ -471,4 +471,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get placeOrder => 'Place order';
+
+  @override
+  String get couldnotopenpaymentpage => 'Could not open payment page';
+
+  @override
+  String get paymentsessionURLismissing => 'Payment session URL is missing';
+
+  @override
+  String get invalidpaymentURL => 'Invalid payment URL';
+
+  @override
+  String get pleaseselectapaymentmethod => 'Please select a payment method';
+
+  @override
+  String get pleaseenterrecipientname => 'Please enter recipient name';
+
+  @override
+  String get pleaseenterrecipientphone => 'Please enter recipient phone';
 }

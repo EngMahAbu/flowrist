@@ -1,23 +1,20 @@
 import 'package:flowrist/config/l10n/app_localizations.dart';
+import 'package:flowrist/core/constants/endpoints.dart';
 import 'package:flowrist/features/checkout/presentation/view/widgets/payment_method_item.dart';
 import 'package:flowrist/features/checkout/presentation/view_model/checkout_cubit.dart';
+import 'package:flowrist/features/checkout/presentation/view_model/checkout_event.dart';
 import 'package:flowrist/features/checkout/presentation/view_model/checkout_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PaymentMethod extends StatelessWidget {
-  const PaymentMethod({
-    super.key,
-  });
+  const PaymentMethod({super.key});
 
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
 
-    const paymentMethods = [
-      'cash',
-      'creditCard',
-    ];
+    final paymentMethods = [Endpoints.cash, Endpoints.creditCard];
 
     return BlocBuilder<CheckoutCubit, CheckoutState>(
       buildWhen: (previous, current) {
@@ -27,16 +24,12 @@ class PaymentMethod extends StatelessWidget {
                 current.placeOrderState.isLoading;
       },
       builder: (context, state) {
-        final isLoading =
-            state.placeOrderState.isLoading;
+        final isLoading = state.placeOrderState.isLoading;
 
         return Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
-            crossAxisAlignment:
-                CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 localizations.paymentMethod,
@@ -50,35 +43,27 @@ class PaymentMethod extends StatelessWidget {
 
               ListView.separated(
                 shrinkWrap: true,
-                physics:
-                    const NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 itemCount: paymentMethods.length,
                 separatorBuilder: (_, _) {
                   return const SizedBox(height: 16);
                 },
                 itemBuilder: (context, index) {
-                  final paymentMethod =
-                      paymentMethods[index];
+                  final paymentMethod = paymentMethods[index];
 
-                  final title =
-                      paymentMethod == 'cash'
-                          ? localizations
-                              .cashOnDelivery
-                          : localizations.creditCard;
+                  final title = paymentMethod == Endpoints.cash
+                      ? localizations.cashOnDelivery
+                      : localizations.creditCard;
 
                   return PaymentMethodItem(
                     title: title,
-                    isSelected:
-                        state.selectedPaymentMethod ==
-                            paymentMethod,
+                    isSelected: state.selectedPaymentMethod == paymentMethod,
                     onTap: isLoading
                         ? null
                         : () {
-                            context
-                                .read<CheckoutCubit>()
-                                .selectPaymentMethod(
-                                  paymentMethod,
-                                );
+                            context.read<CheckoutCubit>().doEvent(
+                              SelectPaymentMethod(paymentMethod: paymentMethod),
+                            );
                           },
                   );
                 },
@@ -86,10 +71,7 @@ class PaymentMethod extends StatelessWidget {
 
               if (isLoading) ...[
                 const SizedBox(height: 20),
-                const Center(
-                  child:
-                      CircularProgressIndicator(),
-                ),
+                const Center(child: CircularProgressIndicator()),
               ],
             ],
           ),

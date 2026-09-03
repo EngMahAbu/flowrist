@@ -5,6 +5,7 @@ import 'package:flowrist/features/checkout/presentation/view/widgets/gift_method
 import 'package:flowrist/features/checkout/presentation/view/widgets/payment_method.dart';
 import 'package:flowrist/features/checkout/presentation/view/widgets/total_price.dart';
 import 'package:flowrist/features/checkout/presentation/view_model/checkout_cubit.dart';
+import 'package:flowrist/features/checkout/presentation/view_model/checkout_event.dart';
 import 'package:flowrist/features/checkout/presentation/view_model/checkout_state.dart';
 import 'package:flowrist/features/home/cart/presentation/cubit/cart_cubit.dart';
 import 'package:flutter/material.dart';
@@ -36,9 +37,8 @@ class _CheckoutViewState extends State<CheckoutView> {
   }
 
   void _getDeliveryFee() {
-    context.read<CheckoutCubit>().getDeliveryFee(
-      addressId: widget.addressId,
-      cartId: widget.cartId,
+    context.read<CheckoutCubit>().doEvent(
+      GetDeliveryFee(addressId: widget.addressId, cartId: widget.cartId),
     );
   }
 
@@ -47,7 +47,7 @@ class _CheckoutViewState extends State<CheckoutView> {
     final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       body: SafeArea(
-        child:  BlocListener<CheckoutCubit, CheckoutState>(
+        child: BlocListener<CheckoutCubit, CheckoutState>(
           listenWhen: (previous, current) {
             final previousState = previous.placeOrderState;
             final currentState = current.placeOrderState;
@@ -132,10 +132,12 @@ class _CheckoutViewState extends State<CheckoutView> {
                             required String name,
                             required String phone,
                           }) {
-                            context.read<CheckoutCubit>().updateGiftInfo(
-                              isGift: isGift,
-                              name: name,
-                              phone: phone,
+                            context.read<CheckoutCubit>().doEvent(
+                              UpdateGiftInfo(
+                                isGift: isGift,
+                                name: name,
+                                phone: phone,
+                              ),
                             );
                           },
                     ),

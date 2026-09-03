@@ -147,5 +147,10 @@
   "name": "Name",
   "enterThePhoneNumber": "Enter the phone number",
   "placeOrder": "Place order",
-  "checkout":"Checkout"
+  "couldnotopenpaymentpage": "Could not open payment page",
+  "paymentsessionURLismissing": "Payment session URL is missing",
+  "invalidpaymentURL":"Invalid payment URL",
+  "pleaseselectapaymentmethod": "Please select a payment method",
+  "pleaseenterrecipientname": "Please enter recipient name",
+  "pleaseenterrecipientphone": "Please enter recipient phone"
 }

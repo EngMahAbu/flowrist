@@ -7,10 +7,9 @@ import 'package:flowrist/features/checkout/domain/entities/payment_entity/card_o
 import 'package:flowrist/features/checkout/domain/entities/payment_entity/card_order_request_entity.dart';
 import 'package:flowrist/features/checkout/domain/entities/payment_entity/delivery_fee_entity.dart';
 import 'package:flowrist/features/checkout/domain/repositories/checkout_repository.dart';
-import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 
-@LazySingleton(as: CheckoutRepository)
+@Injectable(as: CheckoutRepository)
 class CheckoutRepositoryImpl implements CheckoutRepository {
   final CheckoutRemoteDataSource _remoteDataSource;
 
@@ -22,38 +21,11 @@ class CheckoutRepositoryImpl implements CheckoutRepository {
   ) async {
     final request = CardOrderRequestModel.fromEntity(order);
 
-    debugPrint('========== ORDER REQUEST ==========');
-    debugPrint(request.toJson().toString());
-    debugPrint('===================================');
-
     final response = await _remoteDataSource.placeOrder(request);
 
     switch (response) {
       case SuccessResponse<CardOrderResponseModel>():
         final responseEntity = response.data!.toEntity();
-
-        debugPrint('========== ORDER RESPONSE ==========');
-        debugPrint('Status: ${responseEntity.status}');
-        debugPrint('Code: ${responseEntity.code}');
-        debugPrint('Message: ${responseEntity.message}');
-        debugPrint('Has Data: ${responseEntity.data != null}');
-        debugPrint('====================================');
-
-        // The API can return:
-        //
-        // COD:
-        // {
-        //   "status": true,
-        //   "data": null
-        // }
-        //
-        // Card:
-        // {
-        //   "status": true,
-        //   "data": {...}
-        // }
-        //
-        // Both are successful responses.
         return SuccessResponse<CardOrderEntity?>(
           responseEntity.data,
         );
