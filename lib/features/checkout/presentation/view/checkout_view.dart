@@ -8,6 +8,7 @@ import 'package:flowrist/features/checkout/presentation/view_model/checkout_cubi
 import 'package:flowrist/features/checkout/presentation/view_model/checkout_event.dart';
 import 'package:flowrist/features/checkout/presentation/view_model/checkout_state.dart';
 import 'package:flowrist/features/home/cart/presentation/cubit/cart_cubit.dart';
+import 'package:flowrist/features/home/cart/presentation/cubit/cart_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -52,13 +53,13 @@ class _CheckoutViewState extends State<CheckoutView> {
             final previousState = previous.placeOrderState;
             final currentState = current.placeOrderState;
 
-            // Place order finished loading successfully.
+         
             return previousState.isLoading &&
                 !currentState.isLoading &&
                 currentState.errorMessage == null;
           },
           listener: (context, state) {
-            context.read<CartCubit>().clearCartLocally();
+            context.read<CartCubit>().doEvent(GetCartEvent());
           },
           child: CustomScrollView(
             slivers: [

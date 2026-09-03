@@ -8,6 +8,7 @@ import 'package:flowrist/features/checkout/presentation/view_model/checkout_cubi
 import 'package:flowrist/features/checkout/presentation/view_model/checkout_event.dart';
 import 'package:flowrist/features/checkout/presentation/view_model/checkout_state.dart';
 import 'package:flowrist/features/home/cart/presentation/cubit/cart_cubit.dart';
+import 'package:flowrist/features/home/cart/presentation/cubit/cart_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -59,7 +60,7 @@ class TotalPrice extends StatelessWidget {
 
         if (order == null) {
           // Clear cart locally
-          context.read<CartCubit>().clearCartLocally();
+          // context.read<CartCubit>().clearCartLocally();
 
           if (!context.mounted) return;
 
@@ -101,7 +102,7 @@ class TotalPrice extends StatelessWidget {
         }
 
         // Clear cart locally
-        context.read<CartCubit>().clearCartLocally();
+        context.read<CartCubit>().doEvent(GetCartEvent());
 
         // Open Stripe
         final success = await launchUrl(
