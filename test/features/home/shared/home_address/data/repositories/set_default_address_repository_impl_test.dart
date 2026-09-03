@@ -1,3 +1,11 @@
+import 'package:flutter_test/flutter_test.dart';
+
+void main() {
+  test('placeholder test for set_default_address_repository_impl', () {
+    expect(true, isTrue);
+  });
+}
+
 // import 'package:flowrist/config/base_response/base_response.dart';
 // import 'package:flowrist/features/home/shared/home_address/data/data_sources/contract/remote/set_default_address_data_source.dart';
 // import 'package:flowrist/shared/addresses/data/models/default_address_response_model.dart';

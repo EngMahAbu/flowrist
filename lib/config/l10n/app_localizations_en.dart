@@ -435,4 +435,49 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get clear => 'Clear';
+
+  @override
+  String get activeSessions => 'Active Sessions';
+
+  @override
+  String get noActiveSessions => 'No active sessions found';
+
+  @override
+  String get thisDevice => 'This Device';
+
+  @override
+  String get activeNow => 'Active Now';
+
+  @override
+  String get revoke => 'Revoke';
+
+  @override
+  String get logOut => 'Log Out';
+
+  @override
+  String get logOutEverywhere => 'Log out everywhere';
+
+  @override
+  String get revokeSessionTitle => 'Revoke Session';
+
+  @override
+  String get revokeSessionConfirmation =>
+      'Are you sure you want to log out from this device?';
+
+  @override
+  String get revokeAllTitle => 'Log out everywhere';
+
+  @override
+  String get revokeAllConfirmation =>
+      'This will revoke all active sessions except your current device. Continue?';
+
+  @override
+  String get sessionRevokedSuccessfully => 'Session revoked successfully';
+
+  @override
+  String get currentSession => 'Current Session';
+
+  @override
+  String get allSessionsRevokedSuccessfully =>
+      'All sessions revoked successfully';
 }

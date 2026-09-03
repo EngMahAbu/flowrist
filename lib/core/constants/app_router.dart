@@ -13,6 +13,8 @@ import 'package:flowrist/features/home/home/presentation/home_layout/view/home_t
 import 'package:flowrist/features/home/home/presentation/occasion/cubit/occasion_cubit.dart';
 import 'package:flowrist/features/home/home/presentation/occasion/view/occasion_view.dart';
 import 'package:flowrist/features/home/profile/presentation/view/profile_tab_view.dart';
+import 'package:flowrist/features/home/profile/session_management/presentation/cubit/sessions_cubit.dart';
+import 'package:flowrist/features/home/profile/session_management/presentation/view/active_sessions_view.dart';
 import 'package:flowrist/features/home/search_and_filtering/search/presentation/view/search_view.dart';
 import 'package:flowrist/features/home/shared/home_navigation_view.dart';
 import 'package:flowrist/features/splash/presentation/view/splash_view.dart';
@@ -45,23 +47,23 @@ abstract final class AppRoutes {
   static const bestSeller = '/best-seller';
   static const occasions = '/occasions';
   static const addAddress = '/add-address';
+  static const activeSessions = '/active-sessions';
 }
 
 abstract final class AppRouter {
-  static final _rootNavigatorKey = GlobalKey<NavigatorState>();
+  static final rootNavigatorKey = GlobalKey<NavigatorState>();
 
   static final GoRouter router = GoRouter(
-    navigatorKey: _rootNavigatorKey,
+    navigatorKey: rootNavigatorKey,
     initialLocation: AppRoutes.splash,
 
     routes: [
       // ==================================================
       // PRODUCT DETAILS
       // ==================================================
-
       GoRoute(
         path: AppRoutes.productDetails,
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) {
           final productId = state.pathParameters['productId'];
 
@@ -80,7 +82,7 @@ abstract final class AppRouter {
       // --------------------------------------------------
       GoRoute(
         path: AppRoutes.search,
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const SearchView(),
       ),
 
@@ -89,7 +91,7 @@ abstract final class AppRouter {
       // --------------------------------------------------
       GoRoute(
         path: AppRoutes.splash,
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) {
           return const SplashView();
         },
@@ -100,7 +102,7 @@ abstract final class AppRouter {
       // --------------------------------------------------
       GoRoute(
         path: AppRoutes.login,
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) {
           return BlocProvider(
             create: (_) => getIt<LoginCubit>(),
@@ -114,7 +116,7 @@ abstract final class AppRouter {
       // --------------------------------------------------
       GoRoute(
         path: AppRoutes.signUp,
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) {
           return const SignUpView();
         },
@@ -125,7 +127,7 @@ abstract final class AppRouter {
       // --------------------------------------------------
       GoRoute(
         path: AppRoutes.bestSeller,
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) {
           return BlocProvider(
             create: (_) => getIt<BestSellerCubit>(),
@@ -139,7 +141,7 @@ abstract final class AppRouter {
       // --------------------------------------------------
       GoRoute(
         path: AppRoutes.occasions,
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) {
           final extra = state.extra;
 
@@ -233,11 +235,25 @@ abstract final class AppRouter {
       // --------------------------------------------------
       GoRoute(
         path: AppRoutes.addAddress,
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) {
           return BlocProvider<AddAddressViewModel>(
             create: (context) => getIt<AddAddressViewModel>(),
             child: const AddAddressView(),
+          );
+        },
+      ),
+
+      // --------------------------------------------------
+      // Active Sessions Screen
+      // --------------------------------------------------
+      GoRoute(
+        path: AppRoutes.activeSessions,
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) {
+          return BlocProvider<SessionsCubit>(
+            create: (_) => getIt<SessionsCubit>(),
+            child: const ActiveSessionsView(),
           );
         },
       ),
