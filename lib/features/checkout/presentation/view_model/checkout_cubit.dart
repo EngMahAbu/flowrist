@@ -5,12 +5,12 @@ import 'package:flowrist/features/checkout/domain/entities/payment_entity/card_o
 import 'package:flowrist/features/checkout/domain/entities/payment_entity/delivery_fee_entity.dart';
 import 'package:flowrist/features/checkout/domain/use_cases/get_delivery_fee_use_case.dart';
 import 'package:flowrist/features/checkout/domain/use_cases/place_order_use_case.dart';
+import 'package:flowrist/features/checkout/presentation/view_model/checkout_event.dart';
 import 'package:flowrist/features/checkout/presentation/view_model/checkout_state.dart';
 import 'package:flowrist/shared/addresses/domain/use_cases/get_all_user_addresses_use_case.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-
 import '../../../../shared/addresses/domain/entities/address_entity.dart';
 import 'checkout_event.dart';
 
@@ -20,22 +20,35 @@ class CheckoutCubit extends Cubit<CheckoutState> {
   final GetDeliveryFeeUseCase _getDeliveryFeeUseCase;
   final GetAllUserAddressesUseCase _getAllUserAddressesUseCase;
 
-  CheckoutCubit(
-    this._placeOrderUseCase,
-    this._getDeliveryFeeUseCase,
-      this._getAllUserAddressesUseCase,
-  ) : super(CheckoutState.initial());
-
+  CheckoutCubit(this._placeOrderUseCase, this._getDeliveryFeeUseCase)
+    : super(CheckoutState.initial());
   Future<void> doEvent(CheckoutEvent event) async {
     switch (event) {
+      case SelectPaymentMethod():
+        _selectPaymentMethod(event.paymentMethod);
+      case PlaceOrder():
+        _placeOrder(event.order);
+      case GetDeliveryFee():
+        _getDeliveryFee(addressId: event.addressId, cartId: event.cartId);
+      case UpdateGiftInfo():
+        _updateGiftInfo(
+          isGift: event.isGift,
+          name: event.name,
+          phone: event.phone,
+        );
       case GetAddressesEvent():
         await _getAddresses();
       case SelectDeliveryAddressEvent():
         _selectAddress(event.addressId);
     }
   }
+  CheckoutCubit(
+    this._placeOrderUseCase,
+    this._getDeliveryFeeUseCase,
+      this._getAllUserAddressesUseCase,
+  ) : super(CheckoutState.initial());
 
-  void selectPaymentMethod(String paymentMethod) {
+  void _selectPaymentMethod(String paymentMethod) {
     emit(
       state.copyWith(
         selectedPaymentMethod: paymentMethod,
@@ -52,7 +65,7 @@ class CheckoutCubit extends Cubit<CheckoutState> {
     );
   }
 
-  void updateGiftInfo({
+  void _updateGiftInfo({
     required bool isGift,
     required String name,
     required String phone,
@@ -60,7 +73,7 @@ class CheckoutCubit extends Cubit<CheckoutState> {
     emit(state.copyWith(isGift: isGift, giftName: name, giftPhone: phone));
   }
 
-  Future<void> placeOrder(CardOrderRequestEntity order) async {
+  Future<void> _placeOrder(CardOrderRequestEntity order) async {
     emit(
       state.copyWith(placeOrderState: BaseState<CardOrderEntity?>.loading()),
     );
@@ -70,18 +83,7 @@ class CheckoutCubit extends Cubit<CheckoutState> {
 
       switch (response) {
         case SuccessResponse<CardOrderEntity?>():
-          // IMPORTANT:
-          // entity can be null for COD.
-          // Null does NOT mean error.
           final entity = response.data;
-
-          debugPrint('========== PLACE ORDER SUCCESS ==========');
-          debugPrint('Payment method: ${order.paymentMethod}');
-          debugPrint('Has order data: ${entity != null}');
-          debugPrint('Order ID: ${entity?.orderId}');
-          debugPrint('Session URL: ${entity?.sessionUrl}');
-          debugPrint('=========================================');
-
           emit(
             state.copyWith(
               placeOrderState: BaseState<CardOrderEntity?>.success(entity),
@@ -97,11 +99,7 @@ class CheckoutCubit extends Cubit<CheckoutState> {
             ),
           );
       }
-    } catch (e, stackTrace) {
-      debugPrint('========== PLACE ORDER EXCEPTION ==========');
-      debugPrint(e.toString());
-      debugPrint(stackTrace.toString());
-
+    } catch (e) {
       emit(
         state.copyWith(
           placeOrderState: BaseState<CardOrderEntity?>.error(e.toString()),
@@ -110,7 +108,7 @@ class CheckoutCubit extends Cubit<CheckoutState> {
     }
   }
 
-  Future<void> getDeliveryFee({
+  Future<void> _getDeliveryFee({
     required String addressId,
     required String cartId,
   }) async {
@@ -154,11 +152,7 @@ class CheckoutCubit extends Cubit<CheckoutState> {
             ),
           );
       }
-    } catch (e, stackTrace) {
-      debugPrint('========== DELIVERY FEE EXCEPTION ==========');
-      debugPrint(e.toString());
-      debugPrint(stackTrace.toString());
-
+    } catch (e) {
       emit(
         state.copyWith(
           deliveryFeeState: BaseState<DeliveryFeeEntity>.error(e.toString()),

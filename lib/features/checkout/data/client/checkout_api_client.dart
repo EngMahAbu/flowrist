@@ -16,12 +16,12 @@ abstract class CheckoutApiClient {
   @POST(Endpoints.placeOrder)
   Future<CardOrderResponseModel> placeOrder(
     @Body() Map<String, dynamic> request,
-    @Header('Idempotency-Key') String idempotencyKey,
+    @Header(Endpoints.idempotencyKey) String idempotencyKey,
   );
 
   @GET(Endpoints.deliveryFee)
   Future<DeliveryFeeResponseModel> getDeliveryFee({
-    @Query('AddressId') required String addressId,
-    @Query('CartId') required String cartId,
+    @Query(Endpoints.addressId) required String addressId,
+    @Query(Endpoints.cartId) required String cartId,
   });
 }

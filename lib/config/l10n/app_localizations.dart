@@ -981,6 +981,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Place order'**
   String get placeOrder;
+
+  /// No description provided for @couldnotopenpaymentpage.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open payment page'**
+  String get couldnotopenpaymentpage;
+
+  /// No description provided for @paymentsessionURLismissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment session URL is missing'**
+  String get paymentsessionURLismissing;
+
+  /// No description provided for @invalidpaymentURL.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid payment URL'**
+  String get invalidpaymentURL;
+
+  /// No description provided for @pleaseselectapaymentmethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a payment method'**
+  String get pleaseselectapaymentmethod;
+
+  /// No description provided for @pleaseenterrecipientname.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter recipient name'**
+  String get pleaseenterrecipientname;
+
+  /// No description provided for @pleaseenterrecipientphone.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter recipient phone'**
+  String get pleaseenterrecipientphone;
 }
 
 class _AppLocalizationsDelegate

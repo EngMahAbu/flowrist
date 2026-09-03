@@ -8,7 +8,7 @@ import 'package:flowrist/features/checkout/data/models/payment_model/delivery_fe
 import 'package:injectable/injectable.dart';
 import 'package:uuid/uuid.dart';
 
-@LazySingleton(as: CheckoutRemoteDataSource)
+@Injectable(as: CheckoutRemoteDataSource)
 class CheckoutRemoteDataSourceImpl
     implements CheckoutRemoteDataSource {
   final CheckoutApiClient _apiClient;

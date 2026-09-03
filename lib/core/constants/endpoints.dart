@@ -1,4 +1,3 @@
-
 abstract final class Endpoints {
   static const baseUrl = 'http://10.0.2.2:5000/';
   static const register = 'api/identity/auth/register';
@@ -24,4 +23,12 @@ abstract final class Endpoints {
       'api/address-cart/locations/governorates/{governorateId}/cities';
   static const String saveAddress = 'api/address-cart/users/me/addresses';
   static const String searchProducts = 'api/catalog/products/search';
+  static const String dateFormatDelivery = 'dd MMM yyyy, hh:mm a';
+  static const String cash = 'cash';
+  static const String creditCard = 'creditCard';
+  static const String card = 'Card';
+  static const String cod = 'Cod';
+  static const String stripe = 'Stripe';
+  static const String idempotencyKey = "Idempotency-Key";
+  static const String cartId = 'CartId';
 }
