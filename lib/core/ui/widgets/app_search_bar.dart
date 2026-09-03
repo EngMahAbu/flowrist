@@ -13,7 +13,7 @@ class AppSearchBar extends StatelessWidget {
     return TextField(
       onChanged: onChanged,
       decoration: InputDecoration(
-        hintText:  AppLocalizations.of(context)!.search,
+        hintText: AppLocalizations.of(context)!.search,
         hintStyle: AppStyles.regular14InterW500.copyWith(
           color: AppColors.white70,
         ),

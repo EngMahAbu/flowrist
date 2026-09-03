@@ -45,9 +45,9 @@ abstract class DioModule {
         requestHeader: true,
         requestBody: true,
         responseHeader: false,
-        responseBody: true, 
+        responseBody: true,
         error: true,
-        logPrint: (obj) => log(obj.toString()), 
+        logPrint: (obj) => log(obj.toString()),
       ),
     );
 

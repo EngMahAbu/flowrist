@@ -13,18 +13,16 @@ class CategoriesCubit extends Cubit<CategoriesState> {
   final GetCategoriesUseCase _getCategoriesUseCase;
   final GetProductsUseCase _getProductsUseCase;
 
-  CategoriesCubit(
-    this._getCategoriesUseCase,
-    this._getProductsUseCase,
-  ) : super(CategoriesState.initial());
+  CategoriesCubit(this._getCategoriesUseCase, this._getProductsUseCase)
+    : super(CategoriesState.initial());
 
   Future<void> doEvent(CategoriesEvents event) async {
     switch (event) {
-    case GetCategoriesEvent():
-  await _getCategories(
-    targetCategoryId: event.targetCategoryId,
-    initialIndex: event.initialIndex,
-  );
+      case GetCategoriesEvent():
+        await _getCategories(
+          targetCategoryId: event.targetCategoryId,
+          initialIndex: event.initialIndex,
+        );
 
       case GetProductsByCategoryEvent():
         await _getProductsByCategory(event.categoryId);
@@ -34,99 +32,92 @@ class CategoriesCubit extends Cubit<CategoriesState> {
     }
   }
 
-Future<void> _getCategories({
-  String? targetCategoryId,
-  int initialIndex = 0,
-}) async {
-  emit(
-    state.copyWith(
-      categories: state.categories.copyWith(
-        isLoading: true,
-        errorMessage: null,
-      ),
-    ),
-  );
-
-  final result = await _getCategoriesUseCase();
-
-  switch (result) {
-    case SuccessResponse<List<CategoryEntity>>():
-      final categories = result.data ?? [];
-
-      if (categories.isEmpty) {
-        emit(
-          state.copyWith(
-            categories: state.categories.copyWith(
-              isLoading: false,
-              errorMessage: null,
-              data: [],
-            ),
-            selectedIndex: 0,
-          ),
-        );
-        return;
-      }
-
-      int targetIndex = initialIndex;
-
-      // Make sure the initial index is valid.
-      if (targetIndex < 0 || targetIndex >= categories.length) {
-        targetIndex = 0;
-      }
-
-      // If Home passed a category ID,
-      // find its position in the Categories API response.
-      if (targetCategoryId != null) {
-        final foundIndex = categories.indexWhere(
-          (category) => category.id == targetCategoryId,
-        );
-
-        if (foundIndex != -1) {
-          targetIndex = foundIndex;
-        }
-      }
-
-      emit(
-        state.copyWith(
-          categories: state.categories.copyWith(
-            isLoading: false,
-            errorMessage: null,
-            data: categories,
-          ),
-          selectedIndex: targetIndex,
-        ),
-      );
-
-      // Load products for the selected category.
-      await _getProductsByCategory(
-        categories[targetIndex].id,
-      );
-
-    case ErrorResponse<List<CategoryEntity>>():
-      emit(
-        state.copyWith(
-          categories: state.categories.copyWith(
-            isLoading: false,
-            errorMessage: result.errorMessage,
-          ),
-        ),
-      );
-  }
-}
-
-  Future<void> _getProductsByCategory(String categoryId) async {
+  Future<void> _getCategories({
+    String? targetCategoryId,
+    int initialIndex = 0,
+  }) async {
     emit(
       state.copyWith(
-        products: state.products.copyWith(
+        categories: state.categories.copyWith(
           isLoading: true,
           errorMessage: null,
         ),
       ),
     );
 
-    final result = await _getProductsUseCase(
-      categoryId: categoryId,
+    final result = await _getCategoriesUseCase();
+
+    switch (result) {
+      case SuccessResponse<List<CategoryEntity>>():
+        final categories = result.data ?? [];
+
+        if (categories.isEmpty) {
+          emit(
+            state.copyWith(
+              categories: state.categories.copyWith(
+                isLoading: false,
+                errorMessage: null,
+                data: [],
+              ),
+              selectedIndex: 0,
+            ),
+          );
+          return;
+        }
+
+        int targetIndex = initialIndex;
+
+        // Make sure the initial index is valid.
+        if (targetIndex < 0 || targetIndex >= categories.length) {
+          targetIndex = 0;
+        }
+
+        // If Home passed a category ID,
+        // find its position in the Categories API response.
+        if (targetCategoryId != null) {
+          final foundIndex = categories.indexWhere(
+            (category) => category.id == targetCategoryId,
+          );
+
+          if (foundIndex != -1) {
+            targetIndex = foundIndex;
+          }
+        }
+
+        emit(
+          state.copyWith(
+            categories: state.categories.copyWith(
+              isLoading: false,
+              errorMessage: null,
+              data: categories,
+            ),
+            selectedIndex: targetIndex,
+          ),
+        );
+
+        // Load products for the selected category.
+        await _getProductsByCategory(categories[targetIndex].id);
+
+      case ErrorResponse<List<CategoryEntity>>():
+        emit(
+          state.copyWith(
+            categories: state.categories.copyWith(
+              isLoading: false,
+              errorMessage: result.errorMessage,
+            ),
+          ),
+        );
+    }
+  }
+
+  Future<void> _getProductsByCategory(String categoryId) async {
+    emit(
+      state.copyWith(
+        products: state.products.copyWith(isLoading: true, errorMessage: null),
+      ),
     );
+
+    final result = await _getProductsUseCase(categoryId: categoryId);
 
     switch (result) {
       case SuccessResponse<List<ProductEntity>>():
@@ -155,22 +146,14 @@ Future<void> _getCategories({
   Future<void> _selectCategory(int index) async {
     final categories = state.categories.data;
 
-    if (categories == null ||
-        index < 0 ||
-        index >= categories.length) {
+    if (categories == null || index < 0 || index >= categories.length) {
       return;
     }
 
     final selectedCategory = categories[index];
 
-    emit(
-      state.copyWith(
-        selectedIndex: index,
-      ),
-    );
+    emit(state.copyWith(selectedIndex: index));
 
-    await _getProductsByCategory(
-      selectedCategory.id,
-    );
+    await _getProductsByCategory(selectedCategory.id);
   }
 }

@@ -12,8 +12,7 @@ class CartEntity extends Equatable {
     required this.total,
   });
 
-  int get totalQuantity =>
-      items.fold(0, (sum, item) => sum + item.quantity);
+  int get totalQuantity => items.fold(0, (sum, item) => sum + item.quantity);
 
   @override
   List<Object?> get props => [cartId, items, totalQuantity, total];

@@ -4,10 +4,7 @@ class GetCategoriesEvent extends CategoriesEvents {
   final String? targetCategoryId;
   final int initialIndex;
 
-  GetCategoriesEvent({
-    this.targetCategoryId,
-    this.initialIndex = 0,
-  });
+  GetCategoriesEvent({this.targetCategoryId, this.initialIndex = 0});
 }
 
 class SelectCategoryEvent extends CategoriesEvents {
