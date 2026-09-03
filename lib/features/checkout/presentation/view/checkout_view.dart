@@ -5,6 +5,7 @@ import 'package:flowrist/features/checkout/presentation/view/widgets/gift_method
 import 'package:flowrist/features/checkout/presentation/view/widgets/payment_method.dart';
 import 'package:flowrist/features/checkout/presentation/view/widgets/total_price.dart';
 import 'package:flowrist/features/checkout/presentation/view_model/checkout_cubit.dart';
+import 'package:flowrist/features/checkout/presentation/view_model/checkout_event.dart';
 import 'package:flowrist/features/checkout/presentation/view_model/checkout_state.dart';
 import 'package:flowrist/features/home/cart/presentation/cubit/cart_cubit.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +34,7 @@ class _CheckoutViewState extends State<CheckoutView> {
     super.initState();
 
     _getDeliveryFee();
+    context.read<CheckoutCubit>().doEvent(GetAddressesEvent());
   }
 
   void _getDeliveryFee() {
@@ -47,7 +49,7 @@ class _CheckoutViewState extends State<CheckoutView> {
     final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       body: SafeArea(
-        child:  BlocListener<CheckoutCubit, CheckoutState>(
+        child: BlocListener<CheckoutCubit, CheckoutState>(
           listenWhen: (previous, current) {
             final previousState = previous.placeOrderState;
             final currentState = current.placeOrderState;
@@ -109,22 +111,23 @@ class _CheckoutViewState extends State<CheckoutView> {
                         );
                       },
                     ),
-
                     const SizedBox(height: 25),
 
                     const _SectionDivider(),
 
                     const SizedBox(height: 25),
-
                     const DeliveryAddress(),
+                    const SizedBox(height: 25),
 
+                    const _SectionDivider(),
+
+                    const SizedBox(height: 25),
                     const PaymentMethod(),
                     const SizedBox(height: 25),
 
                     const _SectionDivider(),
 
                     const SizedBox(height: 25),
-
                     GiftMethods(
                       onChanged:
                           ({
@@ -139,19 +142,16 @@ class _CheckoutViewState extends State<CheckoutView> {
                             );
                           },
                     ),
-
                     const SizedBox(height: 25),
 
                     const _SectionDivider(),
 
                     const SizedBox(height: 25),
-
                     TotalPrice(
                       subTotal: widget.subTotal,
                       cartId: widget.cartId,
                       addressId: widget.addressId,
                     ),
-
                     const SizedBox(height: 32),
                   ],
                 ),
