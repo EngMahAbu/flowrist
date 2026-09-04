@@ -18,7 +18,7 @@ class DeliveryAddress extends StatelessWidget {
             localizations.deliveryAddress,
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
           ),
-          SizedBox(height: 16),
+        const  SizedBox(height: 16),
           ListView.separated(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
