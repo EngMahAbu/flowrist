@@ -16,15 +16,15 @@ jobs:
         run: |
           echo "Checking branch name: $BRANCH_NAME"
 
-          if [[ ! "$BRANCH_NAME" =~ ^(feature|bugfix|hotfix|release)/.+$ ]]; then
-            echo "❌ Invalid branch name: $BRANCH_NAME"
-            echo ""
-            echo "Expected formats:"
-            echo "  feature/your-feature-name"
-            echo "  bugfix/your-bug-name"
-            echo "  hotfix/your-hotfix-name"
-            echo "  release/your-release-name"
+          BRANCH_REGEX='^(feature|fix|docs|style|refactor|test|chore|perf|ci|build|revert|release)/[a-zA-Z0-9._-]+$'
+          
+            if [[ ! "$BRANCH_NAME" =~ $BRANCH_REGEX ]]; then
+            echo "❌ Invalid branch name: '$BRANCH_NAME'"
+            echo "Expected format: <type>/<description>"
+            echo "Allowed types: feature, fix, docs, style, refactor, test, chore, perf, ci, build, revert, release"
+            echo "Example: feature/cart-management"
             exit 1
           fi
+
 
           echo "✅ Branch name is valid: $BRANCH_NAME"    

@@ -40,14 +40,14 @@ fail() {
 step "Checking branch name"
 
 BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
-BRANCH_REGEX='^(feature|fix|docs|style|refactor|test|chore|perf|ci|build|revert)\/[a-zA-Z0-9._-]+$'
+BRANCH_REGEX='^(feature|fix|docs|style|refactor|test|chore|perf|ci|build|revert|release)\/[a-zA-Z0-9._-]+$'
 
 if [[ "$BRANCH_NAME" == "main" || "$BRANCH_NAME" == "master" || "$BRANCH_NAME" == "develop" ]]; then
   pass "On protected branch '$BRANCH_NAME' — skipping naming check"
 elif [[ ! "$BRANCH_NAME" =~ $BRANCH_REGEX ]]; then
   fail "Invalid branch name: '$BRANCH_NAME'"
   echo "   Expected format: <type>/<description>"
-  echo "   Allowed types: feature, fix, docs, style, refactor, test, chore, perf, ci, build, revert"
+  echo "   Allowed types: feature, fix, docs, style, refactor, test, chore, perf, ci, build, revert, release"
   echo "   Example: feature/cart-management"
 else
   pass "Branch name '$BRANCH_NAME' is valid"
