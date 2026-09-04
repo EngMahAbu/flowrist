@@ -8,7 +8,6 @@ on:
 jobs:
   deploy:
     name: Deploy to Firebase App Distribution
-    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
