@@ -95,7 +95,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                               SnackBar(content: Text(errorMessage)),
                             );
                         }
-                      },
+                      }, 
                       builder: (context, state) {
                         final deliveryFeeState = state.deliveryFeeState;
                         final deliveryFee = deliveryFeeState.data;
