@@ -28,6 +28,10 @@ abstract final class Endpoints {
   static const String cities =
       'api/address-cart/locations/governorates/{governorateId}/cities';
   static const String saveAddress = 'api/address-cart/users/me/addresses';
+  static const String deleteAddress =
+      'api/address-cart/users/me/addresses/{addressId}';
+  static const String updateAddress =
+      'api/address-cart/users/me/addresses/{addressId}';
   static const String searchProducts = 'api/catalog/products/search';
   static const String dateFormatDelivery = 'dd MMM yyyy, hh:mm a';
   static const String cash = 'cash';
