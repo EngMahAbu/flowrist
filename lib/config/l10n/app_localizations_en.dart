@@ -437,56 +437,86 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clear => 'Clear';
 
   @override
-  String get deliveryTime => 'Delivery time';
+  String get activeSessions => 'Active Sessions';
 
   @override
-  String get instantArriveBy => 'Instant, Arrive by';
+  String get noActiveSessions => 'No active sessions found';
 
   @override
-  String get deliveryAddress => 'Delivery address';
+  String get thisDevice => 'This Device';
 
   @override
-  String get addNew => 'Add New';
+  String get activeNow => 'Active Now';
 
   @override
-  String get paymentMethod => 'Payment method';
+  String get revoke => 'Revoke';
 
   @override
-  String get cashOnDelivery => 'Cash on delivery';
+  String get logOut => 'Log Out';
 
   @override
-  String get creditCard => 'Credit card';
+  String get logOutEverywhere => 'Log out everywhere';
 
   @override
-  String get itIsAGift => 'It is a gift';
+  String get revokeSessionTitle => 'Revoke Session';
 
   @override
-  String get enterTheName => 'Enter the name';
+  String get revokeSessionConfirmation =>
+      'Are you sure you want to log out from this device?';
 
   @override
-  String get name => 'Name';
+  String get revokeAllTitle => 'Log out everywhere';
 
   @override
-  String get enterThePhoneNumber => 'Enter the phone number';
+  String get revokeAllConfirmation =>
+      'This will revoke all active sessions except your current device. Continue?';
 
   @override
-  String get placeOrder => 'Place order';
+  String get sessionRevokedSuccessfully => 'Session revoked successfully';
 
   @override
-  String get couldnotopenpaymentpage => 'Could not open payment page';
+  String get currentSession => 'Current Session';
 
   @override
-  String get paymentsessionURLismissing => 'Payment session URL is missing';
+  String get allSessionsRevokedSuccessfully =>
+      'All sessions revoked successfully';
 
   @override
-  String get invalidpaymentURL => 'Invalid payment URL';
+  String get myOrders => 'My orders';
 
   @override
-  String get pleaseselectapaymentmethod => 'Please select a payment method';
+  String get active => 'Active';
 
   @override
-  String get pleaseenterrecipientname => 'Please enter recipient name';
+  String get completed => 'Completed';
 
   @override
-  String get pleaseenterrecipientphone => 'Please enter recipient phone';
+  String get trackOrder => 'Track order';
+
+  @override
+  String get reorder => 'Reorder';
+
+  @override
+  String get deliveredOn => 'Delivered on';
+
+  @override
+  String get noOrdersFound => 'No orders found';
+
+  @override
+  String get orderNumberPrefix => 'Order number#';
+
+  @override
+  String get orderDetails => 'Order Details';
+
+  @override
+  String get status => 'Status';
+
+  @override
+  String get paymentMethod => 'Payment Method';
+
+  @override
+  String get paymentStatus => 'Payment Status';
+
+  @override
+  String get somethingWentWrong => 'Something went wrong';
 }

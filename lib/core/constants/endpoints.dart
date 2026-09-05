@@ -1,6 +1,12 @@
 abstract final class Endpoints {
   static const baseUrl = 'http://10.0.2.2:5000/';
   static const register = 'api/identity/auth/register';
+  static const login = 'api/identity/auth/login';
+  static const refreshToken = 'api/identity/auth/refresh-token';
+  static const sessions = 'api/identity/auth/sessions';
+  static String deleteSession(String sessionId) =>
+      'api/identity/auth/sessions/$sessionId';
+
   static const occasions = 'api/catalog/occasions';
   static const categories = 'api/catalog/categories';
   static const products = 'api/catalog/products';
@@ -31,4 +37,5 @@ abstract final class Endpoints {
   static const String stripe = 'Stripe';
   static const String idempotencyKey = "Idempotency-Key";
   static const String cartId = 'CartId';
+  static const String orders = 'api/orders';
 }

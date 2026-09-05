@@ -15,7 +15,11 @@ import 'package:flowrist/features/home/home/presentation/best_seller/view/best_s
 import 'package:flowrist/features/home/home/presentation/home_layout/view/home_tab_view.dart';
 import 'package:flowrist/features/home/home/presentation/occasion/cubit/occasion_cubit.dart';
 import 'package:flowrist/features/home/home/presentation/occasion/view/occasion_view.dart';
-import 'package:flowrist/features/home/profile/presentation/view/profile_tab_view.dart';
+import 'package:flowrist/features/home/profile/my_orders/presentation/view/my_orders_view.dart';
+import 'package:flowrist/features/home/profile/my_orders/presentation/view/order_details_view.dart';
+import 'package:flowrist/features/home/profile/profile_layout/presentation/view/profile_tab_view.dart';
+import 'package:flowrist/features/home/profile/session_management/presentation/cubit/sessions_cubit.dart';
+import 'package:flowrist/features/home/profile/session_management/presentation/view/active_sessions_view.dart';
 import 'package:flowrist/features/home/search_and_filtering/search/presentation/view/search_view.dart';
 import 'package:flowrist/features/home/shared/home_navigation_view.dart';
 import 'package:flowrist/features/splash/presentation/view/splash_view.dart';
@@ -49,13 +53,19 @@ abstract final class AppRoutes {
   static const bestSeller = '/best-seller';
   static const occasions = '/occasions';
   static const addAddress = '/add-address';
+  static const activeSessions = '/active-sessions';
+  static const myOrders = '/my-orders';
+  static const orderDetails = '/order-details/:orderId';
+  static String orderDetailsPath(String orderId) {
+    return '/order-details/$orderId';
+  }
 }
 
 abstract final class AppRouter {
-  static final _rootNavigatorKey = GlobalKey<NavigatorState>();
+  static final rootNavigatorKey = GlobalKey<NavigatorState>();
 
   static final GoRouter router = GoRouter(
-    navigatorKey: _rootNavigatorKey,
+    navigatorKey: rootNavigatorKey,
     initialLocation: AppRoutes.splash,
 
     routes: [
@@ -64,7 +74,7 @@ abstract final class AppRouter {
       // ==================================================
       GoRoute(
         path: AppRoutes.productDetails,
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) {
           final productId = state.pathParameters['productId'];
 
@@ -83,7 +93,7 @@ abstract final class AppRouter {
       // --------------------------------------------------
       GoRoute(
         path: AppRoutes.search,
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const SearchView(),
       ),
       GoRoute(
@@ -112,7 +122,7 @@ abstract final class AppRouter {
       // --------------------------------------------------
       GoRoute(
         path: AppRoutes.splash,
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) {
           return const SplashView();
         },
@@ -123,7 +133,7 @@ abstract final class AppRouter {
       // --------------------------------------------------
       GoRoute(
         path: AppRoutes.login,
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) {
           return BlocProvider(
             create: (_) => getIt<LoginCubit>(),
@@ -137,7 +147,7 @@ abstract final class AppRouter {
       // --------------------------------------------------
       GoRoute(
         path: AppRoutes.signUp,
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) {
           return const SignUpView();
         },
@@ -148,7 +158,7 @@ abstract final class AppRouter {
       // --------------------------------------------------
       GoRoute(
         path: AppRoutes.bestSeller,
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) {
           return BlocProvider(
             create: (_) => getIt<BestSellerCubit>(),
@@ -162,7 +172,7 @@ abstract final class AppRouter {
       // --------------------------------------------------
       GoRoute(
         path: AppRoutes.occasions,
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) {
           final extra = state.extra;
 
@@ -256,12 +266,52 @@ abstract final class AppRouter {
       // --------------------------------------------------
       GoRoute(
         path: AppRoutes.addAddress,
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) {
           return BlocProvider<AddAddressViewModel>(
             create: (context) => getIt<AddAddressViewModel>(),
             child: const AddAddressView(),
           );
+        },
+      ),
+
+      // --------------------------------------------------
+      // Active Sessions Screen
+      // --------------------------------------------------
+      GoRoute(
+        path: AppRoutes.activeSessions,
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) {
+          return BlocProvider<SessionsCubit>(
+            create: (_) => getIt<SessionsCubit>(),
+            child: const ActiveSessionsView(),
+          );
+        },
+      ),
+
+      // --------------------------------------------------
+      // My Orders Screen
+      // --------------------------------------------------
+      GoRoute(
+        path: AppRoutes.myOrders,
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) => const MyOrdersView(),
+      ),
+
+      // --------------------------------------------------
+      // Order Details Screen
+      // --------------------------------------------------
+      GoRoute(
+        path: AppRoutes.orderDetails,
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) {
+          final orderId = state.pathParameters['orderId'];
+          if (orderId == null || orderId.isEmpty) {
+            return const Scaffold(
+              body: Center(child: Text('Order ID is required')),
+            );
+          }
+          return OrderDetailsView(orderId: orderId);
         },
       ),
     ],
