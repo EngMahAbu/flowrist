@@ -909,6 +909,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Clear'**
   String get clear;
+
+  /// No description provided for @deliveryTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery time'**
+  String get deliveryTime;
+
+  /// No description provided for @instantArriveBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Instant, Arrive by'**
+  String get instantArriveBy;
+
+  /// No description provided for @deliveryAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery address'**
+  String get deliveryAddress;
+
+  /// No description provided for @addNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Add New'**
+  String get addNew;
+
+  /// No description provided for @paymentMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment method'**
+  String get paymentMethod;
+
+  /// No description provided for @cashOnDelivery.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash on delivery'**
+  String get cashOnDelivery;
+
+  /// No description provided for @creditCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit card'**
+  String get creditCard;
+
+  /// No description provided for @itIsAGift.
+  ///
+  /// In en, this message translates to:
+  /// **'It is a gift'**
+  String get itIsAGift;
+
+  /// No description provided for @enterTheName.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the name'**
+  String get enterTheName;
+
+  /// No description provided for @name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get name;
+
+  /// No description provided for @enterThePhoneNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the phone number'**
+  String get enterThePhoneNumber;
+
+  /// No description provided for @placeOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Place order'**
+  String get placeOrder;
+
+  /// No description provided for @couldnotopenpaymentpage.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open payment page'**
+  String get couldnotopenpaymentpage;
+
+  /// No description provided for @paymentsessionURLismissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment session URL is missing'**
+  String get paymentsessionURLismissing;
+
+  /// No description provided for @invalidpaymentURL.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid payment URL'**
+  String get invalidpaymentURL;
+
+  /// No description provided for @pleaseselectapaymentmethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a payment method'**
+  String get pleaseselectapaymentmethod;
+
+  /// No description provided for @pleaseenterrecipientname.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter recipient name'**
+  String get pleaseenterrecipientname;
+
+  /// No description provided for @pleaseenterrecipientphone.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter recipient phone'**
+  String get pleaseenterrecipientphone;
 }
 
 class _AppLocalizationsDelegate
