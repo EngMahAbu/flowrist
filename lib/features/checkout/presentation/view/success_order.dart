@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class SuccessOrder extends StatelessWidget {
   const SuccessOrder({super.key});
@@ -12,7 +13,7 @@ class SuccessOrder extends StatelessWidget {
           Center(child: Text("Success order")),
           ElevatedButton(
             onPressed: () {
-              Navigator.pop(context);
+              context.pop();
             },
             child: Text("data"),
           ),
