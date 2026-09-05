@@ -8,11 +8,10 @@ import 'package:flowrist/features/checkout/domain/use_cases/place_order_use_case
 import 'package:flowrist/features/checkout/presentation/view_model/checkout_event.dart';
 import 'package:flowrist/features/checkout/presentation/view_model/checkout_state.dart';
 import 'package:flowrist/shared/addresses/domain/use_cases/get_all_user_addresses_use_case.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+
 import '../../../../shared/addresses/domain/entities/address_entity.dart';
-import 'checkout_event.dart';
 
 @injectable
 class CheckoutCubit extends Cubit<CheckoutState> {
@@ -20,8 +19,12 @@ class CheckoutCubit extends Cubit<CheckoutState> {
   final GetDeliveryFeeUseCase _getDeliveryFeeUseCase;
   final GetAllUserAddressesUseCase _getAllUserAddressesUseCase;
 
-  CheckoutCubit(this._placeOrderUseCase, this._getDeliveryFeeUseCase)
-    : super(CheckoutState.initial());
+  CheckoutCubit(
+    this._placeOrderUseCase,
+    this._getDeliveryFeeUseCase,
+    this._getAllUserAddressesUseCase,
+  ) : super(CheckoutState.initial());
+
   Future<void> doEvent(CheckoutEvent event) async {
     switch (event) {
       case SelectPaymentMethod():
@@ -37,16 +40,11 @@ class CheckoutCubit extends Cubit<CheckoutState> {
           phone: event.phone,
         );
       case GetAddressesEvent():
-        await _getAddresses();
+        _getAddresses();
       case SelectDeliveryAddressEvent():
         _selectAddress(event.addressId);
     }
   }
-  CheckoutCubit(
-    this._placeOrderUseCase,
-    this._getDeliveryFeeUseCase,
-      this._getAllUserAddressesUseCase,
-  ) : super(CheckoutState.initial());
 
   void _selectPaymentMethod(String paymentMethod) {
     emit(
@@ -58,11 +56,7 @@ class CheckoutCubit extends Cubit<CheckoutState> {
   }
 
   void _selectAddress(String addressId) {
-    emit(
-      state.copyWith(
-        selectedAddressId: addressId,
-      ),
-    );
+    emit(state.copyWith(selectedAddressId: addressId));
   }
 
   void _updateGiftInfo({
@@ -185,7 +179,7 @@ class CheckoutCubit extends Cubit<CheckoutState> {
 
           if (selectedId == null && addresses.isNotEmpty) {
             final defaultAddress = addresses.firstWhere(
-                  (a) => a.isDefault,
+              (a) => a.isDefault,
               orElse: () => addresses.first,
             );
             selectedId = defaultAddress.id;
