@@ -7,16 +7,24 @@ import 'package:flowrist/features/checkout/domain/use_cases/get_delivery_fee_use
 import 'package:flowrist/features/checkout/domain/use_cases/place_order_use_case.dart';
 import 'package:flowrist/features/checkout/presentation/view_model/checkout_event.dart';
 import 'package:flowrist/features/checkout/presentation/view_model/checkout_state.dart';
+import 'package:flowrist/shared/addresses/domain/use_cases/get_all_user_addresses_use_case.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+
+import '../../../../shared/addresses/domain/entities/address_entity.dart';
 
 @injectable
 class CheckoutCubit extends Cubit<CheckoutState> {
   final PlaceOrderUseCase _placeOrderUseCase;
   final GetDeliveryFeeUseCase _getDeliveryFeeUseCase;
+  final GetAllUserAddressesUseCase _getAllUserAddressesUseCase;
 
-  CheckoutCubit(this._placeOrderUseCase, this._getDeliveryFeeUseCase)
-    : super(CheckoutState.initial());
+  CheckoutCubit(
+    this._placeOrderUseCase,
+    this._getDeliveryFeeUseCase,
+    this._getAllUserAddressesUseCase,
+  ) : super(CheckoutState.initial());
+
   Future<void> doEvent(CheckoutEvent event) async {
     switch (event) {
       case SelectPaymentMethod():
@@ -31,6 +39,10 @@ class CheckoutCubit extends Cubit<CheckoutState> {
           name: event.name,
           phone: event.phone,
         );
+      case GetAddressesEvent():
+        _getAddresses();
+      case SelectDeliveryAddressEvent():
+        _selectAddress(event.addressId);
     }
   }
 
@@ -41,6 +53,10 @@ class CheckoutCubit extends Cubit<CheckoutState> {
         placeOrderState: BaseState<CardOrderEntity?>.initial(),
       ),
     );
+  }
+
+  void _selectAddress(String addressId) {
+    emit(state.copyWith(selectedAddressId: addressId));
   }
 
   void _updateGiftInfo({
@@ -141,5 +157,56 @@ class CheckoutCubit extends Cubit<CheckoutState> {
 
   void reset() {
     emit(CheckoutState.initial());
+  }
+
+  Future<void> _getAddresses() async {
+    emit(
+      state.copyWith(
+        addressesState: state.addressesState.copyWith(
+          isLoading: true,
+          errorMessage: null,
+        ),
+      ),
+    );
+
+    try {
+      final response = await _getAllUserAddressesUseCase();
+
+      switch (response) {
+        case SuccessResponse<List<AddressEntity>>():
+          final addresses = response.data ?? const [];
+          String? selectedId = state.selectedAddressId;
+
+          if (selectedId == null && addresses.isNotEmpty) {
+            final defaultAddress = addresses.firstWhere(
+              (a) => a.isDefault,
+              orElse: () => addresses.first,
+            );
+            selectedId = defaultAddress.id;
+          }
+
+          emit(
+            state.copyWith(
+              addressesState: BaseState<List<AddressEntity>>.success(addresses),
+              selectedAddressId: selectedId,
+            ),
+          );
+
+        case ErrorResponse<List<AddressEntity>>():
+          emit(
+            state.copyWith(
+              addressesState: BaseState<List<AddressEntity>>.error(
+                response.errorMessage,
+              ),
+            ),
+          );
+      }
+    } catch (e) {
+      emit(
+        state.copyWith(
+          addressesState: BaseState<List<AddressEntity>>.error(e.toString()),
+        ),
+      );
+    }
   }
 }
