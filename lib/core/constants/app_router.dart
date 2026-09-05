@@ -12,7 +12,9 @@ import 'package:flowrist/features/home/home/presentation/best_seller/view/best_s
 import 'package:flowrist/features/home/home/presentation/home_layout/view/home_tab_view.dart';
 import 'package:flowrist/features/home/home/presentation/occasion/cubit/occasion_cubit.dart';
 import 'package:flowrist/features/home/home/presentation/occasion/view/occasion_view.dart';
-import 'package:flowrist/features/home/profile/presentation/view/profile_tab_view.dart';
+import 'package:flowrist/features/home/profile/my_orders/presentation/view/my_orders_view.dart';
+import 'package:flowrist/features/home/profile/my_orders/presentation/view/order_details_view.dart';
+import 'package:flowrist/features/home/profile/profile_layout/presentation/view/profile_tab_view.dart';
 import 'package:flowrist/features/home/profile/session_management/presentation/cubit/sessions_cubit.dart';
 import 'package:flowrist/features/home/profile/session_management/presentation/view/active_sessions_view.dart';
 import 'package:flowrist/features/home/search_and_filtering/search/presentation/view/search_view.dart';
@@ -48,6 +50,11 @@ abstract final class AppRoutes {
   static const occasions = '/occasions';
   static const addAddress = '/add-address';
   static const activeSessions = '/active-sessions';
+  static const myOrders = '/my-orders';
+  static const orderDetails = '/order-details/:orderId';
+  static String orderDetailsPath(String orderId) {
+    return '/order-details/$orderId';
+  }
 }
 
 abstract final class AppRouter {
@@ -255,6 +262,32 @@ abstract final class AppRouter {
             create: (_) => getIt<SessionsCubit>(),
             child: const ActiveSessionsView(),
           );
+        },
+      ),
+
+      // --------------------------------------------------
+      // My Orders Screen
+      // --------------------------------------------------
+      GoRoute(
+        path: AppRoutes.myOrders,
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) => const MyOrdersView(),
+      ),
+
+      // --------------------------------------------------
+      // Order Details Screen
+      // --------------------------------------------------
+      GoRoute(
+        path: AppRoutes.orderDetails,
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) {
+          final orderId = state.pathParameters['orderId'];
+          if (orderId == null || orderId.isEmpty) {
+            return const Scaffold(
+              body: Center(child: Text('Order ID is required')),
+            );
+          }
+          return OrderDetailsView(orderId: orderId);
         },
       ),
     ],
