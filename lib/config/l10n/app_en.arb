@@ -156,7 +156,7 @@
   "reorder": "Reorder",
   "deliveredOn": "Delivered on",
   "noOrdersFound": "No orders found",
-  "orderNumberPrefix": "Order number#",
+  "orderNumberPrefix": "Order number",
   "orderDetails": "Order Details",
   "status": "Status",
   "paymentMethod": "Payment Method",

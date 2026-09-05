@@ -35,6 +35,7 @@ class OrderDetailsView extends StatelessWidget {
             onPressed: () => Navigator.of(context).maybePop(),
           ),
           title: Text(locale.orderDetails, style: AppStyles.medium18Inter),
+          titleSpacing: 0,
         ),
         body: BlocBuilder<OrdersCubit, OrdersState>(
           builder: (context, state) {
