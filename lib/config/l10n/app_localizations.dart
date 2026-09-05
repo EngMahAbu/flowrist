@@ -1209,6 +1209,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'v 6.3.0 - (446)'**
   String get app_version;
+
+  /// No description provided for @savedAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved address'**
+  String get savedAddress;
 }
 
 class _AppLocalizationsDelegate

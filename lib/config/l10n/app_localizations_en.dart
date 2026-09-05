@@ -588,4 +588,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get app_version => 'v 6.3.0 - (446)';
+
+  @override
+  String get savedAddress => 'Saved address';
 }

@@ -288,7 +288,7 @@ abstract final class AppRouter {
       // --------------------------------------------------
       GoRoute(
         path: AppRoutes.savedAddresses,
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) {
           return BlocProvider<SavedAddressesViewModel>(
             create: (context) => getIt<SavedAddressesViewModel>(),

@@ -37,11 +37,11 @@ class _ProfileTabViewState extends State<ProfileTabView> {
                   Row(
                     children: [
                       // const Text('🌸', style: TextStyle(fontSize: 18)),
-                  SvgPicture.asset(
-                    AppImages.appLogo,
-                    height: 24,
-                    width: 24,
-                  ),
+                      SvgPicture.asset(
+                        AppImages.appLogo,
+                        height: 24,
+                        width: 24,
+                      ),
                       const SizedBox(width: 4),
                       Text(
                         l10n.flowery,
@@ -103,13 +103,13 @@ class _ProfileTabViewState extends State<ProfileTabView> {
                     const SizedBox(height: 12),
 
                     // Avatar
-                      CircleAvatar(
+                    CircleAvatar(
                       radius: 42,
                       child: SvgPicture.asset(
-                    AppImages.appLogo,
-                    height: 100,
-                    width: 100,
-                  ),
+                        AppImages.appLogo,
+                        height: 100,
+                        width: 100,
+                      ),
                     ),
                     const SizedBox(height: 10),
 
@@ -155,7 +155,9 @@ class _ProfileTabViewState extends State<ProfileTabView> {
                       _buildListTile(
                         icon: Icons.location_on_outlined,
                         title: l10n.saveAddress,
-                        onTap: () {},
+                        onTap: () {
+                          context.push(AppRoutes.savedAddresses);
+                        },
                       ),
                       _buildListTile(
                         icon: Icons.location_on_outlined,
