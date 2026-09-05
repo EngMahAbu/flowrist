@@ -477,7 +477,6 @@ class _AddAddressFormViewState extends State<AddAddressFormView> {
                     addressLine: _addressController.text,
                     governorateId: state.selectedGovernorate!.id!,
                     cityId: state.selectedCity!.id!,
-                    // TODO: wait for the backend team's response regarding what to send in this field of the request
                     area: state.selectedCity!.nameEn!,
                     lat: state.selectedLocation?.latitude ?? 0.0,
                     lng: state.selectedLocation?.longitude ?? 0.0,

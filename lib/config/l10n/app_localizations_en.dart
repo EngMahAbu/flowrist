@@ -512,11 +512,80 @@ class AppLocalizationsEn extends AppLocalizations {
   String get status => 'Status';
 
   @override
-  String get paymentMethod => 'Payment Method';
+  String get paymentMethod => 'Payment method';
 
   @override
   String get paymentStatus => 'Payment Status';
 
   @override
   String get somethingWentWrong => 'Something went wrong';
+
+  @override
+  String get deliveryTime => 'Delivery time';
+
+  @override
+  String get instantArriveBy => 'Instant, Arrive by';
+
+  @override
+  String get deliveryAddress => 'Delivery address';
+
+  @override
+  String get addNew => 'Add New';
+
+  @override
+  String get cashOnDelivery => 'Cash on delivery';
+
+  @override
+  String get creditCard => 'Credit card';
+
+  @override
+  String get itIsAGift => 'It is a gift';
+
+  @override
+  String get enterTheName => 'Enter the name';
+
+  @override
+  String get name => 'Name';
+
+  @override
+  String get enterThePhoneNumber => 'Enter the phone number';
+
+  @override
+  String get placeOrder => 'Place order';
+
+  @override
+  String get couldnotopenpaymentpage => 'Could not open payment page';
+
+  @override
+  String get paymentsessionURLismissing => 'Payment session URL is missing';
+
+  @override
+  String get invalidpaymentURL => 'Invalid payment URL';
+
+  @override
+  String get pleaseselectapaymentmethod => 'Please select a payment method';
+
+  @override
+  String get pleaseenterrecipientname => 'Please enter recipient name';
+
+  @override
+  String get pleaseenterrecipientphone => 'Please enter recipient phone';
+
+  @override
+  String get notification => 'Notification';
+
+  @override
+  String get language => 'Language';
+
+  @override
+  String get current_language => 'English';
+
+  @override
+  String get about_us => 'About us';
+
+  @override
+  String get terms_and_conditions => 'Terms & conditions';
+
+  @override
+  String get app_version => 'v 6.3.0 - (446)';
 }
